@@ -13,15 +13,17 @@ namespace WitMorph.Actions
         private bool _isDirty;
         private readonly XmlElement _witdElement;
 
-        public ImportWorkItemTypeDefinitionMorphAction(XmlElement witdElement)
+        public ImportWorkItemTypeDefinitionMorphAction(XmlElement witdElement) : this(witdElement, forceImport: false) {}
+
+        public ImportWorkItemTypeDefinitionMorphAction(XmlElement witdElement, bool forceImport)
         {
             _witdElement = (XmlElement)witdElement.Clone();
+            _isDirty = forceImport;
 
             if (SelectSingleElement("WORKITEMTYPE") == null)
             {
                 throw new ArgumentException("WORKITEMTYPE element missing.");
             }
-
         }
 
         private XmlElement SelectSingleElement(string xpath)
