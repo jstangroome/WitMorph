@@ -9,7 +9,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void Should_Do()
         {
-            var c = new Compare();
+            var c = new MorphEngine();
             //c.Do();
         }
     }
