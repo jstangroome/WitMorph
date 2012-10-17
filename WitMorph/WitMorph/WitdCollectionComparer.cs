@@ -80,7 +80,7 @@ namespace WitMorph
             // remove the old work item type definitions last
             foreach (var targetWitd in removeWitds)
             {
-                // TODO export data for deleted work items
+                _actionSet.ProcessWorkItemData.Add(new ExportWorkItemDataMorphAction(targetWitd.Name, allFields:true));
                 _actionSet.FinaliseWorkItemTypeDefinitions.Add(new DestroyWitdMorphAction(targetWitd.Name));
             }
 

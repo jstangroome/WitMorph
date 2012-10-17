@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,11 +11,15 @@ namespace WitMorph.Actions
     public class ExportWorkItemDataMorphAction : IMorphAction
     {
         private readonly string _workItemTypeName;
+        private readonly bool _allFields;
         private readonly List<string> _fieldReferenceNames = new List<string>();
 
-        public ExportWorkItemDataMorphAction(string workItemTypeName)
+        public ExportWorkItemDataMorphAction(string workItemTypeName) : this (workItemTypeName, allFields:false) {}
+
+        public ExportWorkItemDataMorphAction(string workItemTypeName, bool allFields)
         {
             _workItemTypeName = workItemTypeName;
+            _allFields = allFields;
         }
 
         public void AddExportField(string fieldReferenceName)
@@ -24,13 +29,25 @@ namespace WitMorph.Actions
 
         public void Execute(ExecutionContext context)
         {
-            if (_fieldReferenceNames.Count == 0)
+            if (!_allFields && _fieldReferenceNames.Count == 0)
             {
                 return;
             }
 
             var project = context.GetWorkItemProject();
             var queryContext = new Hashtable { { "project", project.Name }, { "workitemtypename", _workItemTypeName } };
+
+            if (_allFields)
+            {
+                _fieldReferenceNames.Clear();
+                foreach (FieldDefinition fieldDef in project.WorkItemTypes[_workItemTypeName].FieldDefinitions)
+                {
+                    if (!fieldDef.ReferenceName.Equals("System.Id", StringComparison.OrdinalIgnoreCase) && !fieldDef.IsComputed)
+                    {
+                        _fieldReferenceNames.Add(fieldDef.ReferenceName);
+                    }
+                }
+            }
 
             const string wiqlTemplate = @"select [System.Id], {0} from WorkItems where [System.TeamProject] = @project and [System.WorkItemType] = @workitemtypename order by [System.Id]";
             var wiqlFieldList = BuildWiqlFieldList();
@@ -63,6 +80,10 @@ namespace WitMorph.Actions
 
         public override string ToString()
         {
+            if (_allFields)
+            {
+                return string.Format("Export data for work items of type '{0}' in all fields", _workItemTypeName);
+            }
             if (_fieldReferenceNames.Count == 0)
             {
                 return string.Format("No action required. {0}", base.ToString());
