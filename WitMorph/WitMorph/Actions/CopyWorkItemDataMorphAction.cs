@@ -35,5 +35,10 @@ namespace WitMorph.Actions
             }
 
         }
+
+        public override string ToString()
+        {
+            return string.Format("Copy data from field '{0}' to field '{1}' for work items of type '{2}'", _fromFieldReferenceName, _toFieldReferenceName, _workItemTypeName);
+        }
     }
 }

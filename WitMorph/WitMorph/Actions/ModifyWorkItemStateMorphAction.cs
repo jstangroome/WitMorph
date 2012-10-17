@@ -34,5 +34,10 @@ namespace WitMorph.Actions
             }
 
         }
+
+        public override string ToString()
+        {
+            return string.Format("Modify state from '{0}' to '{1}' for work items of type '{2}'", _fromValue, _toValue, _workItemTypeName);
+        }
     }
 }

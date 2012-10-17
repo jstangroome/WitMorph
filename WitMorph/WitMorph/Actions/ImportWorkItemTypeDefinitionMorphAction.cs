@@ -158,6 +158,16 @@ namespace WitMorph.Actions
             }
         }
 
+        public override string ToString()
+        {
+            if (!_isDirty)
+            {
+                return string.Format("No action required. {0}", base.ToString());
+            }
+            var name = SelectSingleElement("WORKITEMTYPE").GetAttribute("name");
+            return string.Format("Import work item type definition '{0}'", name);
+        }
+
         class ImportEventArgsAccumulator
         {
             public ImportEventArgsAccumulator()

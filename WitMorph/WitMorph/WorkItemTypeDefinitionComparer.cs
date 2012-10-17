@@ -27,7 +27,7 @@ namespace WitMorph
             var finalImportAction = new LazyImportWorkItemTypeDefinitionMorphAction(target.Name);
             _actionSet.FinaliseWorkItemTypeDefinitions.Add(finalImportAction);
 
-            var exportDataAction = new ExportWorkItemDataMorphAction(target.Name, Path.GetTempPath()); //TODO replace temp path with something useful
+            var exportDataAction = new ExportWorkItemDataMorphAction(target.Name);
             _actionSet.ProcessWorkItemData.Add(exportDataAction);
 
             foreach (var enumerator in source.Fields)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using WitMorph.Actions;
@@ -27,9 +28,9 @@ namespace WitMorph
             return actionSet.Combine();
         }
 
-        public void Apply(Uri collectionUri, string projectName, IEnumerable<IMorphAction> actions)
+        public void Apply(Uri collectionUri, string projectName, IEnumerable<IMorphAction> actions, string outputPath)
         {
-            var context = new ExecutionContext(collectionUri, projectName);
+            var context = new ExecutionContext(collectionUri, projectName, outputPath);
             foreach (var action in actions)
             {
                 action.Execute(context);

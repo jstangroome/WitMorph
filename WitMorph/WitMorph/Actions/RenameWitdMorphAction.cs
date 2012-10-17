@@ -23,5 +23,10 @@ namespace WitMorph.Actions
 
             InternalAdmin.RenameWorkItemType(workItemType, _newName);
         }
+
+        public override string ToString()
+        {
+            return string.Format("Rename work item type defintinion from '{0}' to '{1}'", _typeName, _newName);
+        }
     }
 }

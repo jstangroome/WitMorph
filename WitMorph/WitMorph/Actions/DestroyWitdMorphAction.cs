@@ -21,5 +21,10 @@ namespace WitMorph.Actions
 
             InternalAdmin.DestroyWorkItemType(workItemType);
         }
+
+        public override string ToString()
+        {
+            return string.Format("Destroy work item type '{0}'", _typeName);
+        }
     }
 }

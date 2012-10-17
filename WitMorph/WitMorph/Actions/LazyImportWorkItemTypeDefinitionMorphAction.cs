@@ -14,6 +14,8 @@ namespace WitMorph.Actions
             _workItemTypeName = workItemTypeName;
         }
 
+        // TODO rename this method
+        // TODO consider using Expression-based parameter to extract action details
         public void AddImportStep(Action<ImportWorkItemTypeDefinitionMorphAction> action)
         {
             _actions.Add(action);
@@ -31,6 +33,11 @@ namespace WitMorph.Actions
             }
 
             importAction.Execute(context);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Lazily import work item type definition '{0}'", _workItemTypeName); //TODO list details of changes
         }
     }
 

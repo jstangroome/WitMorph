@@ -6,14 +6,16 @@ namespace WitMorph.Actions
 {
     public class ExecutionContext
     {
-        public ExecutionContext(Uri collectionUri, string projectName)
+        public ExecutionContext(Uri collectionUri, string projectName, string outputPath)
         {
             CollectionUri = collectionUri;
             ProjectName = projectName;
+            OutputPath = outputPath;
         }
 
         public Uri CollectionUri { get; set; }
         public string ProjectName { get; set; }
+        public string OutputPath { get; set; }
 
         public Project GetWorkItemProject()
         {
