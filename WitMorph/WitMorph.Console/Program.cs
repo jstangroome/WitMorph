@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using WitMorph.Actions;
 
 namespace WitMorph.Console
 {
@@ -21,6 +23,8 @@ namespace WitMorph.Console
             {
                 System.Console.WriteLine(action.ToString());
             }
+
+            var filteredActions = actions.Where(a => !(a is DestroyWitdMorphAction)); // optionally skip deleting extra work item items
 
             engine.Apply(collectionUri, projectName, actions, Path.GetTempPath()); //TODO replace temp path with something useful
 

@@ -82,7 +82,6 @@ namespace WitMorph
             {
                 // TODO export data for deleted work items
                 _actionSet.FinaliseWorkItemTypeDefinitions.Add(new DestroyWitdMorphAction(targetWitd.Name));
-                // TODO consider making destroy optional
             }
 
             // generate morph actions to update the matching work item type definitions
