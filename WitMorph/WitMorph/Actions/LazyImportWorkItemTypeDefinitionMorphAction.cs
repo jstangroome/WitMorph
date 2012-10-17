@@ -14,15 +14,19 @@ namespace WitMorph.Actions
             _workItemTypeName = workItemTypeName;
         }
 
-        // TODO rename this method
         // TODO consider using Expression-based parameter to extract action details
-        public void AddImportStep(Action<ImportWorkItemTypeDefinitionMorphAction> action)
+        public void AddSchemaChange(Action<ImportWorkItemTypeDefinitionMorphAction> action)
         {
             _actions.Add(action);
         }
 
         public void Execute(ExecutionContext context)
         {
+            if (_actions.Count == 0)
+            {
+                return;
+            }
+
             var project = context.GetWorkItemProject();
             var witdElement = (XmlElement)project.WorkItemTypes[_workItemTypeName].Export(false).FirstChild;
             var importAction = new ImportWorkItemTypeDefinitionMorphAction(witdElement);
@@ -37,7 +41,11 @@ namespace WitMorph.Actions
 
         public override string ToString()
         {
-            return string.Format("Lazily import work item type definition '{0}'", _workItemTypeName); //TODO list details of changes
+            if (_actions.Count == 0)
+            {
+                return string.Format("No action required. {0}", base.ToString());
+            }
+            return string.Format("Import {0} schema change(s) to work item type definition '{1}'", _actions.Count, _workItemTypeName); //TODO list details of changes
         }
     }
 

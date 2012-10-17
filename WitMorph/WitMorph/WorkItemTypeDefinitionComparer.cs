@@ -60,7 +60,7 @@ namespace WitMorph
                     if (isNameMatch && isTypeMatch)
                     {
                         // update the metadata on the field
-                        finalImportAction.AddImportStep(i => i.ReplaceFieldDefinition(targetField.ReferenceName, sourceField.Element));
+                        finalImportAction.AddSchemaChange(i => i.ReplaceFieldDefinition(targetField.ReferenceName, sourceField.Element));
                     }
                 }
             }
@@ -83,7 +83,7 @@ namespace WitMorph
                     {
                         // the field is mapped to a new field, copy the data then remove the original field
                         _actionSet.ProcessWorkItemData.Add(new CopyWorkItemDataMorphAction(target.Name, targetField.ReferenceName, sourceField.ReferenceName));
-                        finalImportAction.AddImportStep(i => i.RemoveFieldDefinition(targetField.ReferenceName));
+                        finalImportAction.AddSchemaChange(i => i.RemoveFieldDefinition(targetField.ReferenceName));
                     }
                     else if (_processTemplateMap.SystemFieldReferenceNames.Contains(targetField.ReferenceName))
                     {
@@ -93,7 +93,7 @@ namespace WitMorph
                     {
                         // the field does not exist in the source, export the data for backup then remove the original field
                         exportDataAction.AddExportField(targetField.ReferenceName);
-                        finalImportAction.AddImportStep(i => i.RemoveFieldDefinition(targetField.ReferenceName));
+                        finalImportAction.AddSchemaChange(i => i.RemoveFieldDefinition(targetField.ReferenceName));
                     }
                 }
             }
@@ -129,16 +129,16 @@ namespace WitMorph
                         _actionSet.ProcessWorkItemData.Add(new ModifyWorkItemStateMorphAction(target.Name, targetState.Value, newStateValue));
 
                         // remove the obsolete state and the related transitions
-                        finalImportAction.AddImportStep(i => i.RemoveWorkflowState(targetState.Value)); // ReplaceWorkflow below probably makes this irrelevant
+                        finalImportAction.AddSchemaChange(i => i.RemoveWorkflowState(targetState.Value)); // ReplaceWorkflow below probably makes this irrelevant
                     }
                 }
             }
 
             // replace the workflow (states and transitions)
-            finalImportAction.AddImportStep(i => i.ReplaceWorkflow(source.WorkflowElement));
+            finalImportAction.AddSchemaChange(i => i.ReplaceWorkflow(source.WorkflowElement));
 
             // replace the form layout 
-            finalImportAction.AddImportStep(i => i.ReplaceForm(source.FormElement));
+            finalImportAction.AddSchemaChange(i => i.ReplaceForm(source.FormElement));
 
             // rename the target work item type to the name used by the source 
             if (!string.Equals(source.Name, target.Name, StringComparison.OrdinalIgnoreCase))
