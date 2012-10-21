@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using WitMorph.Actions;
+using WitMorph.Structures;
 
 namespace WitMorph
 {
@@ -18,76 +18,26 @@ namespace WitMorph
 
         public void Compare(IEnumerable<WorkItemTypeDefinition> sourceWitds, IEnumerable<WorkItemTypeDefinition> targetWitds)
         {
-            // handle multiple enumeration
-            sourceWitds = sourceWitds.ToArray();
-            targetWitds = targetWitds.ToArray(); 
+            var mm = new MatchAndMap<WorkItemTypeDefinition, string>(i => i.Name, StringComparer.OrdinalIgnoreCase, _processTemplateMap.WorkItemTypeMap);
+            var matchResult = mm.Match(sourceWitds, targetWitds);
 
-            var updateWitds = new List<SourceTargetPair<WorkItemTypeDefinition>>();
-            var addWitds = new List<WorkItemTypeDefinition>();
-            var removeWitds = new List<WorkItemTypeDefinition>();
-
-            foreach (var sourceWitd in sourceWitds)
+            foreach (var sourceItem in matchResult.SourceOnly)
             {
-                var targetWitd = targetWitds.SingleOrDefault(t => string.Equals(t.Name, sourceWitd.Name, StringComparison.OrdinalIgnoreCase));
-                if (targetWitd == null)
-                {
-                    // no match
-                    addWitds.Add(sourceWitd);
-                }
-                else
-                {
-                    // exists in target
-                    updateWitds.Add(new SourceTargetPair<WorkItemTypeDefinition> { Source = sourceWitd, Target = targetWitd });
-                }
+                // add the new work item type definitions first
+                _actionSet.PrepareWorkItemTypeDefinitions.Add(new ImportWorkItemTypeDefinitionMorphAction(sourceItem.WITDElement, forceImport: true));
             }
 
-            foreach (var targetWitd in targetWitds)
+            foreach (var targetItem in matchResult.TargetOnly)
             {
-                var sourceWitd = sourceWitds.SingleOrDefault(s => string.Equals(s.Name, targetWitd.Name, StringComparison.OrdinalIgnoreCase));
-                if (sourceWitd == null)
-                {
-                    // no match
-                    removeWitds.Add(targetWitd);
-                }
+                // remove the old work item type definitions last
+                _actionSet.ProcessWorkItemData.Add(new ExportWorkItemDataMorphAction(targetItem.Name, allFields: true));
+                _actionSet.FinaliseWorkItemTypeDefinitions.Add(new DestroyWitdMorphAction(targetItem.Name));
             }
 
-            // attempt to map removed Witds to added Witds
-            foreach (var enumerator in removeWitds.ToArray())
-            {
-                var targetWitd = enumerator;
-
-                // is the removed witd mapped to another witd
-                if (_processTemplateMap.WorkItemTypeMap.ContainsKey(targetWitd.Name))
-                {
-                    // is the mapped witd in the added list
-                    var sourceWitd = addWitds.SingleOrDefault(s => string.Equals(s.Name, _processTemplateMap.WorkItemTypeMap[targetWitd.Name], StringComparison.OrdinalIgnoreCase));
-                    if (sourceWitd != null)
-                    {
-                        // convert the add and remove to an update instead
-                        updateWitds.Add(new SourceTargetPair<WorkItemTypeDefinition> { Source = sourceWitd, Target = targetWitd });
-                        addWitds.Remove(sourceWitd);
-                        removeWitds.Remove(targetWitd);
-                    }
-                }
-            }
-
-            // add the new work item type definitions first
-            foreach (var sourceWitd in addWitds)
-            {
-                _actionSet.PrepareWorkItemTypeDefinitions.Add(new ImportWorkItemTypeDefinitionMorphAction(sourceWitd.WITDElement, forceImport: true));
-            }
-
-            // remove the old work item type definitions last
-            foreach (var targetWitd in removeWitds)
-            {
-                _actionSet.ProcessWorkItemData.Add(new ExportWorkItemDataMorphAction(targetWitd.Name, allFields:true));
-                _actionSet.FinaliseWorkItemTypeDefinitions.Add(new DestroyWitdMorphAction(targetWitd.Name));
-            }
-
-            // generate morph actions to update the matching work item type definitions
             var witdComparer = new WorkItemTypeDefinitionComparer(_processTemplateMap, _actionSet);
-            foreach (var pair in updateWitds)
+            foreach (var pair in matchResult.Pairs)
             {
+                // generate morph actions to update the matching work item type definitions
                 witdComparer.Compare(pair.Source, pair.Target);
             }
         }

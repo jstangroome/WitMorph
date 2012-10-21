@@ -13,6 +13,16 @@ namespace WitMorph.Actions
             _newName = newName;
         }
 
+        public string TypeName
+        {
+            get { return _typeName; }
+        }
+
+        public string NewName
+        {
+            get { return _newName; }
+        }
+
         public void Execute(ExecutionContext context)
         {
             // most supported implementation would be to run witadmin.exe but that could be tricky with alternate credentials
@@ -26,7 +36,7 @@ namespace WitMorph.Actions
 
         public override string ToString()
         {
-            return string.Format("Rename work item type defintinion from '{0}' to '{1}'", _typeName, _newName);
+            return string.Format("Rename work item type definition from '{0}' to '{1}'", _typeName, _newName);
         }
     }
 }

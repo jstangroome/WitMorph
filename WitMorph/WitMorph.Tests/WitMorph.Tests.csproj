@@ -36,6 +36,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -50,7 +52,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CompareTests.cs" />
+    <Compile Include="Convert_Scrum_2_To_Agile_6_Tests.cs" />
+    <Compile Include="ProcessTemplates\EmbeddedProcessTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +61,10 @@
       <Project>{E651E0D9-CD14-4D94-8669-B336FE3FF32F}</Project>
       <Name>WitMorph</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProcessTemplates\Microsoft Visual Studio Scrum 2.0.zip" />
+    <EmbeddedResource Include="ProcessTemplates\MSF for Agile Software Development 6.0.zip" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

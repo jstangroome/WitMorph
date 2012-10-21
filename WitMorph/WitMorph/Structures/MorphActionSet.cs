@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WitMorph.Actions;
 
-namespace WitMorph
+namespace WitMorph.Structures
 {
     public class MorphActionSet
     {

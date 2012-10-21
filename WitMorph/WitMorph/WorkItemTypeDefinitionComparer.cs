@@ -1,8 +1,8 @@
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using WitMorph.Actions;
+using WitMorph.Structures;
 
 namespace WitMorph
 {
@@ -48,12 +48,12 @@ namespace WitMorph
                     var isTypeMatch = targetField.Type == sourceField.Type;
                     if (!isNameMatch)
                     {
-                        Debug.WriteLine(string.Format("NAME CHANGE: {0}.{1} > {2}.{3}", source.Name, sourceField.Name, target.Name, targetField.Name));
+                        Debug.WriteLine("NAME CHANGE: {0}.{1} > {2}.{3}", source.Name, sourceField.Name, target.Name, targetField.Name);
                         // TODO different friendly names. witadmin changefield?
                     }
                     if (!isTypeMatch)
                     {
-                        Debug.WriteLine(string.Format("TYPE CHANGE: {0}.{1}.{2} > {3}.{4}.{5}", source.Name, sourceField.ReferenceName, sourceField.Type, target.Name, targetField.ReferenceName, targetField.Type));
+                        Debug.WriteLine("TYPE CHANGE: {0}.{1}.{2} > {3}.{4}.{5}", source.Name, sourceField.ReferenceName, sourceField.Type, target.Name, targetField.ReferenceName, targetField.Type);
                         // TODO different type. witadmin changefield? data copy? fail?
                     }
 

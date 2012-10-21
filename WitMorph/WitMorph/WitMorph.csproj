@@ -53,12 +53,15 @@
     <Compile Include="Actions\RenameWitdMorphAction.cs" />
     <Compile Include="MorphEngine.cs" />
     <Compile Include="Actions\IMorphAction.cs" />
-    <Compile Include="MorphActionSet.cs" />
     <Compile Include="ProcessTemplateDownloader.cs" />
     <Compile Include="ProcessTemplateMap.cs" />
     <Compile Include="ProcessTemplateReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SourceTargetPair.cs" />
+    <Compile Include="Structures\MatchAndMap.cs" />
+    <Compile Include="Structures\MatchResult.cs" />
+    <Compile Include="Structures\MorphActionSet.cs" />
+    <Compile Include="Structures\SourceTargetMap.cs" />
+    <Compile Include="Structures\SourceTargetPair.cs" />
     <Compile Include="WitdCollectionComparer.cs" />
     <Compile Include="WitdField.cs" />
     <Compile Include="WitdState.cs" />

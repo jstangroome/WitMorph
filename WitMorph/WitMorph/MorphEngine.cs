@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using WitMorph.Actions;
+using WitMorph.Structures;
 
 namespace WitMorph
 {
