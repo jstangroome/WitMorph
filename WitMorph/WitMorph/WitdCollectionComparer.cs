@@ -24,7 +24,7 @@ namespace WitMorph
             foreach (var sourceItem in matchResult.SourceOnly)
             {
                 // add the new work item type definitions first
-                _actionSet.PrepareWorkItemTypeDefinitions.Add(new ImportWorkItemTypeDefinitionMorphAction(sourceItem.WITDElement, forceImport: true));
+                _actionSet.PrepareWorkItemTypeDefinitions.Add(new ImportWorkItemTypeDefinitionMorphAction(sourceItem.WITDElement));
             }
 
             foreach (var targetItem in matchResult.TargetOnly)
