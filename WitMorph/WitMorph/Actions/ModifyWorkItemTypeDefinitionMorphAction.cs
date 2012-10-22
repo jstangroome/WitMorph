@@ -149,7 +149,7 @@ namespace WitMorph.Actions
             }
 
             var project = context.GetWorkItemProject();
-            var witdElement = (XmlElement)project.WorkItemTypes[_workItemTypeName].Export(false).FirstChild;
+            var witdElement = project.WorkItemTypes[_workItemTypeName].Export(false).DocumentElement;
 
             foreach (var action in _actions)
             {

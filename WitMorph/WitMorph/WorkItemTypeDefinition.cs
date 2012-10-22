@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -8,44 +7,41 @@ namespace WitMorph
 {
     public class WorkItemTypeDefinition
     {
-        private readonly XmlDocument _document;
-        private readonly XmlNamespaceManager _namespaceManager;
-        private readonly XmlElement _workItemTypeElement;
+        private readonly XmlElement _witdElement;
         private readonly Lazy<WitdField[]> _lazyFields;
         private readonly Lazy<WitdState[]> _lazyStates;
 
-        public WorkItemTypeDefinition(XmlDocument document)
+        public WorkItemTypeDefinition(XmlDocument document) : this(document.DocumentElement) {}
+
+        public WorkItemTypeDefinition(XmlElement witdElement)
         {
-            _document = document;
-
-            _namespaceManager = new XmlNamespaceManager(_document.NameTable);
-            _namespaceManager.AddNamespace("witd", "http://schemas.microsoft.com/VisualStudio/2008/workitemtracking/typedef");
-
-            _workItemTypeElement = (XmlElement)_document.SelectSingleNode("/witd:WITD/WORKITEMTYPE", _namespaceManager);
-            if (_workItemTypeElement == null)
+            if (witdElement.SelectSingleNode("WORKITEMTYPE") == null)
             {
                 throw new ArgumentException("Invalid definition document, missing WORKITEMTYPE element.");
             }
 
+            _witdElement = (XmlElement)witdElement.Clone();
+
             _lazyFields = new Lazy<WitdField[]>(
-                () => _workItemTypeElement
-                          .SelectNodes("FIELDS/FIELD")
+                () => _witdElement
+                          .SelectNodes("WORKITEMTYPE/FIELDS/FIELD")
                           .Cast<XmlElement>()
                           .Select(e => new WitdField(e))
                           .ToArray()
                 );
 
             _lazyStates = new Lazy<WitdState[]>(
-                () => _workItemTypeElement
-                          .SelectNodes("WORKFLOW/STATES/STATE")
+                () => _witdElement
+                          .SelectNodes("WORKITEMTYPE/WORKFLOW/STATES/STATE")
                           .Cast<XmlElement>()
                           .Select(e => new WitdState(e))
                           .ToArray()
                 );
         }
 
-        public string Name { 
-            get { return _workItemTypeElement.GetAttribute("name"); }
+        public string Name
+        {
+            get { return ((XmlElement)_witdElement.SelectSingleNode("WORKITEMTYPE")).GetAttribute("name"); }
         }
 
         public ICollection<WitdField> Fields {
@@ -59,22 +55,17 @@ namespace WitMorph
 
         public XmlElement WITDElement
         {
-            get { return (XmlElement)_workItemTypeElement.ParentNode.Clone(); }
+            get { return (XmlElement)_witdElement.Clone(); }
         }
 
         public XmlElement WorkflowElement
         {
-            get { return (XmlElement)_workItemTypeElement.SelectSingleNode("WORKFLOW").Clone(); }
+            get { return (XmlElement)_witdElement.SelectSingleNode("WORKITEMTYPE/WORKFLOW").Clone(); }
         }
 
         public XmlElement FormElement
         {
-            get { return (XmlElement)_workItemTypeElement.SelectSingleNode("FORM").Clone(); }
+            get { return (XmlElement)_witdElement.SelectSingleNode("WORKITEMTYPE/FORM").Clone(); }
         }
-
-        //public XmlElement Element
-        //{
-        //    get { return (XmlElement)_workItemTypeElement.Clone(); }
-        //}
     }
 }
