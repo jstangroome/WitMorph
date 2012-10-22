@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Xml;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client.Provision;
 
@@ -9,16 +7,11 @@ namespace WitMorph.Actions
 {
     public class ImportWorkItemTypeDefinitionMorphAction : IMorphAction
     {
-        private readonly XmlElement _witdElement;
+        private readonly WorkItemTypeDefinition _typeDefinition;
 
-        public ImportWorkItemTypeDefinitionMorphAction(XmlElement witdElement)
+        public ImportWorkItemTypeDefinitionMorphAction(WorkItemTypeDefinition typeDefinition)
         {
-            if (witdElement.SelectSingleNode("WORKITEMTYPE") == null)
-            {
-                throw new ArgumentException("WORKITEMTYPE element missing.");
-            }
-
-            _witdElement = (XmlElement)witdElement.Clone();
+            _typeDefinition = typeDefinition;
         }
 
         public void Execute(ExecutionContext context)
@@ -28,7 +21,7 @@ namespace WitMorph.Actions
             project.WorkItemTypes.ImportEventHandler += accumulator.Handler;
             try
             {
-                project.WorkItemTypes.Import(_witdElement);
+                project.WorkItemTypes.Import(_typeDefinition.WITDElement);
             }
             catch (ProvisionValidationException)
             {
@@ -46,8 +39,7 @@ namespace WitMorph.Actions
 
         public override string ToString()
         {
-            var name = ((XmlElement)_witdElement.SelectSingleNode("WORKITEMTYPE")).GetAttribute("name");
-            return string.Format("Import work item type definition '{0}'", name);
+            return string.Format("Import work item type definition '{0}'", _typeDefinition.Name);
         }
 
         class ImportEventArgsAccumulator
