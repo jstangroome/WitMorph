@@ -167,6 +167,20 @@ namespace WitMorph.Tests
             Assert.IsTrue(taskIndex > 0, "Is Task state modified");
         }
 
+        [TestMethod]
+        public void ScrumToAgile_should_modify_ToDo_state_to_New_for_Task()
+        {
+            var actions = Actions.ToList();
+
+            var taskIndex = actions.FindIndex(a =>
+            {
+                var e = a as ModifyWorkItemStateMorphAction;
+                return e != null && e.TypeName == "Task" && e.FromValue == "To Do" && e.ToValue == "New";
+            });
+
+            Assert.IsTrue(taskIndex > 0, "Is Task state modified");
+        }
+
         // TODO verify BusinessValue and AcceptanceCriteria are exported for PBIs
         // TODO verify individual fields are removed after export
         // TODO verify extra states are removed 

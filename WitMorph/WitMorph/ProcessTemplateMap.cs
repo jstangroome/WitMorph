@@ -20,7 +20,7 @@ namespace WitMorph
             _workItemTypeMap.Add("User Story", "Product Backlog Item");
 
             _workItemStateMap = new SourceTargetMap<string>(StringComparer.OrdinalIgnoreCase);
-            _workItemStateMap.Add("New", "Todo");
+            _workItemStateMap.Add("New", "To Do");
             _workItemStateMap.Add("Active", "In Progress");
             _workItemStateMap.Add("Closed", "Done");
             // TODO per-work item type state maps
