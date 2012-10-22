@@ -2,7 +2,7 @@ using System.Xml;
 
 namespace WitMorph
 {
-    public class WitdState
+    public class WitdState // invariant readonly
     {
         private readonly XmlElement _stateElement;
 

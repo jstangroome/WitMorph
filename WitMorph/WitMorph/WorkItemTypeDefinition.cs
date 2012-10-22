@@ -8,12 +8,13 @@ namespace WitMorph
     public class WorkItemTypeDefinition
     {
         private readonly XmlElement _witdElement;
-        private readonly Lazy<WitdField[]> _lazyFields;
-        private readonly Lazy<WitdState[]> _lazyStates;
+        private readonly bool _isWritable;
+        private readonly WitdField[] _fields;
+        private readonly WitdState[] _states;
 
-        public WorkItemTypeDefinition(XmlDocument document) : this(document.DocumentElement) {}
+        public WorkItemTypeDefinition(XmlDocument document) : this(document.DocumentElement, false) {}
 
-        public WorkItemTypeDefinition(XmlElement witdElement)
+        public WorkItemTypeDefinition(XmlElement witdElement, bool isWritable)
         {
             if (witdElement.SelectSingleNode("WORKITEMTYPE") == null)
             {
@@ -21,22 +22,22 @@ namespace WitMorph
             }
 
             _witdElement = (XmlElement)witdElement.Clone();
+            _isWritable = isWritable;
 
-            _lazyFields = new Lazy<WitdField[]>(
-                () => _witdElement
-                          .SelectNodes("WORKITEMTYPE/FIELDS/FIELD")
-                          .Cast<XmlElement>()
-                          .Select(e => new WitdField(e))
-                          .ToArray()
-                );
+            if (!_isWritable)
+            {
+                _fields = _witdElement
+                    .SelectNodes("WORKITEMTYPE/FIELDS/FIELD")
+                    .Cast<XmlElement>()
+                    .Select(e => new WitdField(e))
+                    .ToArray();
 
-            _lazyStates = new Lazy<WitdState[]>(
-                () => _witdElement
-                          .SelectNodes("WORKITEMTYPE/WORKFLOW/STATES/STATE")
-                          .Cast<XmlElement>()
-                          .Select(e => new WitdState(e))
-                          .ToArray()
-                );
+                _states = _witdElement
+                    .SelectNodes("WORKITEMTYPE/WORKFLOW/STATES/STATE")
+                    .Cast<XmlElement>()
+                    .Select(e => new WitdState(e))
+                    .ToArray();
+            }
         }
 
         public string Name
@@ -45,12 +46,12 @@ namespace WitMorph
         }
 
         public ICollection<WitdField> Fields {
-            get { return _lazyFields.Value; }
+            get { return _fields; }
         }
 
         public ICollection<WitdState> States
         {
-            get { return _lazyStates.Value; }
+            get { return _states; }
         }
 
         public XmlElement WITDElement

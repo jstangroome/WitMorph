@@ -156,7 +156,9 @@ namespace WitMorph.Actions
                 action(witdElement);
             }
 
-            var importAction = new ImportWorkItemTypeDefinitionMorphAction(new WorkItemTypeDefinition(witdElement)); // TODO perform actions on WorkItemTypeDefinition instead of witdElement directly
+            var workItemTypeDefinition = new WorkItemTypeDefinition(witdElement, true); // TODO perform actions on WorkItemTypeDefinition instead of witdElement directly
+
+            var importAction = new ImportWorkItemTypeDefinitionMorphAction(workItemTypeDefinition); 
             importAction.Execute(context);
         }
 

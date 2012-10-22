@@ -4,7 +4,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph
 {
-    public class WitdField
+    public class WitdField // invariant readonly
     {
         private readonly XmlElement _fieldElement;
 
@@ -43,7 +43,7 @@ namespace WitMorph
             }
         }
 
-        public string HelpText
+        public string HelpText // never used, consider removing
         {
             get { 
                 var helpTextElement = (XmlElement) _fieldElement.SelectSingleNode("HELPTEXT");
