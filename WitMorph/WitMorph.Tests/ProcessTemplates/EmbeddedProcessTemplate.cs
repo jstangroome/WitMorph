@@ -21,8 +21,7 @@ namespace WitMorph.Tests.ProcessTemplates
 
         public EmbeddedProcessTemplate(string processTemplateName)
         {
-            _templatePath = Path.GetTempFileName();
-            File.Delete(_templatePath);
+            _templatePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(GetType(), processTemplateName + ".zip"))
                 using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
