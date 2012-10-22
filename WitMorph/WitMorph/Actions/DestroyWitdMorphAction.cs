@@ -11,6 +11,8 @@ namespace WitMorph.Actions
             _typeName = typeName;
         }
 
+        public string TypeName { get { return _typeName; } }
+
         public void Execute(ExecutionContext context)
         {
             // most supported implementation would be to run witadmin.exe but that could be tricky with alternate credentials

@@ -22,8 +22,18 @@ namespace WitMorph.Actions
             _allFields = allFields;
         }
 
+        public string WorkItemTypeName { get { return _workItemTypeName; } }
+
+        public bool AllFields { get { return _allFields; } }
+
+        public IEnumerable<string> FieldReferenceNames { get { return _fieldReferenceNames; } }
+
         public void AddExportField(string fieldReferenceName)
         {
+            if (_allFields)
+            {
+                throw new InvalidOperationException("All fields are exported");
+            }
             _fieldReferenceNames.Add(fieldReferenceName);
         }
 

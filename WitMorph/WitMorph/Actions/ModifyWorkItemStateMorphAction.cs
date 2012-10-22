@@ -17,6 +17,10 @@ namespace WitMorph.Actions
             _toValue = toValue;
         }
 
+        public string TypeName { get { return _workItemTypeName; } }
+        public string FromValue { get { return _fromValue; } }
+        public string ToValue { get { return _toValue; } }
+
         public void Execute(ExecutionContext context)
         {
             var project = context.GetWorkItemProject();

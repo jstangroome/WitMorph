@@ -17,6 +17,10 @@ namespace WitMorph.Actions
             _toFieldReferenceName = toFieldReferenceName;
         }
 
+        public string TypeName { get { return _workItemTypeName; } }
+        public string FromField { get { return _fromFieldReferenceName; } }
+        public string ToField { get { return _toFieldReferenceName; } }
+
         public void Execute(ExecutionContext context)
         {
             var project = context.GetWorkItemProject();
