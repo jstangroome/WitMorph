@@ -48,6 +48,7 @@
     <Compile Include="Actions\ExecutionContext.cs" />
     <Compile Include="Actions\ExportWorkItemDataMorphAction.cs" />
     <Compile Include="Actions\ImportWorkItemTypeDefinitionMorphAction.cs" />
+    <Compile Include="Actions\IWorkItemTypeDefinitionSchemaChange.cs" />
     <Compile Include="Actions\ModifyWorkItemStateMorphAction.cs" />
     <Compile Include="Actions\LazyImportWorkItemTypeDefinitionMorphAction.cs" />
     <Compile Include="Actions\RenameWitdMorphAction.cs" />

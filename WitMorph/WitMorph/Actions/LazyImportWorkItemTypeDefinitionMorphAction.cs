@@ -15,7 +15,7 @@ namespace WitMorph.Actions
         }
 
         // TODO consider using Expression-based parameter to extract action details
-        public void AddSchemaChange(Action<ImportWorkItemTypeDefinitionMorphAction> action)
+        public void AddSchemaChange(Action<IWorkItemTypeDefinitionSchemaChange> action)
         {
             _actions.Add(action);
         }

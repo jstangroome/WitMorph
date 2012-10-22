@@ -8,7 +8,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client.Provision;
 
 namespace WitMorph.Actions
 {
-    public class ImportWorkItemTypeDefinitionMorphAction : IMorphAction
+    public class ImportWorkItemTypeDefinitionMorphAction : IMorphAction, IWorkItemTypeDefinitionSchemaChange
     {
         private bool _isDirty;
         private readonly XmlElement _witdElement;
