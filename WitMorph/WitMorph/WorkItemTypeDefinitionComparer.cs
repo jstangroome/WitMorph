@@ -73,10 +73,11 @@ namespace WitMorph
                 var sourceField = source.Fields.SingleOrDefault(s => string.Equals(s.ReferenceName, targetField.ReferenceName, StringComparison.OrdinalIgnoreCase));
                 if (sourceField == null)
                 {
-                    if (_processTemplateMap.WorkItemFieldMap.ContainsKey(targetField.ReferenceName))
+                    var mappedSourceFieldName = _processTemplateMap.WorkItemFieldMap.GetSourceByTarget(targetField.ReferenceName);
+                    if (mappedSourceFieldName != null)
                     {
                         // find the matching field in the source using the mapped name
-                        sourceField = source.Fields.SingleOrDefault(s => string.Equals(s.ReferenceName, _processTemplateMap.WorkItemFieldMap[targetField.ReferenceName], StringComparison.OrdinalIgnoreCase));
+                        sourceField = source.Fields.SingleOrDefault(s => string.Equals(s.ReferenceName, mappedSourceFieldName, StringComparison.OrdinalIgnoreCase));
                     }
 
                     if (sourceField != null)

@@ -126,6 +126,21 @@ namespace WitMorph.Tests
         }
 
         [TestMethod]
+        public void ScrumToAgile_should_copy_Effort_to_StoryPoints_for_PBI()
+        {
+            var actions = Actions.ToList();
+
+            var pbiCopyIndex = actions.FindIndex(a =>
+            {
+                var e = a as CopyWorkItemDataMorphAction;
+                return e != null && e.TypeName == "Product Backlog Item" && e.FromField == "Microsoft.VSTS.Scheduling.Effort" && e.ToField == "Microsoft.VSTS.Scheduling.StoryPoints";
+            });
+
+            Assert.IsTrue(pbiCopyIndex > 0, "Is PBI field copied");
+        }
+
+
+        [TestMethod]
         public void ScrumToAgile_should_modify_Done_state_to_Closed_for_Task()
         {
             var actions = Actions.ToList();
