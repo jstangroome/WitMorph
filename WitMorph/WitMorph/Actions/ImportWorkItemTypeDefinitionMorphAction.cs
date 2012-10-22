@@ -21,11 +21,6 @@ namespace WitMorph.Actions
             _witdElement = (XmlElement)witdElement.Clone();
         }
 
-        private XmlElement SelectSingleElement(string xpath)
-        {
-            return (XmlElement)_witdElement.SelectSingleNode(xpath);
-        }
-
         public void Execute(ExecutionContext context)
         {
             var project = context.GetWorkItemProject();
@@ -51,7 +46,7 @@ namespace WitMorph.Actions
 
         public override string ToString()
         {
-            var name = SelectSingleElement("WORKITEMTYPE").GetAttribute("name");
+            var name = ((XmlElement)_witdElement.SelectSingleNode("WORKITEMTYPE")).GetAttribute("name");
             return string.Format("Import work item type definition '{0}'", name);
         }
 
