@@ -9,7 +9,7 @@ namespace WitMorph
         private readonly HashSet<string> _systemFieldReferenceNames;
         private readonly SourceTargetMap<string> _workItemTypeMap;
         private readonly Dictionary<string, string> _workItemFieldMap;
-        private readonly Dictionary<string, string> _workItemStateMap;
+        private readonly SourceTargetMap<string> _workItemStateMap;
 
         public ProcessTemplateMap()
         {
@@ -19,7 +19,11 @@ namespace WitMorph
             _workItemTypeMap = new SourceTargetMap<string>(StringComparer.OrdinalIgnoreCase);
             _workItemTypeMap.Add("User Story", "Product Backlog Item");
 
-            _workItemStateMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { { "Todo", "New" }, { "In Progress", "Active" }, { "Done", "Closed" } };
+            _workItemStateMap = new SourceTargetMap<string>(StringComparer.OrdinalIgnoreCase);
+            _workItemStateMap.Add("New", "Todo");
+            _workItemStateMap.Add("Active", "In Progress");
+            _workItemStateMap.Add("Closed", "Done");
+            // TODO per-work item type state maps
 
             _workItemFieldMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {{"Microsoft.VSTS.Common.BacklogPriority", "Microsoft.VSTS.Common.StackRank"}, {"Microsoft.VSTS.Scheduling.Effort", "Microsoft.VSTS.Scheduling.StoryPoints"}};
             //TODO consider appending Microsoft.VSTS.Common.AcceptanceCriteria content to System.Description
@@ -30,7 +34,7 @@ namespace WitMorph
 
         public SourceTargetMap<string> WorkItemTypeMap { get { return _workItemTypeMap; } }
 
-        public IReadOnlyDictionary<string, string> WorkItemStateMap { get { return _workItemStateMap; } }
+        public SourceTargetMap<string> WorkItemStateMap { get { return _workItemStateMap; } }
 
         public IReadOnlyDictionary<string, string> WorkItemFieldMap { get { return _workItemFieldMap; } }
     }

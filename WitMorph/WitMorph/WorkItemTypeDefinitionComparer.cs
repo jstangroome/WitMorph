@@ -118,15 +118,15 @@ namespace WitMorph
                 if (sourceState == null)
                 {
                     // no match, check if there is a state map
-                    if (_processTemplateMap.WorkItemStateMap.ContainsKey(targetState.Value))
+                    var mappedSourceState = _processTemplateMap.WorkItemStateMap.GetSourceByTarget(targetState.Value);
+                    if (mappedSourceState != null)
                     {
                         // add a new transition from the current state to the new mapped state
                         const string defaultReason = "Process Template Change";
-                        string newStateValue = _processTemplateMap.WorkItemStateMap[targetState.Value];
-                        importAction.AddWorkflowTransition(targetState.Value, newStateValue, defaultReason);
+                        importAction.AddWorkflowTransition(targetState.Value, mappedSourceState, defaultReason);
 
                         // change the current state to new state for existing work items
-                        _actionSet.ProcessWorkItemData.Add(new ModifyWorkItemStateMorphAction(target.Name, targetState.Value, newStateValue));
+                        _actionSet.ProcessWorkItemData.Add(new ModifyWorkItemStateMorphAction(target.Name, targetState.Value, mappedSourceState));
 
                         // remove the obsolete state and the related transitions
                         finalImportAction.AddSchemaChange(i => i.RemoveWorkflowState(targetState.Value)); // ReplaceWorkflow below probably makes this irrelevant
