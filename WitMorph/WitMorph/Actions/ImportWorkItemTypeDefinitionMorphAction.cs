@@ -13,12 +13,12 @@ namespace WitMorph.Actions
 
         public ImportWorkItemTypeDefinitionMorphAction(XmlElement witdElement)
         {
-            _witdElement = (XmlElement)witdElement.Clone();
-
-            if (SelectSingleElement("WORKITEMTYPE") == null)
+            if (witdElement.SelectSingleNode("WORKITEMTYPE") == null)
             {
                 throw new ArgumentException("WORKITEMTYPE element missing.");
             }
+
+            _witdElement = (XmlElement)witdElement.Clone();
         }
 
         private XmlElement SelectSingleElement(string xpath)
