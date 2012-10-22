@@ -118,7 +118,7 @@ namespace WitMorph
                 if (sourceState == null)
                 {
                     // no match, check if there is a state map
-                    var mappedSourceState = _processTemplateMap.WorkItemStateMap.GetSourceByTarget(targetState.Value);
+                    var mappedSourceState = _processTemplateMap.GetWorkItemStateMap(target.Name).GetSourceByTarget(targetState.Value);
                     if (mappedSourceState != null)
                     {
                         // add a new transition from the current state to the new mapped state

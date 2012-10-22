@@ -126,15 +126,9 @@ namespace WitMorph.Tests
         }
 
         [TestMethod]
-        public void ScrumToAgile_should_modify_Done_state_to_Closed_for_Bug_Task_and_PBI()
+        public void ScrumToAgile_should_modify_Done_state_to_Closed_for_Task()
         {
             var actions = Actions.ToList();
-
-            var bugIndex = actions.FindIndex(a =>
-            {
-                var e = a as ModifyWorkItemStateMorphAction;
-                return e != null && e.TypeName == "Bug" && e.FromValue == "Done" && e.ToValue == "Closed";
-            });
 
             var taskIndex = actions.FindIndex(a =>
             {
@@ -142,15 +136,35 @@ namespace WitMorph.Tests
                 return e != null && e.TypeName == "Task" && e.FromValue == "Done" && e.ToValue == "Closed";
             });
 
+            Assert.IsTrue(taskIndex > 0, "Is Task state modified");
+        }
+
+        [TestMethod]
+        public void ScrumToAgile_should_modify_Done_state_to_Resolved_for_PBI()
+        {
+            var actions = Actions.ToList();
+
             var pbiIndex = actions.FindIndex(a =>
             {
                 var e = a as ModifyWorkItemStateMorphAction;
-                return e != null && e.TypeName == "Product Backlog Item" && e.FromValue == "Done" && e.ToValue == "Closed";
+                return e != null && e.TypeName == "Product Backlog Item" && e.FromValue == "Done" && e.ToValue == "Resolved";
             });
 
-            Assert.IsTrue(bugIndex > 0, "Is Bug state modified");
-            Assert.IsTrue(taskIndex > 0, "Is Task state modified");
             Assert.IsTrue(pbiIndex > 0, "Is PBI state modified");
+        }
+
+        [TestMethod]
+        public void ScrumToAgile_should_modify_Done_state_to_Resolved_for_Bug()
+        {
+            var actions = Actions.ToList();
+
+            var bugIndex = actions.FindIndex(a =>
+            {
+                var e = a as ModifyWorkItemStateMorphAction;
+                return e != null && e.TypeName == "Bug" && e.FromValue == "Done" && e.ToValue == "Resolved";
+            });
+
+            Assert.IsTrue(bugIndex > 0, "Is state modified");
         }
 
         [TestMethod]

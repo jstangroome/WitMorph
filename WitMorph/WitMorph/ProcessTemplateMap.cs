@@ -9,7 +9,7 @@ namespace WitMorph
         private readonly HashSet<string> _systemFieldReferenceNames;
         private readonly SourceTargetMap<string> _workItemTypeMap;
         private readonly Dictionary<string, string> _workItemFieldMap;
-        private readonly SourceTargetMap<string> _workItemStateMap;
+        private readonly Dictionary<string, SourceTargetMap<string>> _workItemStateMaps;
 
         public ProcessTemplateMap()
         {
@@ -19,13 +19,33 @@ namespace WitMorph
             _workItemTypeMap = new SourceTargetMap<string>(StringComparer.OrdinalIgnoreCase);
             _workItemTypeMap.Add("User Story", "Product Backlog Item");
 
-            _workItemStateMap = new SourceTargetMap<string>(StringComparer.OrdinalIgnoreCase);
-            _workItemStateMap.Add("New", "To Do");
-            _workItemStateMap.Add("Active", "In Progress");
-            _workItemStateMap.Add("Closed", "Done");
-            // TODO per-work item type state maps
+            SourceTargetMap<string> stateMap;
+            _workItemStateMaps = new Dictionary<string, SourceTargetMap<string>>(StringComparer.OrdinalIgnoreCase);
 
-            _workItemFieldMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {{"Microsoft.VSTS.Common.BacklogPriority", "Microsoft.VSTS.Common.StackRank"}, {"Microsoft.VSTS.Scheduling.Effort", "Microsoft.VSTS.Scheduling.StoryPoints"}};
+            // Agile Task <= Scrum Task
+            stateMap = new SourceTargetMap<string>(StringComparer.OrdinalIgnoreCase);
+            stateMap.Add("New", "To Do");
+            stateMap.Add("Active", "In Progress");
+            stateMap.Add("Closed", "Done");
+            _workItemStateMaps.Add("Task", stateMap);
+
+            // Agile Bug <= Scrum Bug
+            stateMap = new SourceTargetMap<string>(StringComparer.OrdinalIgnoreCase);
+            stateMap.Add("Active", "New");
+            stateMap.Add("Active", "Approved");
+            stateMap.Add("Active", "Committed");
+            stateMap.Add("Resolved", "Done");
+            stateMap.Add("Closed", "Removed");
+            _workItemStateMaps.Add("Bug", stateMap);
+
+            // Agile User Story <= Scrum Product Backlog Item
+            stateMap = new SourceTargetMap<string>(StringComparer.OrdinalIgnoreCase);
+            stateMap.Add("Active", "Approved");
+            stateMap.Add("Active", "Committed");
+            stateMap.Add("Resolved", "Done");
+            _workItemStateMaps.Add("Product Backlog Item", stateMap);
+
+            _workItemFieldMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { { "Microsoft.VSTS.Common.BacklogPriority", "Microsoft.VSTS.Common.StackRank" }, { "Microsoft.VSTS.Scheduling.Effort", "Microsoft.VSTS.Scheduling.StoryPoints" } };
             //TODO consider appending Microsoft.VSTS.Common.AcceptanceCriteria content to System.Description
 
         }
@@ -34,7 +54,14 @@ namespace WitMorph
 
         public SourceTargetMap<string> WorkItemTypeMap { get { return _workItemTypeMap; } }
 
-        public SourceTargetMap<string> WorkItemStateMap { get { return _workItemStateMap; } }
+        public SourceTargetMap<string> GetWorkItemStateMap(string targetWorkItemTypeName)
+        {
+            if (_workItemStateMaps.ContainsKey(targetWorkItemTypeName))
+            {
+                return _workItemStateMaps[targetWorkItemTypeName];
+            }
+            return new SourceTargetMap<string>(StringComparer.OrdinalIgnoreCase);
+        }
 
         public IReadOnlyDictionary<string, string> WorkItemFieldMap { get { return _workItemFieldMap; } }
     }
