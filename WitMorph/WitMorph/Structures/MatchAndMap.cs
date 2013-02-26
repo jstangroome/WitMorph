@@ -17,10 +17,10 @@ namespace WitMorph.Structures
             _keyMap = keyMap;
         }
 
-        private bool MatchFunction(TItem sourceItem, TItem targetItem)
+        private bool MatchFunction(TItem goalItem, TItem currentItem)
         {
-            var sourceKey = _keySelector(sourceItem);
-            var targetKey = _keySelector(targetItem);
+            var sourceKey = _keySelector(goalItem);
+            var targetKey = _keySelector(currentItem);
             var match = _keyEqualityComparer.Equals(sourceKey, targetKey);
             if (!match)
             {
@@ -33,32 +33,32 @@ namespace WitMorph.Structures
             return match;
         }
 
-        public MatchResult<TItem> Match(IEnumerable<TItem> sourceItems, IEnumerable<TItem> targetItems)
+        public MatchResult<TItem> Match(IEnumerable<TItem> goalItems, IEnumerable<TItem> currentItems)
         {
             var output = new MatchResult<TItem>();
 
-            sourceItems = sourceItems as TItem[] ?? sourceItems.ToArray();
-            targetItems = targetItems as TItem[] ?? targetItems.ToArray();
+            goalItems = goalItems as TItem[] ?? goalItems.ToArray();
+            currentItems = currentItems as TItem[] ?? currentItems.ToArray();
 
-            foreach (var sourceItem in sourceItems)
+            foreach (var goalItem in goalItems)
             {
-                var targetItem = targetItems.SingleOrDefault(t => MatchFunction(sourceItem, t));
-                if (targetItem == null)
+                var currentItem = currentItems.SingleOrDefault(t => MatchFunction(goalItem, t));
+                if (currentItem == null)
                 {
-                    output.SourceOnly.Add(sourceItem);
+                    output.SourceOnly.Add(goalItem);
                 }
                 else
                 {
-                    output.Pairs.Add(new CurrentAndGoalPair<TItem>(targetItem, sourceItem));
+                    output.Pairs.Add(new CurrentAndGoalPair<TItem>(currentItem, goalItem));
                 }
             }
 
-            foreach (var targetItem in targetItems)
+            foreach (var currentItem in currentItems)
             {
-                var sourceItem = sourceItems.SingleOrDefault(s => MatchFunction(s, targetItem));
-                if (sourceItem == null)
+                var goalItem = goalItems.SingleOrDefault(s => MatchFunction(s, currentItem));
+                if (goalItem == null)
                 {
-                    output.TargetOnly.Add(targetItem);
+                    output.TargetOnly.Add(currentItem);
                 }
             }
 
