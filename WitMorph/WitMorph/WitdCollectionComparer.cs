@@ -21,13 +21,13 @@ namespace WitMorph
             var mm = new MatchAndMap<WorkItemTypeDefinition, string>(i => i.Name, StringComparer.OrdinalIgnoreCase, _processTemplateMap.WorkItemTypeMap);
             var matchResult = mm.Match(currentWitds, goalWitds);
 
-            foreach (var sourceItem in matchResult.SourceOnly)
+            foreach (var sourceItem in matchResult.GoalOnly)
             {
                 // add the new work item type definitions first
                 _actionSet.PrepareWorkItemTypeDefinitions.Add(new ImportWorkItemTypeDefinitionMorphAction(sourceItem));
             }
 
-            foreach (var targetItem in matchResult.TargetOnly)
+            foreach (var targetItem in matchResult.CurrentOnly)
             {
                 // remove the old work item type definitions last
                 _actionSet.ProcessWorkItemData.Add(new ExportWorkItemDataMorphAction(targetItem.Name, allFields: true));

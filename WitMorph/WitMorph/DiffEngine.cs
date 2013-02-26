@@ -17,9 +17,9 @@ namespace WitMorph
         public IEnumerable<IDifference> CompareProcessTemplates(ProcessTemplate current, ProcessTemplate goal)
         {
             var mm = new MatchAndMap<WorkItemTypeDefinition, string>(i => i.Name, StringComparer.OrdinalIgnoreCase, _processTemplateMap.WorkItemTypeMap);
-            var matchResult = mm.Match(goal.WorkItemTypeDefinitions, current.WorkItemTypeDefinitions);
+            var matchResult = mm.Match(current.WorkItemTypeDefinitions, goal.WorkItemTypeDefinitions);
 
-            foreach (var goalItem in matchResult.TargetOnly)
+            foreach (var goalItem in matchResult.GoalOnly)
             {
                 yield return new AddedWorkItemTypeDefinitionDifference(goalItem);
             }

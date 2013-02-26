@@ -45,7 +45,7 @@ namespace WitMorph.Structures
                 var currentItem = currentItems.SingleOrDefault(t => MatchFunction(t, goalItem));
                 if (currentItem == null)
                 {
-                    output.SourceOnly.Add(goalItem);
+                    output.GoalOnly.Add(goalItem);
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace WitMorph.Structures
                 var goalItem = goalItems.SingleOrDefault(s => MatchFunction(currentItem, s));
                 if (goalItem == null)
                 {
-                    output.TargetOnly.Add(currentItem);
+                    output.CurrentOnly.Add(currentItem);
                 }
             }
 
