@@ -55,6 +55,7 @@
     <Compile Include="DiffEngine.cs" />
     <Compile Include="Differences\AddedWorkItemTypeDefinitionDifference.cs" />
     <Compile Include="Differences\IDifference.cs" />
+    <Compile Include="Differences\RemovedWorkItemTypeDefinitionDifference.cs" />
     <Compile Include="MorphEngine.cs" />
     <Compile Include="Actions\IMorphAction.cs" />
     <Compile Include="ProcessTemplateDownloader.cs" />

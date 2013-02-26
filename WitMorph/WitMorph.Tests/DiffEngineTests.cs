@@ -38,5 +38,16 @@ namespace WitMorph.Tests
 
             Assert.IsNotNull(addedImpediment);
         }
+
+        [TestMethod]
+        public void DiffEngine_should_identify_removed_Issue_work_item_type()
+        {
+            var addedImpediment = _differences
+                .OfType<RemovedWorkItemTypeDefinitionDifference>()
+                .SingleOrDefault(d => d.TypeName.Equals("Issue", StringComparison.InvariantCultureIgnoreCase));
+
+            Assert.IsNotNull(addedImpediment);
+        }
+
     }
 }

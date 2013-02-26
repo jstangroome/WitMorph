@@ -24,6 +24,11 @@ namespace WitMorph
                 yield return new AddedWorkItemTypeDefinitionDifference(goalItem);
             }
 
+            foreach (var currentItem in matchResult.CurrentOnly)
+            {
+                yield return new RemovedWorkItemTypeDefinitionDifference(currentItem.Name);
+            }
+
         }
     }
 
