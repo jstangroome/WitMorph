@@ -19,15 +19,15 @@ namespace WitMorph.Structures
 
         private bool MatchFunction(TItem currentItem, TItem goalItem)
         {
-            var sourceKey = _keySelector(goalItem);
-            var targetKey = _keySelector(currentItem);
-            var match = _keyEqualityComparer.Equals(sourceKey, targetKey);
+            var goalKey = _keySelector(goalItem);
+            var currentKey = _keySelector(currentItem);
+            var match = _keyEqualityComparer.Equals(goalKey, currentKey);
             if (!match)
             {
-                var mappedTargetKey = _keyMap.GetGoalByCurrent(targetKey);
+                var mappedTargetKey = _keyMap.GetGoalByCurrent(currentKey);
                 if (mappedTargetKey != default(TKey))
                 {
-                    match = _keyEqualityComparer.Equals(sourceKey, mappedTargetKey);
+                    match = _keyEqualityComparer.Equals(goalKey, mappedTargetKey);
                 }
             }
             return match;
