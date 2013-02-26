@@ -1,14 +1,14 @@
 namespace WitMorph.Structures
 {
-    public class SourceTargetPair<T>
+    public class CurrentAndGoalPair<T>
     {
-        public SourceTargetPair(T sourceItem, T targetItem)
+        public CurrentAndGoalPair(T goalItem, T currentItem)
         {
-            Source = sourceItem;
-            Target = targetItem;
+            Goal = goalItem;
+            Current = currentItem;
         }
 
-        public T Source { get; set; }
-        public T Target { get; set; }
+        public T Goal { get; set; }
+        public T Current { get; set; }
     }
 }

@@ -49,7 +49,7 @@ namespace WitMorph.Structures
                 }
                 else
                 {
-                    output.Pairs.Add(new SourceTargetPair<TItem>(sourceItem, targetItem));
+                    output.Pairs.Add(new CurrentAndGoalPair<TItem>(sourceItem, targetItem));
                 }
             }
 
