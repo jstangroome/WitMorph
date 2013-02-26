@@ -38,7 +38,7 @@ namespace WitMorph
             foreach (var pair in matchResult.Pairs)
             {
                 // generate morph actions to update the matching work item type definitions
-                witdComparer.Compare(pair.Goal, pair.Current);
+                witdComparer.Compare(pair.Current, pair.Goal);
             }
         }
     }

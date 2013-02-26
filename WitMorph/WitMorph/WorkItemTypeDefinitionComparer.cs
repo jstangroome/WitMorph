@@ -17,7 +17,7 @@ namespace WitMorph
             _actionSet = actionSet;
         }
 
-        public void Compare(WorkItemTypeDefinition goal, WorkItemTypeDefinition current)
+        public void Compare(WorkItemTypeDefinition current, WorkItemTypeDefinition goal)
         {
             // in hindsight, for better separation of concerns, the code for identifying differences should be distinct from the code for creating actions to resolve the differences
 
