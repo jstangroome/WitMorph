@@ -16,10 +16,10 @@ namespace WitMorph
             _actionSet = actionSet;
         }
 
-        public void Compare(IEnumerable<WorkItemTypeDefinition> sourceWitds, IEnumerable<WorkItemTypeDefinition> targetWitds)
+        public void Compare(IEnumerable<WorkItemTypeDefinition> goalWitds, IEnumerable<WorkItemTypeDefinition> currentWitds)
         {
             var mm = new MatchAndMap<WorkItemTypeDefinition, string>(i => i.Name, StringComparer.OrdinalIgnoreCase, _processTemplateMap.WorkItemTypeMap);
-            var matchResult = mm.Match(sourceWitds, targetWitds);
+            var matchResult = mm.Match(goalWitds, currentWitds);
 
             foreach (var sourceItem in matchResult.SourceOnly)
             {

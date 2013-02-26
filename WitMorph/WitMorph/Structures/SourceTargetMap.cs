@@ -2,23 +2,23 @@ using System.Collections.Generic;
 
 namespace WitMorph.Structures
 {
-    public class SourceTargetMap<T>
+    public class CurrentToGoalMap<T>
     {
-        private readonly IDictionary<T, T> _sourceKeyedByTarget = new Dictionary<T, T>();
+        private readonly IDictionary<T, T> _goalKeyedByCurrent = new Dictionary<T, T>();
 
-        public SourceTargetMap(IEqualityComparer<T> equalityComparer)
+        public CurrentToGoalMap(IEqualityComparer<T> equalityComparer)
         {
-            _sourceKeyedByTarget = new Dictionary<T, T>(equalityComparer);
+            _goalKeyedByCurrent = new Dictionary<T, T>(equalityComparer);
         }
 
-        public void Add(T sourceItem, T targetItem)
+        public void Add(T goalItem, T currentItem)
         {
-            _sourceKeyedByTarget.Add(targetItem, sourceItem);
+            _goalKeyedByCurrent.Add(currentItem, goalItem);
         }
 
-        public T GetSourceByTarget(T target)
+        public T GetGoalByCurrent(T current)
         {
-            return _sourceKeyedByTarget.ContainsKey(target) ? _sourceKeyedByTarget[target] : default(T);
+            return _goalKeyedByCurrent.ContainsKey(current) ? _goalKeyedByCurrent[current] : default(T);
         }
     }
 }

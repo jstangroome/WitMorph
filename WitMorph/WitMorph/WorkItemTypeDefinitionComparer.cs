@@ -73,7 +73,7 @@ namespace WitMorph
                 var sourceField = source.Fields.SingleOrDefault(s => string.Equals(s.ReferenceName, targetField.ReferenceName, StringComparison.OrdinalIgnoreCase));
                 if (sourceField == null)
                 {
-                    var mappedSourceFieldName = _processTemplateMap.WorkItemFieldMap.GetSourceByTarget(targetField.ReferenceName);
+                    var mappedSourceFieldName = _processTemplateMap.WorkItemFieldMap.GetGoalByCurrent(targetField.ReferenceName);
                     if (mappedSourceFieldName != null)
                     {
                         // find the matching field in the source using the mapped name
@@ -119,7 +119,7 @@ namespace WitMorph
                 if (sourceState == null)
                 {
                     // no match, check if there is a state map
-                    var mappedSourceState = _processTemplateMap.GetWorkItemStateMap(target.Name).GetSourceByTarget(targetState.Value);
+                    var mappedSourceState = _processTemplateMap.GetWorkItemStateMap(target.Name).GetGoalByCurrent(targetState.Value);
                     if (mappedSourceState != null)
                     {
                         // add a new transition from the current state to the new mapped state
