@@ -17,7 +17,7 @@ namespace WitMorph.Structures
             _keyMap = keyMap;
         }
 
-        private bool MatchFunction(TItem goalItem, TItem currentItem)
+        private bool MatchFunction(TItem currentItem, TItem goalItem)
         {
             var sourceKey = _keySelector(goalItem);
             var targetKey = _keySelector(currentItem);
@@ -33,7 +33,7 @@ namespace WitMorph.Structures
             return match;
         }
 
-        public MatchResult<TItem> Match(IEnumerable<TItem> goalItems, IEnumerable<TItem> currentItems)
+        public MatchResult<TItem> Match(IEnumerable<TItem> currentItems, IEnumerable<TItem> goalItems)
         {
             var output = new MatchResult<TItem>();
 
@@ -42,7 +42,7 @@ namespace WitMorph.Structures
 
             foreach (var goalItem in goalItems)
             {
-                var currentItem = currentItems.SingleOrDefault(t => MatchFunction(goalItem, t));
+                var currentItem = currentItems.SingleOrDefault(t => MatchFunction(t, goalItem));
                 if (currentItem == null)
                 {
                     output.SourceOnly.Add(goalItem);
@@ -55,7 +55,7 @@ namespace WitMorph.Structures
 
             foreach (var currentItem in currentItems)
             {
-                var goalItem = goalItems.SingleOrDefault(s => MatchFunction(s, currentItem));
+                var goalItem = goalItems.SingleOrDefault(s => MatchFunction(currentItem, s));
                 if (goalItem == null)
                 {
                     output.TargetOnly.Add(currentItem);

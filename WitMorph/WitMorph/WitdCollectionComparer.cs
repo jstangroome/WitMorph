@@ -19,7 +19,7 @@ namespace WitMorph
         public void Compare(IEnumerable<WorkItemTypeDefinition> goalWitds, IEnumerable<WorkItemTypeDefinition> currentWitds)
         {
             var mm = new MatchAndMap<WorkItemTypeDefinition, string>(i => i.Name, StringComparer.OrdinalIgnoreCase, _processTemplateMap.WorkItemTypeMap);
-            var matchResult = mm.Match(goalWitds, currentWitds);
+            var matchResult = mm.Match(currentWitds, goalWitds);
 
             foreach (var sourceItem in matchResult.SourceOnly)
             {
