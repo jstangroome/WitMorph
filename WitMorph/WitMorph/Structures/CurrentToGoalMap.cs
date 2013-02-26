@@ -11,7 +11,7 @@ namespace WitMorph.Structures
             _goalKeyedByCurrent = new Dictionary<T, T>(equalityComparer);
         }
 
-        public void Add(T goalItem, T currentItem)
+        public void Add(T currentItem, T goalItem)
         {
             _goalKeyedByCurrent.Add(currentItem, goalItem);
         }

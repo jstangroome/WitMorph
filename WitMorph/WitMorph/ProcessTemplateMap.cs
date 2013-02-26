@@ -19,38 +19,38 @@ namespace WitMorph
 
             // Agile type <= Scrum type
             _workItemTypeMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
-            _workItemTypeMap.Add("User Story", "Product Backlog Item");
+            _workItemTypeMap.Add("Product Backlog Item", "User Story");
 
             CurrentToGoalMap<string> stateMap;
             _workItemStateMaps = new Dictionary<string, CurrentToGoalMap<string>>(StringComparer.OrdinalIgnoreCase);
 
             // Agile Task <= Scrum Task
             stateMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
-            stateMap.Add("New", "To Do");
-            stateMap.Add("Active", "In Progress");
-            stateMap.Add("Closed", "Done");
+            stateMap.Add("To Do", "New");
+            stateMap.Add("In Progress", "Active");
+            stateMap.Add("Done", "Closed");
             _workItemStateMaps.Add("Task", stateMap);
 
             // Agile Bug <= Scrum Bug
             stateMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
-            stateMap.Add("Active", "New");
-            stateMap.Add("Active", "Approved");
-            stateMap.Add("Active", "Committed");
-            stateMap.Add("Resolved", "Done");
-            stateMap.Add("Closed", "Removed");
+            stateMap.Add("New", "Active");
+            stateMap.Add("Approved", "Active");
+            stateMap.Add("Committed", "Active");
+            stateMap.Add("Done", "Resolved");
+            stateMap.Add("Removed", "Closed");
             _workItemStateMaps.Add("Bug", stateMap);
 
             // Agile User Story <= Scrum Product Backlog Item
             stateMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
-            stateMap.Add("Active", "Approved");
-            stateMap.Add("Active", "Committed");
-            stateMap.Add("Resolved", "Done");
+            stateMap.Add("Approved", "Active");
+            stateMap.Add("Committed", "Active");
+            stateMap.Add("Done", "Resolved");
             _workItemStateMaps.Add("Product Backlog Item", stateMap);
 
             // Agile field <= Scrum field
             _workItemFieldMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
-            _workItemFieldMap.Add("Microsoft.VSTS.Common.StackRank", "Microsoft.VSTS.Common.BacklogPriority");
-            _workItemFieldMap.Add("Microsoft.VSTS.Scheduling.StoryPoints", "Microsoft.VSTS.Scheduling.Effort");
+            _workItemFieldMap.Add("Microsoft.VSTS.Common.BacklogPriority", "Microsoft.VSTS.Common.StackRank");
+            _workItemFieldMap.Add("Microsoft.VSTS.Scheduling.Effort", "Microsoft.VSTS.Scheduling.StoryPoints");
             //TODO consider appending Microsoft.VSTS.Common.AcceptanceCriteria content to System.Description
 
         }
