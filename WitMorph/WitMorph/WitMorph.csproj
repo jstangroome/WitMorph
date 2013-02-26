@@ -65,7 +65,7 @@
     <Compile Include="Structures\MatchResult.cs" />
     <Compile Include="Structures\MorphActionSet.cs" />
     <Compile Include="Structures\CurrentToGoalMap.cs" />
-    <Compile Include="Structures\SourceTargetPair.cs" />
+    <Compile Include="Structures\CurrentAndGoalPair.cs" />
     <Compile Include="WitdCollectionComparer.cs" />
     <Compile Include="WitdField.cs" />
     <Compile Include="WitdState.cs" />
