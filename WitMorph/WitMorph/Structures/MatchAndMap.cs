@@ -24,10 +24,10 @@ namespace WitMorph.Structures
             var match = _keyEqualityComparer.Equals(goalKey, currentKey);
             if (!match)
             {
-                var mappedTargetKey = _keyMap.GetGoalByCurrent(currentKey);
-                if (mappedTargetKey != default(TKey))
+                var mappedCurrentKey = _keyMap.GetGoalByCurrent(currentKey);
+                if (mappedCurrentKey != default(TKey))
                 {
-                    match = _keyEqualityComparer.Equals(goalKey, mappedTargetKey);
+                    match = _keyEqualityComparer.Equals(goalKey, mappedCurrentKey);
                 }
             }
             return match;

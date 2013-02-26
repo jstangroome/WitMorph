@@ -59,11 +59,11 @@ namespace WitMorph
 
         public CurrentToGoalMap<string> WorkItemTypeMap { get { return _workItemTypeMap; } }
 
-        public CurrentToGoalMap<string> GetWorkItemStateMap(string targetWorkItemTypeName)
+        public CurrentToGoalMap<string> GetWorkItemStateMap(string currentWorkItemTypeName)
         {
-            if (_workItemStateMaps.ContainsKey(targetWorkItemTypeName))
+            if (_workItemStateMaps.ContainsKey(currentWorkItemTypeName))
             {
-                return _workItemStateMaps[targetWorkItemTypeName];
+                return _workItemStateMaps[currentWorkItemTypeName];
             }
             return new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
         }
