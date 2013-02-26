@@ -16,19 +16,28 @@ namespace WitMorph
 
         public IEnumerable<IDifference> CompareProcessTemplates(ProcessTemplate current, ProcessTemplate goal)
         {
+            var differences = new List<IDifference>();
+            
             var mm = new MatchAndMap<WorkItemTypeDefinition, string>(i => i.Name, StringComparer.OrdinalIgnoreCase, _processTemplateMap.WorkItemTypeMap);
             var matchResult = mm.Match(current.WorkItemTypeDefinitions, goal.WorkItemTypeDefinitions);
 
             foreach (var goalItem in matchResult.GoalOnly)
             {
-                yield return new AddedWorkItemTypeDefinitionDifference(goalItem);
+               differences.Add(new AddedWorkItemTypeDefinitionDifference(goalItem));
             }
 
             foreach (var currentItem in matchResult.CurrentOnly)
             {
-                yield return new RemovedWorkItemTypeDefinitionDifference(currentItem.Name);
+               differences.Add(new RemovedWorkItemTypeDefinitionDifference(currentItem.Name));
             }
 
+            var witdComparer = new WorkItemTypeDefinitionComparer(_processTemplateMap, null);
+            foreach (var pair in matchResult.Pairs)
+            {
+                differences.AddRange(witdComparer.FindDifferences(pair.Current, pair.Goal));
+            }
+
+            return differences;
         }
     }
 

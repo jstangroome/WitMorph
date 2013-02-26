@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using WitMorph.Actions;
+using WitMorph.Differences;
 using WitMorph.Structures;
 
 namespace WitMorph
@@ -149,5 +151,29 @@ namespace WitMorph
 
         }
 
+        public IEnumerable<IDifference> FindDifferences(WorkItemTypeDefinition current, WorkItemTypeDefinition goal)
+        {
+            var differences = new List<IDifference>();
+
+            var stateMatchAndMap = new MatchAndMap<WitdState, string>(s => s.Value, StringComparer.OrdinalIgnoreCase, _processTemplateMap.GetWorkItemStateMap(current.Name));
+            var stateMatchResult = stateMatchAndMap.Match(current.States, goal.States);
+
+            foreach (var goalState in stateMatchResult.GoalOnly)
+            {
+                differences.Add(new AddedWorkItemStateDifference(current.Name, goalState));
+            }
+
+            foreach (var currentState in stateMatchResult.CurrentOnly)
+            {
+                differences.Add(new RemovedWorkItemStateDifference(currentState.Value));
+            }
+
+            foreach (var pair in stateMatchResult.Pairs)
+            {
+              // TODO renamed with new definition
+            }
+
+            return differences;
+        }
     }
 }

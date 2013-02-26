@@ -42,11 +42,24 @@ namespace WitMorph.Tests
         [TestMethod]
         public void DiffEngine_should_identify_removed_Issue_work_item_type()
         {
-            var addedImpediment = _differences
+            var removedIssue = _differences
                 .OfType<RemovedWorkItemTypeDefinitionDifference>()
                 .SingleOrDefault(d => d.TypeName.Equals("Issue", StringComparison.InvariantCultureIgnoreCase));
 
-            Assert.IsNotNull(addedImpediment);
+            Assert.IsNotNull(removedIssue);
+        }
+
+        [TestMethod]
+        public void DiffEngine_should_identify_new_To_Do_state_for_Task_work_item_type()
+        {
+            var addedToDo = _differences
+                .OfType<AddedWorkItemStateDifference>()
+                .SingleOrDefault(
+                    d => d.State.Value.Equals("To Do", StringComparison.InvariantCultureIgnoreCase) &&
+                        d.CurrentWorkItemTypeName.Equals("Task", StringComparison.InvariantCultureIgnoreCase)
+                );
+
+            Assert.IsNotNull(addedToDo);
         }
 
     }
