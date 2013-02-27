@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using WitMorph.Actions;
+using WitMorph.Differences;
 using WitMorph.Structures;
 
 namespace WitMorph
@@ -23,6 +25,18 @@ namespace WitMorph
             var actionSet = new MorphActionSet();
             var witdCollectionComparer = new WitdCollectionComparer(processTemplateMap, actionSet);
             witdCollectionComparer.Compare(processTemplateWitds, GetTeamProjectWorkItemTypeDefinitions(collection, projectName));
+
+            return actionSet.Combine();
+        }
+
+        public IEnumerable<IMorphAction> GenerateActions(IEnumerable<IDifference> differences)
+        {
+            var actionSet = new MorphActionSet();
+
+            foreach (var witdRename in differences.OfType<RenamedWorkItemTypeDefinitionDifference>())
+            {
+                actionSet.FinaliseWorkItemTypeDefinitions.Add(new RenameWitdMorphAction(witdRename.CurrentTypeName, witdRename.GoalTypeName));
+            }
 
             return actionSet.Combine();
         }

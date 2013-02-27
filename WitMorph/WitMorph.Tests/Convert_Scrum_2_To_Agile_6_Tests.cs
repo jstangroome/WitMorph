@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WitMorph.Actions;
@@ -214,6 +215,38 @@ namespace WitMorph.Tests
         // TODO verify individual fields are removed after export
         // TODO verify extra states are removed 
         // TODO verify state modifications for all WITDs are done before they're removed
+
+        [TestMethod]
+        public void ScrumToAgile_should_produce_the_same_actions_directly_as_via_the_DiffEngine()
+        {
+            IEnumerable<IMorphAction> actionsViaDiffEngine;
+            using (var agileTemplate = EmbeddedProcessTemplate.Agile6())
+            using (var scrumTemplate = EmbeddedProcessTemplate.Scrum2())
+            {
+                var agileReader = new ProcessTemplateReader(agileTemplate.TemplatePath);
+                var scrumReader = new ProcessTemplateReader(scrumTemplate.TemplatePath);
+
+                var processTemplateMap = ProcessTemplateMap.ConvertScrum2ToAgile6();
+
+                var currentProcessTemplate = new ProcessTemplate { WorkItemTypeDefinitions = new ReadOnlyCollection<WorkItemTypeDefinition>(scrumReader.WorkItemTypeDefinitions.ToArray()) };
+                var goalProcessTemplate = new ProcessTemplate { WorkItemTypeDefinitions = new ReadOnlyCollection<WorkItemTypeDefinition>(agileReader.WorkItemTypeDefinitions.ToArray()) };
+
+                var diffEngine = new DiffEngine(processTemplateMap);
+                var differences = diffEngine.CompareProcessTemplates(currentProcessTemplate, goalProcessTemplate);
+
+                var morphEngine = new MorphEngine();
+                actionsViaDiffEngine = morphEngine.GenerateActions(differences);
+            }
+ 
+            Assert.AreEqual(46, _actions.Count(), "Baseline for direct actions has changed");
+
+            var renameAction = actionsViaDiffEngine
+                .OfType<RenameWitdMorphAction>()
+                .SingleOrDefault(a => a.TypeName == "Product Backlog Item" && a.NewName == "User Story");
+
+            Assert.IsNotNull(renameAction);
+
+        }
 
     }
 }
