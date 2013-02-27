@@ -20,7 +20,7 @@ namespace WitMorph.Tests
                 var agileReader = new ProcessTemplateReader(agileTemplate.TemplatePath);
                 var scrumReader = new ProcessTemplateReader(scrumTemplate.TemplatePath);
 
-                var processTemplateMap = new ProcessTemplateMap();
+                var processTemplateMap = ProcessTemplateMap.ConvertScrum2ToAgile6();
                 var actionSet = new MorphActionSet();
 
                 var sut = new WitdCollectionComparer(processTemplateMap, actionSet);

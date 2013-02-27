@@ -24,7 +24,7 @@ namespace WitMorph.Tests
                 var currentProcessTemplate = new ProcessTemplate {WorkItemTypeDefinitions = new ReadOnlyCollection<WorkItemTypeDefinition>(currentTemplateReader.WorkItemTypeDefinitions.ToArray())};
                 var goalProcessTemplate = new ProcessTemplate {WorkItemTypeDefinitions = new ReadOnlyCollection<WorkItemTypeDefinition>(goalTemplateReader.WorkItemTypeDefinitions.ToArray())};
 
-                var diffEngine = new DiffEngine(new ProcessTemplateMap());
+                var diffEngine = new DiffEngine(ProcessTemplateMap.ConvertAgile6ToScrum2());
                 _differences = diffEngine.CompareProcessTemplates(currentProcessTemplate, goalProcessTemplate);
             }
         }
@@ -47,6 +47,17 @@ namespace WitMorph.Tests
                 .SingleOrDefault(d => d.TypeName.Equals("Issue", StringComparison.InvariantCultureIgnoreCase));
 
             Assert.IsNotNull(removedIssue);
+        }
+
+        [TestMethod]
+        public void DiffEngine_should_identify_User_Story_renamed_to_PBI_work_item_type()
+        {
+            var renamedUserStory = _differences
+                .OfType<RenamedWorkItemTypeDefinitionDifference>()
+                .SingleOrDefault(d => d.CurrentTypeName.Equals("User Story", StringComparison.InvariantCultureIgnoreCase) &&
+                    d.GoalTypeName.Equals("Product Backlog Item", StringComparison.InvariantCultureIgnoreCase));
+
+            Assert.IsNotNull(renamedUserStory);
         }
 
         [TestMethod]

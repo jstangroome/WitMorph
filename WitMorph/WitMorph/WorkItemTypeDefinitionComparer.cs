@@ -155,6 +155,11 @@ namespace WitMorph
         {
             var differences = new List<IDifference>();
 
+            if (!current.Name.Equals(goal.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                differences.Add(new RenamedWorkItemTypeDefinitionDifference(current.Name, goal.Name));
+            }
+
             var stateMatchAndMap = new MatchAndMap<WitdState, string>(s => s.Value, StringComparer.OrdinalIgnoreCase, _processTemplateMap.GetWorkItemStateMap(current.Name));
             var stateMatchResult = stateMatchAndMap.Match(current.States, goal.States);
 

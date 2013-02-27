@@ -18,7 +18,7 @@ namespace WitMorph.Console
 
             var engine = new MorphEngine();
 
-            var actions = engine.GenerateActions(collectionUri, projectName, newProcessTemplateName);
+            var actions = engine.GenerateActions(collectionUri, projectName, newProcessTemplateName, ProcessTemplateMap.ConvertScrum2ToAgile6());
             foreach (var action in actions)
             {
                 System.Console.WriteLine(action.ToString());

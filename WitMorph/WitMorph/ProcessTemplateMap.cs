@@ -11,48 +11,62 @@ namespace WitMorph
         private readonly CurrentToGoalMap<string> _workItemFieldMap;
         private readonly Dictionary<string, CurrentToGoalMap<string>> _workItemStateMaps;
 
-        public ProcessTemplateMap()
+        public static ProcessTemplateMap ConvertScrum2ToAgile6()
         {
-            _systemFieldReferenceNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "System.Watermark", "System.TeamProject", "System.IterationId", "System.ExternalLinkCount", "System.HyperLinkCount", "System.AttachedFileCount", "System.NodeName", "System.RevisedDate", "System.AreaId", "System.AuthorizedAs", "System.AuthorizedDate", "System.Rev", "System.WorkItemType", "System.Description", "System.RelatedLinkCount", "System.ChangedDate", "System.ChangedBy", "System.CreatedDate", "System.CreatedBy", "System.History" };
-            
-            // currently only implements map to convert Scrum 2 to Agile 6
-
-            // Agile type <= Scrum type
-            _workItemTypeMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
-            _workItemTypeMap.Add("Product Backlog Item", "User Story");
+            var map = new ProcessTemplateMap();
 
             CurrentToGoalMap<string> stateMap;
-            _workItemStateMaps = new Dictionary<string, CurrentToGoalMap<string>>(StringComparer.OrdinalIgnoreCase);
 
-            // Agile Task <= Scrum Task
+            // Scrum type => Agile type
+            map._workItemTypeMap.Add("Product Backlog Item", "User Story");
+
+            // Scrum Task => Agile Task
             stateMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
             stateMap.Add("To Do", "New");
             stateMap.Add("In Progress", "Active");
             stateMap.Add("Done", "Closed");
-            _workItemStateMaps.Add("Task", stateMap);
+            map._workItemStateMaps.Add("Task", stateMap);
 
-            // Agile Bug <= Scrum Bug
+            // Scrum Bug => Agile Bug
             stateMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
             stateMap.Add("New", "Active");
             stateMap.Add("Approved", "Active");
             stateMap.Add("Committed", "Active");
             stateMap.Add("Done", "Resolved");
             stateMap.Add("Removed", "Closed");
-            _workItemStateMaps.Add("Bug", stateMap);
+            map._workItemStateMaps.Add("Bug", stateMap);
 
-            // Agile User Story <= Scrum Product Backlog Item
+            // Scrum Product Backlog Item => Agile User Story
             stateMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
             stateMap.Add("Approved", "Active");
             stateMap.Add("Committed", "Active");
             stateMap.Add("Done", "Resolved");
-            _workItemStateMaps.Add("Product Backlog Item", stateMap);
+            map._workItemStateMaps.Add("Product Backlog Item", stateMap);
 
-            // Agile field <= Scrum field
-            _workItemFieldMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
-            _workItemFieldMap.Add("Microsoft.VSTS.Common.BacklogPriority", "Microsoft.VSTS.Common.StackRank");
-            _workItemFieldMap.Add("Microsoft.VSTS.Scheduling.Effort", "Microsoft.VSTS.Scheduling.StoryPoints");
+            // Scrum field => Agile field
+            map._workItemFieldMap.Add("Microsoft.VSTS.Common.BacklogPriority", "Microsoft.VSTS.Common.StackRank");
+            map._workItemFieldMap.Add("Microsoft.VSTS.Scheduling.Effort", "Microsoft.VSTS.Scheduling.StoryPoints");
             //TODO consider appending Microsoft.VSTS.Common.AcceptanceCriteria content to System.Description
 
+            return map;
+        }
+
+        public static ProcessTemplateMap ConvertAgile6ToScrum2()
+        {
+            var map = new ProcessTemplateMap();
+
+            map._workItemTypeMap.Add("User Story", "Product Backlog Item");
+
+            return map;
+        }
+
+        private ProcessTemplateMap()
+        {
+            _systemFieldReferenceNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "System.Watermark", "System.TeamProject", "System.IterationId", "System.ExternalLinkCount", "System.HyperLinkCount", "System.AttachedFileCount", "System.NodeName", "System.RevisedDate", "System.AreaId", "System.AuthorizedAs", "System.AuthorizedDate", "System.Rev", "System.WorkItemType", "System.Description", "System.RelatedLinkCount", "System.ChangedDate", "System.ChangedBy", "System.CreatedDate", "System.CreatedBy", "System.History" };
+
+            _workItemTypeMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
+            _workItemStateMaps = new Dictionary<string, CurrentToGoalMap<string>>(StringComparer.OrdinalIgnoreCase);
+            _workItemFieldMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
         }
 
         public HashSet<string> SystemFieldReferenceNames { get { return _systemFieldReferenceNames; } }

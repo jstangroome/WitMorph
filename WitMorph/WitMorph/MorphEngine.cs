@@ -9,7 +9,7 @@ namespace WitMorph
 {
     public class MorphEngine
     {
-        public IEnumerable<IMorphAction> GenerateActions(Uri collectionUri, string projectName, string newProcessTemplateName)
+        public IEnumerable<IMorphAction> GenerateActions(Uri collectionUri, string projectName, string newProcessTemplateName, ProcessTemplateMap processTemplateMap)
         {
             var collection = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(collectionUri);
 
@@ -20,7 +20,6 @@ namespace WitMorph
                 processTemplateWitds = processTemplateReader.WorkItemTypeDefinitions;
             }
 
-            var processTemplateMap = new ProcessTemplateMap();
             var actionSet = new MorphActionSet();
             var witdCollectionComparer = new WitdCollectionComparer(processTemplateMap, actionSet);
             witdCollectionComparer.Compare(processTemplateWitds, GetTeamProjectWorkItemTypeDefinitions(collection, projectName));
