@@ -9,11 +9,11 @@ using WitMorph.Tests.ProcessTemplates;
 namespace WitMorph.Tests
 {
     [TestClass]
-    public class DiffEngineTests
+    public class Agile6ToScrum2DifferenceTests
     {
         private static IEnumerable<IDifference> _differences;
 
-        static DiffEngineTests()
+        static Agile6ToScrum2DifferenceTests()
         {
             using (var currentTemplate = EmbeddedProcessTemplate.Agile6())
             using (var goalTemplate = EmbeddedProcessTemplate.Scrum2())
@@ -30,7 +30,7 @@ namespace WitMorph.Tests
         }
 
         [TestMethod]
-        public void DiffEngine_should_identify_new_Impediment_work_item_type()
+        public void Agile6ToScrum2Difference_should_identify_new_Impediment_work_item_type()
         {
             var addedImpediment = _differences
                 .OfType<AddedWorkItemTypeDefinitionDifference>()
@@ -40,7 +40,7 @@ namespace WitMorph.Tests
         }
 
         [TestMethod]
-        public void DiffEngine_should_identify_removed_Issue_work_item_type()
+        public void Agile6ToScrum2Difference_should_identify_removed_Issue_work_item_type()
         {
             var removedIssue = _differences
                 .OfType<RemovedWorkItemTypeDefinitionDifference>()
@@ -50,7 +50,7 @@ namespace WitMorph.Tests
         }
 
         [TestMethod]
-        public void DiffEngine_should_identify_User_Story_renamed_to_PBI_work_item_type()
+        public void Agile6ToScrum2Difference_should_identify_User_Story_renamed_to_PBI_work_item_type()
         {
             var renamedUserStory = _differences
                 .OfType<RenamedWorkItemTypeDefinitionDifference>()
@@ -61,7 +61,7 @@ namespace WitMorph.Tests
         }
 
         [TestMethod]
-        public void DiffEngine_should_identify_new_To_Do_state_for_Task_work_item_type()
+        public void Agile6ToScrum2Difference_should_identify_new_To_Do_state_for_Task_work_item_type()
         {
             var addedToDo = _differences
                 .OfType<AddedWorkItemStateDifference>()
