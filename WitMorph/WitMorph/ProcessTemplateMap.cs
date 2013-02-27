@@ -59,6 +59,11 @@ namespace WitMorph
 
             map._workItemFieldMap.Add("Microsoft.VSTS.Common.StackRank", "Microsoft.VSTS.Common.BacklogPriority");
 
+            // Agile Task => Scrum Task
+            var taskStateMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
+            taskStateMap.Add("Active", "In Progress");
+            map._workItemStateMaps.Add("Task", taskStateMap);
+
             return map;
         }
 

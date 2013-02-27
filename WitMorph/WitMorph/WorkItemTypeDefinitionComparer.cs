@@ -160,7 +160,7 @@ namespace WitMorph
                 differences.Add(new RenamedWorkItemTypeDefinitionDifference(current.Name, goal.Name));
             }
 
-            FindStateDiffferences(current.Name, current.States, goal.States, differences);
+            FindStateDifferences(current.Name, current.States, goal.States, differences);
 
             FindFieldDifferences(current.Name, current.Fields, goal.Fields, differences);
 
@@ -190,7 +190,7 @@ namespace WitMorph
 
         }
 
-        private void FindStateDiffferences(string currentWorkItemTypeName, IEnumerable<WitdState> currentStates, IEnumerable<WitdState> goalStates, IList<IDifference> differences)
+        private void FindStateDifferences(string currentWorkItemTypeName, IEnumerable<WitdState> currentStates, IEnumerable<WitdState> goalStates, ICollection<IDifference> differences)
         {
             var stateMatchAndMap = new MatchAndMap<WitdState, string>(s => s.Value, StringComparer.OrdinalIgnoreCase, _processTemplateMap.GetWorkItemStateMap(currentWorkItemTypeName));
             var stateMatchResult = stateMatchAndMap.Match(currentStates, goalStates);
@@ -207,7 +207,10 @@ namespace WitMorph
 
             foreach (var pair in stateMatchResult.Pairs)
             {
-                // TODO renamed with new definition
+                if (!string.Equals(pair.Current.Value, pair.Goal.Value, StringComparison.OrdinalIgnoreCase))
+                {
+                    differences.Add(new RenamedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal.Value));
+                }
             }
         }
     }

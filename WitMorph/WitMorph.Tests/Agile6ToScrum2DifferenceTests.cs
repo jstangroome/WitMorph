@@ -99,6 +99,17 @@ namespace WitMorph.Tests
             Assert.IsNotNull(userStoryFieldRename, "User Story field rename not identified");
         }
 
+        [TestMethod]
+        public void Agile6ToScrum2Difference_should_identify_Active_state_renamed_to_InProgress_for_Task()
+        {
+            var stateRename = _differences
+                .OfType<RenamedWorkItemStateDifference>()
+                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "Task"
+                    && d.CurrentStateName == "Active"
+                    && d.GoalStateName == "In Progress");
+
+            Assert.IsNotNull(stateRename, "Task Active state rename not identified");
+        }
 
     }
 }
