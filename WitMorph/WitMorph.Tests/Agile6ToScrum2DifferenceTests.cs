@@ -81,8 +81,22 @@ namespace WitMorph.Tests
                 .SingleOrDefault(d => d.CurrentWorkItemTypeName == "Bug" 
                     && d.CurrentFieldReferenceName == "Microsoft.VSTS.Common.StackRank"
                     && d.GoalFieldReferenceName == "Microsoft.VSTS.Common.BacklogPriority");
+
+            var taskFieldRename = _differences
+                .OfType<RenamedWorkItemFieldDifference>()
+                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "Task"
+                    && d.CurrentFieldReferenceName == "Microsoft.VSTS.Common.StackRank"
+                    && d.GoalFieldReferenceName == "Microsoft.VSTS.Common.BacklogPriority");
             
+            var userStoryFieldRename = _differences
+                .OfType<RenamedWorkItemFieldDifference>()
+                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "User Story"
+                    && d.CurrentFieldReferenceName == "Microsoft.VSTS.Common.StackRank"
+                    && d.GoalFieldReferenceName == "Microsoft.VSTS.Common.BacklogPriority");
+
             Assert.IsNotNull(bugFieldRename, "Bug field rename not identified");
+            Assert.IsNotNull(taskFieldRename, "Task field rename not identified");
+            Assert.IsNotNull(userStoryFieldRename, "User Story field rename not identified");
         }
 
 
