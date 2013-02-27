@@ -40,25 +40,24 @@ namespace WitMorph.Structures
             goalItems = goalItems as TItem[] ?? goalItems.ToArray();
             currentItems = currentItems as TItem[] ?? currentItems.ToArray();
 
-            foreach (var goalItem in goalItems)
-            {
-                var currentItem = currentItems.SingleOrDefault(t => MatchFunction(t, goalItem));
-                if (currentItem == null)
-                {
-                    output.GoalOnly.Add(goalItem);
-                }
-                else
-                {
-                    output.Pairs.Add(new CurrentAndGoalPair<TItem>(currentItem, goalItem));
-                }
-            }
-
             foreach (var currentItem in currentItems)
             {
                 var goalItem = goalItems.SingleOrDefault(s => MatchFunction(currentItem, s));
                 if (goalItem == null)
                 {
                     output.CurrentOnly.Add(currentItem);
+                } 
+                else
+                {
+                    output.Pairs.Add(new CurrentAndGoalPair<TItem>(currentItem, goalItem));
+                }
+            }
+
+            foreach (var goalItem in goalItems)
+            {
+                if (!currentItems.Any(t => MatchFunction(t, goalItem)))
+                {
+                    output.GoalOnly.Add(goalItem);
                 }
             }
 
