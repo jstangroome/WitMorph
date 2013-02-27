@@ -57,6 +57,8 @@ namespace WitMorph
 
             map._workItemTypeMap.Add("User Story", "Product Backlog Item");
 
+            map._workItemFieldMap.Add("Microsoft.VSTS.Common.StackRank", "Microsoft.VSTS.Common.BacklogPriority");
+
             return map;
         }
 

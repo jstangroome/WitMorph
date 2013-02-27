@@ -73,5 +73,18 @@ namespace WitMorph.Tests
             Assert.IsNotNull(addedToDo);
         }
 
+        [TestMethod]
+        public void Agile6ToScrum2Difference_should_identify_StackRank_field_renamed_to_BacklogPriority_field_for_Bug_Task_and_User_Story()
+        {
+            var bugFieldRename = _differences
+                .OfType<RenamedWorkItemFieldDifference>()
+                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "Bug" 
+                    && d.CurrentFieldReferenceName == "Microsoft.VSTS.Common.StackRank"
+                    && d.GoalFieldReferenceName == "Microsoft.VSTS.Common.BacklogPriority");
+            
+            Assert.IsNotNull(bugFieldRename, "Bug field rename not identified");
+        }
+
+
     }
 }

@@ -160,12 +160,44 @@ namespace WitMorph
                 differences.Add(new RenamedWorkItemTypeDefinitionDifference(current.Name, goal.Name));
             }
 
-            var stateMatchAndMap = new MatchAndMap<WitdState, string>(s => s.Value, StringComparer.OrdinalIgnoreCase, _processTemplateMap.GetWorkItemStateMap(current.Name));
-            var stateMatchResult = stateMatchAndMap.Match(current.States, goal.States);
+            FindStateDiffferences(current.Name, current.States, goal.States, differences);
+
+            FindFieldDifferences(current.Name, current.Fields, goal.Fields, differences);
+
+            return differences;
+        }
+
+        private void FindFieldDifferences(string currentWorkItemTypeName, IEnumerable<WitdField> currentFields, IEnumerable<WitdField> goalFields, IList<IDifference> differences)
+        {
+            var fieldMatchAndMap = new MatchAndMap<WitdField, string>(s => s.ReferenceName, StringComparer.OrdinalIgnoreCase, _processTemplateMap.WorkItemFieldMap);
+            var fieldMatchResult = fieldMatchAndMap.Match(currentFields, goalFields);
+
+            foreach (var goalField in fieldMatchResult.GoalOnly)
+            {
+            }
+
+            foreach (var currentField in fieldMatchResult.CurrentOnly)
+            {
+            }
+
+            foreach (var pair in fieldMatchResult.Pairs)
+            {
+                if (!string.Equals(pair.Current.ReferenceName, pair.Goal.ReferenceName, StringComparison.OrdinalIgnoreCase))
+                {
+                    differences.Add(new RenamedWorkItemFieldDifference(currentWorkItemTypeName, pair.Current.ReferenceName, pair.Goal.ReferenceName));
+                }
+            }
+
+        }
+
+        private void FindStateDiffferences(string currentWorkItemTypeName, IEnumerable<WitdState> currentStates, IEnumerable<WitdState> goalStates, IList<IDifference> differences)
+        {
+            var stateMatchAndMap = new MatchAndMap<WitdState, string>(s => s.Value, StringComparer.OrdinalIgnoreCase, _processTemplateMap.GetWorkItemStateMap(currentWorkItemTypeName));
+            var stateMatchResult = stateMatchAndMap.Match(currentStates, goalStates);
 
             foreach (var goalState in stateMatchResult.GoalOnly)
             {
-                differences.Add(new AddedWorkItemStateDifference(current.Name, goalState));
+                differences.Add(new AddedWorkItemStateDifference(currentWorkItemTypeName, goalState));
             }
 
             foreach (var currentState in stateMatchResult.CurrentOnly)
@@ -175,10 +207,8 @@ namespace WitMorph
 
             foreach (var pair in stateMatchResult.Pairs)
             {
-              // TODO renamed with new definition
+                // TODO renamed with new definition
             }
-
-            return differences;
         }
     }
 }
