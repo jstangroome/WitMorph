@@ -53,7 +53,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Convert_Scrum_2_To_Agile_6_Tests.cs" />
-    <Compile Include="DiffEngineTests.cs" />
+    <Compile Include="Agile6ToScrum2DifferenceTests.cs" />
     <Compile Include="ProcessTemplates\EmbeddedProcessTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
