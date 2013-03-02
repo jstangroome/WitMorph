@@ -305,13 +305,29 @@ namespace WitMorph.Tests
 
             //ScrumToAgile_should_modify_Done_state_to_Closed_for_Task
 
+            var taskAddStateIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
+                return m != null && m.WorkItemTypeName == "Task"
+                       && m.Actions.OfType<AddStateModifyWorkItemTypeDefinitionSubAction>().Any(s => s.Name == "Closed");
+            });
+
+            var taskAddTransitionIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
+                return m != null && m.WorkItemTypeName == "Task"
+                       && m.Actions.OfType<AddTransitionModifyWorkItemTypeDefinitionSubAction>().Any(t => t.FromState == "Done" && t.ToState == "Closed");
+            });
+
             var taskStateChangeIndex = actionsViaDiffEngine.FindIndex(a =>
             {
                 var e = a as ModifyWorkItemStateMorphAction;
                 return e != null && e.TypeName == "Task" && e.FromValue == "Done" && e.ToValue == "Closed";
             });
 
-            Assert.IsTrue(taskStateChangeIndex >= 0, "Will not change Task state from Done to Closed");
+            Assert.IsTrue(taskAddStateIndex >= 0, "Will not add Task Closed state");
+            Assert.AreEqual(taskAddStateIndex, taskAddTransitionIndex, "Should add Task transition from Done to Closed");
+            Assert.IsTrue(taskStateChangeIndex > taskAddStateIndex, "Will not change Task state from Done to Closed after adding state");
             // TODO test for add of state and transition and subsequent state removal
 
         }

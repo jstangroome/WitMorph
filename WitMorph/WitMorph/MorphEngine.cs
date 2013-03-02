@@ -63,6 +63,9 @@ namespace WitMorph
                 foreach (var stateRename in workItemTypeGroup.OfType<RenamedWorkItemStateDifference>())
                 {
                     // TODO add state and transition from old state to new
+                    modifyTypeAction.AddWorkflowState(stateRename.GoalState);
+                    const string defaultReason = "Process Template Change";
+                    modifyTypeAction.AddWorkflowTransition(stateRename.CurrentStateName, stateRename.GoalStateName, defaultReason);
                     actionSet.ProcessWorkItemData.Add(new ModifyWorkItemStateMorphAction(stateRename.CurrentWorkItemTypeName, stateRename.CurrentStateName, stateRename.GoalStateName));
                     // TODO remove state and related transitions
                 }

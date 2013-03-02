@@ -16,6 +16,8 @@ namespace WitMorph.Actions
         }
 
         protected XmlElement FieldsElement(XmlElement witdElement) { return SelectSingleElement(witdElement, "WORKITEMTYPE/FIELDS"); }
+        protected XmlElement StatesElement(XmlElement witdElement) { return SelectSingleElement(witdElement, "WORKITEMTYPE/WORKFLOW/STATES"); }
+        protected XmlElement TransitionsElement(XmlElement witdElement) { return SelectSingleElement(witdElement, "WORKITEMTYPE/WORKFLOW/TRANSITIONS"); }
 
         protected void AppendImportedChild(XmlNode parent, XmlElement child)
         {
@@ -89,6 +91,66 @@ namespace WitMorph.Actions
         }
     }
 
+    public class AddStateModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
+    {
+        private readonly WitdState _state;
+
+        public AddStateModifyWorkItemTypeDefinitionSubAction(WitdState state)
+        {
+            _state = state;
+        }
+
+        public override void Execute(XmlElement witdElement)
+        {
+            AppendImportedChild(StatesElement(witdElement), _state.Element);
+        }
+
+        public string Name
+        {
+            get { return _state.Value; }
+        }
+    }
+
+    public class AddTransitionModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
+    {
+        private readonly string _fromState;
+        private readonly string _toState;
+        private readonly string _defaultReason;
+
+        public AddTransitionModifyWorkItemTypeDefinitionSubAction(string fromState, string toState, string defaultReason)
+        {
+            _fromState = fromState;
+            _toState = toState;
+            _defaultReason = defaultReason;
+        }
+
+        public string FromState
+        {
+            get { return _fromState; }
+        }
+
+        public string ToState
+        {
+            get { return _toState; }
+        }
+
+        public override void Execute(XmlElement witdElement)
+        {
+            var transitionsElement = TransitionsElement(witdElement);
+            var transitionElement = transitionsElement.OwnerDocument.CreateElement("TRANSITION");
+            transitionElement.SetAttribute("from", FromState);
+            transitionElement.SetAttribute("to", ToState);
+            var reasonsElement = transitionsElement.OwnerDocument.CreateElement("REASONS");
+            transitionElement.AppendChild(reasonsElement);
+            var defaultReasonElement = transitionsElement.OwnerDocument.CreateElement("DEFAULTREASON");
+            defaultReasonElement.SetAttribute("value", _defaultReason);
+            reasonsElement.AppendChild(defaultReasonElement);
+
+            transitionsElement.AppendChild(transitionElement);
+        }
+    }
+
+
     public static class AnonymousModifyWorkItemTypeDefinitionSubActionExtension
     {
         public static void Add(this IList<ModifyWorkItemTypeDefinitionSubAction> actions, Action<XmlElement> action)
@@ -135,27 +197,14 @@ namespace WitMorph.Actions
             _actions.Add(new AddFieldModifyWorkItemTypeDefinitionSubAction(field));
         }
 
-        public void AddWorkflowState(XmlElement workflowStateElement)
+        public void AddWorkflowState(WitdState state)
         {
-            _actions.Add(e => AppendImportedChild(StatesElement(e), workflowStateElement));
+            _actions.Add(new AddStateModifyWorkItemTypeDefinitionSubAction(state));
         }
 
         public void AddWorkflowTransition(string fromState, string toState, string defaultReason)
         {
-            _actions.Add(e =>
-                         {
-                             var transitionsElement = TransitionsElement(e);
-                             var transitionElement = transitionsElement.OwnerDocument.CreateElement("TRANSITION");
-                             transitionElement.SetAttribute("from", fromState);
-                             transitionElement.SetAttribute("to", toState);
-                             var reasonsElement = transitionsElement.OwnerDocument.CreateElement("REASONS");
-                             transitionElement.AppendChild(reasonsElement);
-                             var defaultReasonElement = transitionsElement.OwnerDocument.CreateElement("DEFAULTREASON");
-                             defaultReasonElement.SetAttribute("value", defaultReason);
-                             reasonsElement.AppendChild(defaultReasonElement);
-
-                             transitionsElement.AppendChild(transitionElement);
-                         });
+            _actions.Add(new AddTransitionModifyWorkItemTypeDefinitionSubAction(fromState, toState, defaultReason));
         }
 
         public void RemoveFieldDefinition(string fieldReferenceName)

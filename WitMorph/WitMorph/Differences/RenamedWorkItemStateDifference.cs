@@ -4,13 +4,13 @@
     {
         private readonly string _currentWorkItemTypeName;
         private readonly string _currentStateName;
-        private readonly string _goalStateName;
+        private readonly WitdState _goalState;
 
-        public RenamedWorkItemStateDifference(string currentWorkItemTypeName, string currentStateName, string goalStateName)
+        public RenamedWorkItemStateDifference(string currentWorkItemTypeName, string currentStateName, WitdState goalState)
         {
             _currentWorkItemTypeName = currentWorkItemTypeName;
             _currentStateName = currentStateName;
-            _goalStateName = goalStateName;
+            _goalState = goalState;
         }
 
         public string CurrentWorkItemTypeName
@@ -25,7 +25,12 @@
 
         public string GoalStateName
         {
-            get { return _goalStateName; }
+            get { return _goalState.Value; }
+        }
+
+        public WitdState GoalState
+        {
+            get { return _goalState; }
         }
     }
 }

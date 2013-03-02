@@ -108,7 +108,7 @@ namespace WitMorph
                 if (currentState == null)
                 {
                     // the state doesn't exist, add it
-                    modifyTypeAction.AddWorkflowState(goalState.Element);
+                    modifyTypeAction.AddWorkflowState(goalState);
                 }
             }
 
@@ -210,7 +210,7 @@ namespace WitMorph
             {
                 if (!string.Equals(pair.Current.Value, pair.Goal.Value, StringComparison.OrdinalIgnoreCase))
                 {
-                    differences.Add(new RenamedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal.Value));
+                    differences.Add(new RenamedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
                 }
             }
         }
