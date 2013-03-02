@@ -63,7 +63,7 @@ namespace WitMorph.Tests
                 return d != null && d.TypeName == "Impediment";
             });
 
-            Assert.IsTrue(exportIndex > 0, "Is exported");
+            Assert.IsTrue(exportIndex >= 0, "Is exported");
             Assert.IsTrue(destroyIndex > exportIndex, "Is destroyed after exported");
         }
 
@@ -80,7 +80,7 @@ namespace WitMorph.Tests
                     && e.FieldReferenceNames.Contains("Microsoft.VSTS.Common.AcceptanceCriteria");
             });
 
-            Assert.IsTrue(exportIndex > 0, "Is exported");
+            Assert.IsTrue(exportIndex >= 0, "Is exported");
         }
 
         [TestMethod]
@@ -95,7 +95,7 @@ namespace WitMorph.Tests
                     && e.FieldReferenceNames.Contains("Microsoft.VSTS.CMMI.Blocked");
             });
 
-            Assert.IsTrue(exportIndex > 0, "Is exported");
+            Assert.IsTrue(exportIndex >= 0, "Is exported");
         }
 
         [TestMethod]
@@ -121,9 +121,9 @@ namespace WitMorph.Tests
                 return e != null && e.TypeName == "Product Backlog Item" && e.FromField == "Microsoft.VSTS.Common.BacklogPriority" && e.ToField == "Microsoft.VSTS.Common.StackRank";
             });
 
-            Assert.IsTrue(bugCopyIndex > 0, "Is Bug field copied");
-            Assert.IsTrue(taskCopyIndex > 0, "Is Task field copied");
-            Assert.IsTrue(pbiCopyIndex > 0, "Is PBI field copied");
+            Assert.IsTrue(bugCopyIndex >= 0, "Is Bug field copied");
+            Assert.IsTrue(taskCopyIndex >= 0, "Is Task field copied");
+            Assert.IsTrue(pbiCopyIndex >= 0, "Is PBI field copied");
         }
 
         [TestMethod]
@@ -137,7 +137,7 @@ namespace WitMorph.Tests
                 return e != null && e.TypeName == "Product Backlog Item" && e.FromField == "Microsoft.VSTS.Scheduling.Effort" && e.ToField == "Microsoft.VSTS.Scheduling.StoryPoints";
             });
 
-            Assert.IsTrue(pbiCopyIndex > 0, "Is PBI field copied");
+            Assert.IsTrue(pbiCopyIndex >= 0, "Is PBI field copied");
         }
 
 
@@ -152,7 +152,7 @@ namespace WitMorph.Tests
                 return e != null && e.TypeName == "Task" && e.FromValue == "Done" && e.ToValue == "Closed";
             });
 
-            Assert.IsTrue(taskIndex > 0, "Is Task state modified");
+            Assert.IsTrue(taskIndex >= 0, "Is Task state modified");
         }
 
         [TestMethod]
@@ -166,7 +166,7 @@ namespace WitMorph.Tests
                 return e != null && e.TypeName == "Product Backlog Item" && e.FromValue == "Done" && e.ToValue == "Resolved";
             });
 
-            Assert.IsTrue(pbiIndex > 0, "Is PBI state modified");
+            Assert.IsTrue(pbiIndex >= 0, "Is PBI state modified");
         }
 
         [TestMethod]
@@ -180,7 +180,7 @@ namespace WitMorph.Tests
                 return e != null && e.TypeName == "Bug" && e.FromValue == "Done" && e.ToValue == "Resolved";
             });
 
-            Assert.IsTrue(bugIndex > 0, "Is state modified");
+            Assert.IsTrue(bugIndex >= 0, "Is state modified");
         }
 
         [TestMethod]
@@ -194,7 +194,7 @@ namespace WitMorph.Tests
                 return e != null && e.TypeName == "Task" && e.FromValue == "In Progress" && e.ToValue == "Active";
             });
 
-            Assert.IsTrue(taskIndex > 0, "Is Task state modified");
+            Assert.IsTrue(taskIndex >= 0, "Is Task state modified");
         }
 
         [TestMethod]
@@ -208,7 +208,7 @@ namespace WitMorph.Tests
                 return e != null && e.TypeName == "Task" && e.FromValue == "To Do" && e.ToValue == "New";
             });
 
-            Assert.IsTrue(taskIndex > 0, "Is Task state modified");
+            Assert.IsTrue(taskIndex >= 0, "Is Task state modified");
         }
 
         // TODO verify BusinessValue and AcceptanceCriteria are exported for PBIs
@@ -219,7 +219,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_produce_the_same_actions_directly_as_via_the_DiffEngine()
         {
-            IEnumerable<IMorphAction> actionsViaDiffEngine;
+            List<IMorphAction> actionsViaDiffEngine;
             using (var agileTemplate = EmbeddedProcessTemplate.Agile6())
             using (var scrumTemplate = EmbeddedProcessTemplate.Scrum2())
             {
@@ -235,17 +235,37 @@ namespace WitMorph.Tests
                 var differences = diffEngine.CompareProcessTemplates(currentProcessTemplate, goalProcessTemplate);
 
                 var morphEngine = new MorphEngine();
-                actionsViaDiffEngine = morphEngine.GenerateActions(differences);
+                actionsViaDiffEngine = morphEngine.GenerateActions(differences).ToList();
             }
  
             Assert.AreEqual(46, _actions.Count(), "Baseline for direct actions has changed");
+
+            //ScrumToAgile_should_rename_PBI_to_User_Story
 
             var renameAction = actionsViaDiffEngine
                 .OfType<RenameWitdMorphAction>()
                 .SingleOrDefault(a => a.TypeName == "Product Backlog Item" && a.NewName == "User Story");
 
-            Assert.IsNotNull(renameAction);
+            Assert.IsNotNull(renameAction, "Will not rename Product Backlog Item work item type to User Story");
 
+            //ScrumToAgile_should_export_and_remove_Impediment
+
+            var exportIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var e = a as ExportWorkItemDataMorphAction;
+                return e != null && e.WorkItemTypeName == "Impediment" && e.AllFields;
+            });
+
+            var destroyIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var d = a as DestroyWitdMorphAction;
+                return d != null && d.TypeName == "Impediment";
+            });
+
+            Assert.IsTrue(exportIndex >= 0, "Will not export Impediment work items");
+            Assert.IsTrue(destroyIndex > exportIndex, "Will destroy Impediment work items before exporting existing data");
+
+        
         }
 
     }

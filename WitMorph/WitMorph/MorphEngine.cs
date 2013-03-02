@@ -33,9 +33,17 @@ namespace WitMorph
         {
             var actionSet = new MorphActionSet();
 
+            // TODO group differences by work item type?
+
             foreach (var witdRename in differences.OfType<RenamedWorkItemTypeDefinitionDifference>())
             {
                 actionSet.FinaliseWorkItemTypeDefinitions.Add(new RenameWitdMorphAction(witdRename.CurrentTypeName, witdRename.GoalTypeName));
+            }
+
+            foreach (var witdRemove in differences.OfType<RemovedWorkItemTypeDefinitionDifference>())
+            {
+                actionSet.ProcessWorkItemData.Add(new ExportWorkItemDataMorphAction(witdRemove.TypeName, allFields: true));
+                actionSet.FinaliseWorkItemTypeDefinitions.Add(new DestroyWitdMorphAction(witdRemove.TypeName));
             }
 
             return actionSet.Combine();
