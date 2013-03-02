@@ -5,14 +5,78 @@ using System.Xml;
 
 namespace WitMorph.Actions
 {
+    public abstract class ModifyWorkItemTypeDefinitionSubAction
+    {
+        public abstract void Execute(XmlElement witdElement);
+
+        protected XmlElement SelectSingleElement(XmlElement witdElement, string xpath)
+        {
+            return (XmlElement)witdElement.SelectSingleNode(xpath);
+        }
+
+        protected XmlElement FieldsElement(XmlElement witdElement) { return SelectSingleElement(witdElement, "WORKITEMTYPE/FIELDS"); }
+
+        protected void AppendImportedChild(XmlNode parent, XmlElement child)
+        {
+            if (parent.OwnerDocument == null)
+            {
+                throw new ArgumentException("OwnerDocument property value is null.", "parent");
+            }
+            parent.AppendChild(parent.OwnerDocument.ImportNode(child, deep: true));
+        }
+    }
+
+    public class AnonymousModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
+    {
+        private readonly Action<XmlElement> _action;
+
+        public AnonymousModifyWorkItemTypeDefinitionSubAction(Action<XmlElement> action)
+        {
+            _action = action;
+        }
+
+        public override void Execute(XmlElement witdElement)
+        {
+            _action(witdElement);
+        }
+    }
+
+    public class AddFieldModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
+    {
+        private readonly XmlElement _fieldElement;
+
+        public AddFieldModifyWorkItemTypeDefinitionSubAction(XmlElement fieldElement)
+        {
+            _fieldElement = fieldElement;
+        }
+
+        public override void Execute(XmlElement witdElement)
+        {
+            AppendImportedChild(FieldsElement(witdElement), _fieldElement);
+        }
+    }
+
+    public static class AnonymousModifyWorkItemTypeDefinitionSubActionExtension
+    {
+        public static void Add(this IList<ModifyWorkItemTypeDefinitionSubAction> actions, Action<XmlElement> action)
+        {
+            actions.Add(new AnonymousModifyWorkItemTypeDefinitionSubAction(action));
+        }
+    }
+
     public class ModifyWorkItemTypeDefinitionMorphAction : IMorphAction
     {
         private readonly string _workItemTypeName;
-        private readonly List<Action<XmlElement>> _actions = new List<Action<XmlElement>>();
+        private readonly IList<ModifyWorkItemTypeDefinitionSubAction> _actions = new List<ModifyWorkItemTypeDefinitionSubAction>();
 
         public ModifyWorkItemTypeDefinitionMorphAction(string workItemTypeName)
         {
             _workItemTypeName = workItemTypeName;
+        }
+
+        public string WorkItemTypeName
+        {
+            get { return _workItemTypeName; }
         }
 
         private XmlElement SelectSingleElement(XmlElement witdElement, string xpath)
@@ -35,7 +99,7 @@ namespace WitMorph.Actions
 
         public void AddFieldDefinition(XmlElement fieldElement)
         {
-            _actions.Add(e => AppendImportedChild(FieldsElement(e), fieldElement));
+            _actions.Add(new AddFieldModifyWorkItemTypeDefinitionSubAction(fieldElement));
         }
 
         public void AddWorkflowState(XmlElement workflowStateElement)
@@ -153,7 +217,7 @@ namespace WitMorph.Actions
 
             foreach (var action in _actions)
             {
-                action(witdElement);
+                action.Execute(witdElement);
             }
 
             var workItemTypeDefinition = new WorkItemTypeDefinition(witdElement, true); // TODO perform actions on WorkItemTypeDefinition instead of witdElement directly
