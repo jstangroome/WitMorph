@@ -302,6 +302,18 @@ namespace WitMorph.Tests
             Assert.IsTrue(taskAddFieldIndex >= 0, "Will not add Task StackRank field");
             Assert.IsTrue(taskFieldCopyIndex > taskAddFieldIndex, "Will not copy Task BacklogPriority field to StackRank after adding field");
             Assert.IsTrue(taskRemoveFieldIndex > taskFieldCopyIndex, "Will not remove BacklogPriority field after copying data");
+
+            //ScrumToAgile_should_modify_Done_state_to_Closed_for_Task
+
+            var taskStateChangeIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var e = a as ModifyWorkItemStateMorphAction;
+                return e != null && e.TypeName == "Task" && e.FromValue == "Done" && e.ToValue == "Closed";
+            });
+
+            Assert.IsTrue(taskStateChangeIndex >= 0, "Will not change Task state from Done to Closed");
+            // TODO test for add of state and transition and subsequent state removal
+
         }
 
     }

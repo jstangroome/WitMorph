@@ -1,6 +1,6 @@
 ﻿namespace WitMorph.Differences
 {
-    public class RenamedWorkItemStateDifference : IDifference
+    public class RenamedWorkItemStateDifference : IWorkItemTypeDifference
     {
         private readonly string _currentWorkItemTypeName;
         private readonly string _currentStateName;

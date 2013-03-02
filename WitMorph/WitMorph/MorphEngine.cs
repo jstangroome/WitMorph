@@ -55,8 +55,16 @@ namespace WitMorph
                 foreach (var fieldRename in workItemTypeGroup.OfType<RenamedWorkItemFieldDifference>())
                 {
                     modifyTypeAction.AddFieldDefinition(fieldRename.GoalField);
+                    // TODO consolidate data copy for multiple fields into one action
                     actionSet.ProcessWorkItemData.Add(new CopyWorkItemDataMorphAction(fieldRename.CurrentWorkItemTypeName, fieldRename.CurrentFieldReferenceName, fieldRename.GoalFieldReferenceName));
                     finalModifyTypeAction.RemoveFieldDefinition(fieldRename.CurrentFieldReferenceName);
+                }
+
+                foreach (var stateRename in workItemTypeGroup.OfType<RenamedWorkItemStateDifference>())
+                {
+                    // TODO add state and transition from old state to new
+                    actionSet.ProcessWorkItemData.Add(new ModifyWorkItemStateMorphAction(stateRename.CurrentWorkItemTypeName, stateRename.CurrentStateName, stateRename.GoalStateName));
+                    // TODO remove state and related transitions
                 }
 
                 foreach (var fieldRemove in workItemTypeGroup.OfType<RemovedWorkItemFieldDifference>())
