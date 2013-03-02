@@ -178,6 +178,7 @@ namespace WitMorph
 
             foreach (var currentField in fieldMatchResult.CurrentOnly)
             {
+                differences.Add(new RemovedWorkItemFieldDifference(currentWorkItemTypeName, currentField.ReferenceName));
             }
 
             foreach (var pair in fieldMatchResult.Pairs)

@@ -265,7 +265,18 @@ namespace WitMorph.Tests
             Assert.IsTrue(exportIndex >= 0, "Will not export Impediment work items");
             Assert.IsTrue(destroyIndex > exportIndex, "Will destroy Impediment work items before exporting existing data");
 
-        
+            //ScrumToAgile_should_export_extra_Bug_fields
+
+            var bugExportIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var e = a as ExportWorkItemDataMorphAction;
+                return e != null && e.WorkItemTypeName == "Bug"
+                    && e.FieldReferenceNames.Contains("Microsoft.VSTS.Scheduling.Effort")
+                    && e.FieldReferenceNames.Contains("Microsoft.VSTS.Common.AcceptanceCriteria");
+            });
+
+            Assert.IsTrue(bugExportIndex >= 0, "Will not export two removed Bug fields");
+
         }
 
     }

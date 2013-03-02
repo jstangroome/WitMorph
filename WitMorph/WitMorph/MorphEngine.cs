@@ -46,6 +46,25 @@ namespace WitMorph
                 actionSet.FinaliseWorkItemTypeDefinitions.Add(new DestroyWitdMorphAction(witdRemove.TypeName));
             }
 
+            var removedFieldGroups = differences
+                .OfType<RemovedWorkItemFieldDifference>()
+                .GroupBy(d => d.CurrentWorkItemTypeName, StringComparer.OrdinalIgnoreCase);
+
+            foreach (var group in removedFieldGroups)
+            {
+                var exportDataAction = new ExportWorkItemDataMorphAction(group.Key);
+                var finalModifyTypeAction = new ModifyWorkItemTypeDefinitionMorphAction(group.Key);
+
+                foreach (var fieldRemove in group)
+                {
+                    exportDataAction.AddExportField(fieldRemove.ReferenceFieldName);
+                    finalModifyTypeAction.RemoveFieldDefinition(fieldRemove.ReferenceFieldName);
+                }
+
+                actionSet.ProcessWorkItemData.Add(exportDataAction);
+                actionSet.FinaliseWorkItemTypeDefinitions.Add(finalModifyTypeAction);
+            }
+
             return actionSet.Combine();
         }
 
