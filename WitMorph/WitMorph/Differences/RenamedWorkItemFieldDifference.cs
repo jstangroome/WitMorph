@@ -1,16 +1,16 @@
 namespace WitMorph.Differences
 {
-    public class RenamedWorkItemFieldDifference : IDifference
+    public class RenamedWorkItemFieldDifference : IWorkItemTypeDifference
     {
         private readonly string _currentWorkItemTypeName;
         private readonly string _currentFieldReferenceName;
-        private readonly string _goalFieldReferenceName;
+        private readonly WitdField _goalField;
 
-        public RenamedWorkItemFieldDifference(string currentWorkItemTypeName, string currentFieldReferenceName, string goalFieldReferenceName)
+        public RenamedWorkItemFieldDifference(string currentWorkItemTypeName, string currentFieldReferenceName, WitdField goalField)
         {
             _currentWorkItemTypeName = currentWorkItemTypeName;
             _currentFieldReferenceName = currentFieldReferenceName;
-            _goalFieldReferenceName = goalFieldReferenceName;
+            _goalField = goalField;
         }
 
         public string CurrentWorkItemTypeName
@@ -25,7 +25,12 @@ namespace WitMorph.Differences
 
         public string GoalFieldReferenceName
         {
-            get { return _goalFieldReferenceName; }
+            get { return _goalField.ReferenceName; }
+        }
+
+        public WitdField GoalField
+        {
+            get { return _goalField; }
         }
     }
 }

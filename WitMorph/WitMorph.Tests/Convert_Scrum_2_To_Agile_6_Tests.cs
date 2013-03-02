@@ -277,6 +277,17 @@ namespace WitMorph.Tests
 
             Assert.IsTrue(bugExportIndex >= 0, "Will not export two removed Bug fields");
 
+            //ScrumToAgile_should_copy_BacklogPriority_to_StackRank_for_Task
+
+            var taskFieldCopyIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var e = a as CopyWorkItemDataMorphAction;
+                return e != null && e.TypeName == "Task" && e.FromField == "Microsoft.VSTS.Common.BacklogPriority" && e.ToField == "Microsoft.VSTS.Common.StackRank";
+            });
+
+            // TODO test add field, copy data, then remove field in order
+
+            Assert.IsTrue(taskFieldCopyIndex >= 0, "Will not copy Task BacklogPriority field to StackRank");
         }
 
     }

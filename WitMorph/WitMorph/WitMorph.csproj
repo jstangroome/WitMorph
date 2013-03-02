@@ -55,6 +55,7 @@
     <Compile Include="DiffEngine.cs" />
     <Compile Include="Differences\AddedWorkItemStateDifference.cs" />
     <Compile Include="Differences\AddedWorkItemTypeDefinitionDifference.cs" />
+    <Compile Include="Differences\IWorkItemTypeDifference.cs" />
     <Compile Include="Differences\RemovedWorkItemFieldDifference.cs" />
     <Compile Include="Differences\RenamedWorkItemStateDifference.cs" />
     <Compile Include="Differences\IDifference.cs" />

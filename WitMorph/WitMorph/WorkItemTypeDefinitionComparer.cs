@@ -185,7 +185,7 @@ namespace WitMorph
             {
                 if (!string.Equals(pair.Current.ReferenceName, pair.Goal.ReferenceName, StringComparison.OrdinalIgnoreCase))
                 {
-                    differences.Add(new RenamedWorkItemFieldDifference(currentWorkItemTypeName, pair.Current.ReferenceName, pair.Goal.ReferenceName));
+                    differences.Add(new RenamedWorkItemFieldDifference(currentWorkItemTypeName, pair.Current.ReferenceName, pair.Goal));
                 }
             }
 

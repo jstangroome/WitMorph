@@ -1,6 +1,6 @@
 namespace WitMorph.Differences
 {
-    public class RemovedWorkItemFieldDifference : IDifference
+    public class RemovedWorkItemFieldDifference : IWorkItemTypeDifference
     {
         private readonly string _currentWorkItemTypeName;
         private readonly string _referenceFieldName;

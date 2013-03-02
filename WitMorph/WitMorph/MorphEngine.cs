@@ -33,36 +33,44 @@ namespace WitMorph
         {
             var actionSet = new MorphActionSet();
 
-            // TODO group differences by work item type?
-
             foreach (var witdRename in differences.OfType<RenamedWorkItemTypeDefinitionDifference>())
             {
                 actionSet.FinaliseWorkItemTypeDefinitions.Add(new RenameWitdMorphAction(witdRename.CurrentTypeName, witdRename.GoalTypeName));
+            }
+
+            var workItemTypeDifferences = differences
+                .OfType<IWorkItemTypeDifference>()
+                .GroupBy(d => d.CurrentWorkItemTypeName, StringComparer.OrdinalIgnoreCase);
+
+            foreach (var workItemTypeGroup in workItemTypeDifferences)
+            {
+                var modifyTypeAction = new ModifyWorkItemTypeDefinitionMorphAction(workItemTypeGroup.Key);
+                var exportDataAction = new ExportWorkItemDataMorphAction(workItemTypeGroup.Key);
+                var finalModifyTypeAction = new ModifyWorkItemTypeDefinitionMorphAction(workItemTypeGroup.Key);
+
+                actionSet.PrepareWorkItemTypeDefinitions.Add(modifyTypeAction);
+                actionSet.ProcessWorkItemData.Add(exportDataAction);
+                actionSet.FinaliseWorkItemTypeDefinitions.Add(finalModifyTypeAction);
+
+                foreach (var fieldRename in workItemTypeGroup.OfType<RenamedWorkItemFieldDifference>())
+                {
+                    modifyTypeAction.AddFieldDefinition(fieldRename.GoalField.Element);
+                    actionSet.ProcessWorkItemData.Add(new CopyWorkItemDataMorphAction(fieldRename.CurrentWorkItemTypeName, fieldRename.CurrentFieldReferenceName, fieldRename.GoalFieldReferenceName));
+                    finalModifyTypeAction.RemoveFieldDefinition(fieldRename.CurrentFieldReferenceName);
+                }
+
+                foreach (var fieldRemove in workItemTypeGroup.OfType<RemovedWorkItemFieldDifference>())
+                {
+                    exportDataAction.AddExportField(fieldRemove.ReferenceFieldName);
+                    finalModifyTypeAction.RemoveFieldDefinition(fieldRemove.ReferenceFieldName);
+                }
+
             }
 
             foreach (var witdRemove in differences.OfType<RemovedWorkItemTypeDefinitionDifference>())
             {
                 actionSet.ProcessWorkItemData.Add(new ExportWorkItemDataMorphAction(witdRemove.TypeName, allFields: true));
                 actionSet.FinaliseWorkItemTypeDefinitions.Add(new DestroyWitdMorphAction(witdRemove.TypeName));
-            }
-
-            var removedFieldGroups = differences
-                .OfType<RemovedWorkItemFieldDifference>()
-                .GroupBy(d => d.CurrentWorkItemTypeName, StringComparer.OrdinalIgnoreCase);
-
-            foreach (var group in removedFieldGroups)
-            {
-                var exportDataAction = new ExportWorkItemDataMorphAction(group.Key);
-                var finalModifyTypeAction = new ModifyWorkItemTypeDefinitionMorphAction(group.Key);
-
-                foreach (var fieldRemove in group)
-                {
-                    exportDataAction.AddExportField(fieldRemove.ReferenceFieldName);
-                    finalModifyTypeAction.RemoveFieldDefinition(fieldRemove.ReferenceFieldName);
-                }
-
-                actionSet.ProcessWorkItemData.Add(exportDataAction);
-                actionSet.FinaliseWorkItemTypeDefinitions.Add(finalModifyTypeAction);
             }
 
             return actionSet.Combine();
