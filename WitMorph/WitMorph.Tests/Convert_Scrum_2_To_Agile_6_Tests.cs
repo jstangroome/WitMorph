@@ -292,10 +292,16 @@ namespace WitMorph.Tests
                 return e != null && e.TypeName == "Task" && e.FromField == "Microsoft.VSTS.Common.BacklogPriority" && e.ToField == "Microsoft.VSTS.Common.StackRank";
             });
 
-            // TODO test add field, copy data, then remove field in order
+            var taskRemoveFieldIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
+                return m != null && m.WorkItemTypeName == "Task"
+                       && m.Actions.OfType<RemoveFieldModifyWorkItemTypeDefinitionSubAction>().Any(s => s.ReferenceName == "Microsoft.VSTS.Common.BacklogPriority");
+            });
 
             Assert.IsTrue(taskAddFieldIndex >= 0, "Will not add Task StackRank field");
             Assert.IsTrue(taskFieldCopyIndex > taskAddFieldIndex, "Will not copy Task BacklogPriority field to StackRank after adding field");
+            Assert.IsTrue(taskRemoveFieldIndex > taskFieldCopyIndex, "Will not remove BacklogPriority field after copying data");
         }
 
     }

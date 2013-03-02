@@ -62,6 +62,33 @@ namespace WitMorph.Actions
         }
     }
 
+    public class RemoveFieldModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
+    {
+        private readonly string _referenceName;
+
+        public RemoveFieldModifyWorkItemTypeDefinitionSubAction(string referenceName)
+        {
+            _referenceName = referenceName;
+        }
+
+        public override void Execute(XmlElement witdElement)
+        {
+            var fieldsElement = FieldsElement(witdElement);
+            var originalFieldElement = fieldsElement.SelectSingleNode(string.Format("FIELD[@refname='{0}']", _referenceName));
+            if (originalFieldElement == null)
+            {
+                throw new ArgumentException("Original field not found.");
+            }
+
+            fieldsElement.RemoveChild(originalFieldElement);
+        }
+
+        public string ReferenceName
+        {
+            get { return _referenceName; }
+        }
+    }
+
     public static class AnonymousModifyWorkItemTypeDefinitionSubActionExtension
     {
         public static void Add(this IList<ModifyWorkItemTypeDefinitionSubAction> actions, Action<XmlElement> action)
@@ -133,18 +160,7 @@ namespace WitMorph.Actions
 
         public void RemoveFieldDefinition(string fieldReferenceName)
         {
-            _actions.Add(e =>
-                         {
-                             var fieldsElement = FieldsElement(e);
-                             var originalFieldElement = fieldsElement.SelectSingleNode(string.Format("FIELD[@refname='{0}']", fieldReferenceName));
-                             if (originalFieldElement == null)
-                             {
-                                 throw new ArgumentException("Original field not found.");
-                             }
-
-                             fieldsElement.RemoveChild(originalFieldElement);
-                             
-                         });
+            _actions.Add(new RemoveFieldModifyWorkItemTypeDefinitionSubAction(fieldReferenceName));
         }
 
         public void RemoveWorkflowState(string state)
