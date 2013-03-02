@@ -54,7 +54,7 @@ namespace WitMorph
 
                 foreach (var fieldRename in workItemTypeGroup.OfType<RenamedWorkItemFieldDifference>())
                 {
-                    modifyTypeAction.AddFieldDefinition(fieldRename.GoalField.Element);
+                    modifyTypeAction.AddFieldDefinition(fieldRename.GoalField);
                     actionSet.ProcessWorkItemData.Add(new CopyWorkItemDataMorphAction(fieldRename.CurrentWorkItemTypeName, fieldRename.CurrentFieldReferenceName, fieldRename.GoalFieldReferenceName));
                     finalModifyTypeAction.RemoveFieldDefinition(fieldRename.CurrentFieldReferenceName);
                 }

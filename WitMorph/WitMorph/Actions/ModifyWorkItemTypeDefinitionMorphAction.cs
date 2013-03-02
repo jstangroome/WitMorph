@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml;
 
@@ -43,16 +44,21 @@ namespace WitMorph.Actions
 
     public class AddFieldModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
     {
-        private readonly XmlElement _fieldElement;
+        private readonly WitdField _field;
 
-        public AddFieldModifyWorkItemTypeDefinitionSubAction(XmlElement fieldElement)
+        public AddFieldModifyWorkItemTypeDefinitionSubAction(WitdField field)
         {
-            _fieldElement = fieldElement;
+            _field = field;
+        }
+
+        public string ReferenceName
+        {
+            get { return _field.ReferenceName; }
         }
 
         public override void Execute(XmlElement witdElement)
         {
-            AppendImportedChild(FieldsElement(witdElement), _fieldElement);
+            AppendImportedChild(FieldsElement(witdElement), _field.Element);
         }
     }
 
@@ -97,9 +103,9 @@ namespace WitMorph.Actions
             parent.AppendChild(parent.OwnerDocument.ImportNode(child, deep: true));
         }
 
-        public void AddFieldDefinition(XmlElement fieldElement)
+        public void AddFieldDefinition(WitdField field)
         {
-            _actions.Add(new AddFieldModifyWorkItemTypeDefinitionSubAction(fieldElement));
+            _actions.Add(new AddFieldModifyWorkItemTypeDefinitionSubAction(field));
         }
 
         public void AddWorkflowState(XmlElement workflowStateElement)
@@ -224,6 +230,11 @@ namespace WitMorph.Actions
 
             var importAction = new ImportWorkItemTypeDefinitionMorphAction(workItemTypeDefinition); 
             importAction.Execute(context);
+        }
+
+        public IReadOnlyList<ModifyWorkItemTypeDefinitionSubAction> Actions
+        {
+            get { return new ReadOnlyCollection<ModifyWorkItemTypeDefinitionSubAction>(_actions); }
         }
 
         public override string ToString()

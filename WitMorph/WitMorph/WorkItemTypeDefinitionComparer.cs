@@ -41,7 +41,7 @@ namespace WitMorph
                 if (currentField == null)
                 {
                     // the field doesn't exist, add it
-                    modifyTypeAction.AddFieldDefinition(goalField.Element);
+                    modifyTypeAction.AddFieldDefinition(goalField);
                 }
                 else
                 {

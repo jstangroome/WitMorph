@@ -279,6 +279,13 @@ namespace WitMorph.Tests
 
             //ScrumToAgile_should_copy_BacklogPriority_to_StackRank_for_Task
 
+            var taskAddFieldIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
+                return m != null && m.WorkItemTypeName == "Task"
+                       && m.Actions.OfType<AddFieldModifyWorkItemTypeDefinitionSubAction>().Any(s => s.ReferenceName == "Microsoft.VSTS.Common.StackRank");
+            });
+
             var taskFieldCopyIndex = actionsViaDiffEngine.FindIndex(a =>
             {
                 var e = a as CopyWorkItemDataMorphAction;
@@ -287,7 +294,8 @@ namespace WitMorph.Tests
 
             // TODO test add field, copy data, then remove field in order
 
-            Assert.IsTrue(taskFieldCopyIndex >= 0, "Will not copy Task BacklogPriority field to StackRank");
+            Assert.IsTrue(taskAddFieldIndex >= 0, "Will not add Task StackRank field");
+            Assert.IsTrue(taskFieldCopyIndex > taskAddFieldIndex, "Will not copy Task BacklogPriority field to StackRank after adding field");
         }
 
     }
