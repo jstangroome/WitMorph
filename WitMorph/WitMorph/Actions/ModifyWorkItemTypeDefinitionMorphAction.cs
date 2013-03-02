@@ -111,6 +111,42 @@ namespace WitMorph.Actions
         }
     }
 
+    public class RemoveStateModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
+    {
+        private readonly string _name;
+
+        public RemoveStateModifyWorkItemTypeDefinitionSubAction(string name)
+        {
+            _name = name;
+        }
+
+        public override void Execute(XmlElement witdElement)
+        {
+            var statesElement = StatesElement(witdElement);
+            var stateElement = statesElement.SelectNodes("STATE").Cast<XmlElement>()
+                .SingleOrDefault(e => string.Equals(e.GetAttribute("value"), _name, StringComparison.OrdinalIgnoreCase));
+            if (stateElement != null)
+            {
+                statesElement.RemoveChild(stateElement);
+                //_isDirty = true;
+            }
+            var transitionsElement = TransitionsElement(witdElement);
+            var transitionElements = transitionsElement.SelectNodes("TRANSITION").Cast<XmlElement>()
+                .Where(e => string.Equals(e.GetAttribute("from"), _name, StringComparison.OrdinalIgnoreCase)
+                            || string.Equals(e.GetAttribute("to"), _name, StringComparison.OrdinalIgnoreCase));
+            foreach (var transitionElement in transitionElements)
+            {
+                transitionsElement.RemoveChild(transitionElement);
+                //_isDirty = true;
+            }
+        }
+
+        public string Name
+        {
+            get { return _name; }
+        }
+    }
+
     public class AddTransitionModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
     {
         private readonly string _fromState;
@@ -214,26 +250,7 @@ namespace WitMorph.Actions
 
         public void RemoveWorkflowState(string state)
         {
-            _actions.Add(witd =>
-                         {
-                             var statesElement = StatesElement(witd);
-                             var stateElement = statesElement.SelectNodes("STATE").Cast<XmlElement>()
-                                 .SingleOrDefault(e => string.Equals(e.GetAttribute("value"), state, StringComparison.OrdinalIgnoreCase));
-                             if (stateElement != null)
-                             {
-                                 statesElement.RemoveChild(stateElement);
-                                 //_isDirty = true;
-                             }
-                             var transitionsElement = TransitionsElement(witd);
-                             var transitionElements = transitionsElement.SelectNodes("TRANSITION").Cast<XmlElement>()
-                                 .Where(e => string.Equals(e.GetAttribute("from"), state, StringComparison.OrdinalIgnoreCase)
-                                             || string.Equals(e.GetAttribute("to"), state, StringComparison.OrdinalIgnoreCase));
-                             foreach (var transitionElement in transitionElements)
-                             {
-                                 transitionsElement.RemoveChild(transitionElement);
-                                 //_isDirty = true;
-                             }
-                         });
+            _actions.Add(new RemoveStateModifyWorkItemTypeDefinitionSubAction(state));
         }
 
 
