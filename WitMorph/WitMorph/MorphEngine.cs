@@ -52,6 +52,11 @@ namespace WitMorph
                 actionSet.ProcessWorkItemData.Add(exportDataAction);
                 actionSet.FinaliseWorkItemTypeDefinitions.Add(finalModifyTypeAction);
 
+                foreach (var fieldAdd in workItemTypeGroup.OfType<AddedWorkItemFieldDifference>())
+                {
+                    modifyTypeAction.AddFieldDefinition(fieldAdd.GoalField);
+                }
+
                 foreach (var fieldRename in workItemTypeGroup.OfType<RenamedWorkItemFieldDifference>())
                 {
                     modifyTypeAction.AddFieldDefinition(fieldRename.GoalField);

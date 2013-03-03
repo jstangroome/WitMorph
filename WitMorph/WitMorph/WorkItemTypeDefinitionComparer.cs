@@ -174,10 +174,12 @@ namespace WitMorph
 
             foreach (var goalField in fieldMatchResult.GoalOnly)
             {
+                differences.Add(new AddedWorkItemFieldDifference(currentWorkItemTypeName, goalField));
             }
 
             foreach (var currentField in fieldMatchResult.CurrentOnly)
             {
+                // TODO ignore removal of system fields - perhaps during action generation though
                 differences.Add(new RemovedWorkItemFieldDifference(currentWorkItemTypeName, currentField.ReferenceName));
             }
 
@@ -187,6 +189,7 @@ namespace WitMorph
                 {
                     differences.Add(new RenamedWorkItemFieldDifference(currentWorkItemTypeName, pair.Current.ReferenceName, pair.Goal));
                 }
+                // TODO field changes (data type, helptext, validation, etc)
             }
 
         }

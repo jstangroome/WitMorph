@@ -219,25 +219,13 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_produce_the_same_actions_directly_as_via_the_DiffEngine()
         {
-            List<IMorphAction> actionsViaDiffEngine;
-            using (var agileTemplate = EmbeddedProcessTemplate.Agile6())
-            using (var scrumTemplate = EmbeddedProcessTemplate.Scrum2())
+            var actionsViaDiffEngine = GenerateActionsViaDiffEngine();
+
+            var optimizedActions = _actions.Where(a =>
             {
-                var agileReader = new ProcessTemplateReader(agileTemplate.TemplatePath);
-                var scrumReader = new ProcessTemplateReader(scrumTemplate.TemplatePath);
-
-                var processTemplateMap = ProcessTemplateMap.ConvertScrum2ToAgile6();
-
-                var currentProcessTemplate = new ProcessTemplate { WorkItemTypeDefinitions = new ReadOnlyCollection<WorkItemTypeDefinition>(scrumReader.WorkItemTypeDefinitions.ToArray()) };
-                var goalProcessTemplate = new ProcessTemplate { WorkItemTypeDefinitions = new ReadOnlyCollection<WorkItemTypeDefinition>(agileReader.WorkItemTypeDefinitions.ToArray()) };
-
-                var diffEngine = new DiffEngine(processTemplateMap);
-                var differences = diffEngine.CompareProcessTemplates(currentProcessTemplate, goalProcessTemplate);
-
-                var morphEngine = new MorphEngine();
-                actionsViaDiffEngine = morphEngine.GenerateActions(differences).ToList();
-            }
- 
+                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
+                return m == null || m.Actions.Count > 0;
+            });
             Assert.AreEqual(46, _actions.Count(), "Baseline for direct actions has changed");
 
             //ScrumToAgile_should_rename_PBI_to_User_Story
@@ -337,6 +325,48 @@ namespace WitMorph.Tests
             Assert.AreEqual(taskAddStateIndex, taskAddTransitionIndex, "Should add Task transition from Done to Closed");
             Assert.IsTrue(taskStateChangeIndex > taskAddStateIndex, "Will not change Task state from Done to Closed after adding state");
             Assert.IsTrue(taskRemoveStateIndex > taskStateChangeIndex, "Should remove Task Done state after changing data");
+
+            // overall
+
+            Assert.AreEqual(optimizedActions.Count(), actionsViaDiffEngine.Count(), "Should produce the same number of actions");
+        }
+
+        private static List<IMorphAction> GenerateActionsViaDiffEngine()
+        {
+            List<IMorphAction> actionsViaDiffEngine;
+            using (var agileTemplate = EmbeddedProcessTemplate.Agile6())
+            using (var scrumTemplate = EmbeddedProcessTemplate.Scrum2())
+            {
+                var agileReader = new ProcessTemplateReader(agileTemplate.TemplatePath);
+                var scrumReader = new ProcessTemplateReader(scrumTemplate.TemplatePath);
+
+                var processTemplateMap = ProcessTemplateMap.ConvertScrum2ToAgile6();
+
+                var currentProcessTemplate = new ProcessTemplate {WorkItemTypeDefinitions = new ReadOnlyCollection<WorkItemTypeDefinition>(scrumReader.WorkItemTypeDefinitions.ToArray())};
+                var goalProcessTemplate = new ProcessTemplate {WorkItemTypeDefinitions = new ReadOnlyCollection<WorkItemTypeDefinition>(agileReader.WorkItemTypeDefinitions.ToArray())};
+
+                var diffEngine = new DiffEngine(processTemplateMap);
+                var differences = diffEngine.CompareProcessTemplates(currentProcessTemplate, goalProcessTemplate);
+
+                var morphEngine = new MorphEngine();
+                actionsViaDiffEngine = morphEngine.GenerateActions(differences).ToList();
+            }
+            return actionsViaDiffEngine;
+        }
+
+        [TestMethod]
+        public void ScrumToAgile_should_add_OriginalEstimate_field_to_Task()
+        {
+            var actionsViaDiffEngine = GenerateActionsViaDiffEngine();
+
+            var addFieldIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
+                return m != null && m.WorkItemTypeName == "Task"
+                       && m.Actions.OfType<AddFieldModifyWorkItemTypeDefinitionSubAction>().Any(s => s.ReferenceName == "Microsoft.VSTS.Scheduling.OriginalEstimate");
+            });
+
+            RelativeAssert.IsGreaterThanOrEqual(0, addFieldIndex, "Should add field to task.");
         }
 
     }
