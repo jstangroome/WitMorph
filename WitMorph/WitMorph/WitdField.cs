@@ -51,5 +51,12 @@ namespace WitMorph
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            var other = obj as WitdField;
+            if (other == null) return false;
+            return other._fieldElement.OuterXml == _fieldElement.OuterXml;
+            // TODO consider comparing canonical xml for differences
+        }
     }
 }

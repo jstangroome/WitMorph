@@ -217,7 +217,14 @@ namespace WitMorph.Tests
         // TODO verify state modifications for all WITDs are done before they're removed
 
         [TestMethod]
-        public void ScrumToAgile_should_produce_the_same_actions_directly_as_via_the_DiffEngine()
+        public void ScrumToAgile_should_maintain_same_baseline_number_of_actions_in_original_MorphEngine_code()
+        {
+            Assert.AreEqual(46, _actions.Count(), "Baseline for direct actions has changed");
+        }
+
+
+        [TestMethod]
+        public void ScrumToAgile_should_produce_the_same_number_of_actions_directly_as_via_the_DiffEngine()
         {
             var actionsViaDiffEngine = GenerateActionsViaDiffEngine();
 
@@ -226,7 +233,29 @@ namespace WitMorph.Tests
                 var m = a as ModifyWorkItemTypeDefinitionMorphAction;
                 return m == null || m.Actions.Count > 0;
             });
-            Assert.AreEqual(46, _actions.Count(), "Baseline for direct actions has changed");
+
+            Assert.AreEqual(optimizedActions.Count(), actionsViaDiffEngine.Count(), "Should produce the same number of actions");
+        }
+
+        [TestMethod]
+        public void ScrumToAgile_should_replace_IntegrationBuild_field_for_Task()
+        {
+            var actionsViaDiffEngine = GenerateActionsViaDiffEngine();
+
+            var replaceActionIndex = actionsViaDiffEngine.FindIndex(a =>
+            {
+                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
+                return m != null && m.WorkItemTypeName == "Task" &&
+                    m.Actions.OfType<ReplaceFieldModifyWorkItemTypeDefinitionSubAction>().Any(r => r.ReferenceName == "Microsoft.VSTS.Build.IntegrationBuild");
+            });
+
+            RelativeAssert.IsGreaterThanOrEqual(0, replaceActionIndex, "Will not replace IntegrationBuild field for Task");
+        }
+
+        [TestMethod]
+        public void ScrumToAgile_should_produce_the_same_types_of_actions_directly_as_via_the_DiffEngine_combined()
+        {
+            var actionsViaDiffEngine = GenerateActionsViaDiffEngine();
 
             //ScrumToAgile_should_rename_PBI_to_User_Story
 
@@ -325,10 +354,6 @@ namespace WitMorph.Tests
             Assert.AreEqual(taskAddStateIndex, taskAddTransitionIndex, "Should add Task transition from Done to Closed");
             Assert.IsTrue(taskStateChangeIndex > taskAddStateIndex, "Will not change Task state from Done to Closed after adding state");
             Assert.IsTrue(taskRemoveStateIndex > taskStateChangeIndex, "Should remove Task Done state after changing data");
-
-            // overall
-
-            Assert.AreEqual(optimizedActions.Count(), actionsViaDiffEngine.Count(), "Should produce the same number of actions");
         }
 
         private static List<IMorphAction> GenerateActionsViaDiffEngine()

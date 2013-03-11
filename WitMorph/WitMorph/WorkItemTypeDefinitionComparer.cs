@@ -62,7 +62,7 @@ namespace WitMorph
                     if (isNameMatch && isTypeMatch)
                     {
                         // update the metadata on the field
-                        finalModifyTypeAction.ReplaceFieldDefinition(currentField.ReferenceName, goalField.Element);
+                        finalModifyTypeAction.ReplaceFieldDefinition(goalField);
                     }
                 }
             }
@@ -189,7 +189,11 @@ namespace WitMorph
                 {
                     differences.Add(new RenamedWorkItemFieldDifference(currentWorkItemTypeName, pair.Current.ReferenceName, pair.Goal));
                 }
-                // TODO field changes (data type, helptext, validation, etc)
+                else if (!pair.Current.Equals(pair.Goal))
+                {
+                    differences.Add(new ChangedWorkItemFieldDifference(currentWorkItemTypeName, pair.Current.ReferenceName, pair.Goal));
+                }
+                // TODO field changes (friendly name, data type, helptext, reporting options, validation, etc)
             }
 
         }
@@ -215,6 +219,7 @@ namespace WitMorph
                 {
                     differences.Add(new RenamedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
                 }
+                // TODO state validation changes and transition differences
             }
         }
     }

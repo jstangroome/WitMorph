@@ -80,6 +80,11 @@ namespace WitMorph
                     finalModifyTypeAction.RemoveFieldDefinition(fieldRemove.ReferenceFieldName);
                 }
 
+                foreach (var fieldChange in workItemTypeGroup.OfType<ChangedWorkItemFieldDifference>())
+                {
+                    finalModifyTypeAction.ReplaceFieldDefinition(fieldChange.GoalField);
+                }
+
             }
 
             foreach (var witdRemove in differences.OfType<RemovedWorkItemTypeDefinitionDifference>())

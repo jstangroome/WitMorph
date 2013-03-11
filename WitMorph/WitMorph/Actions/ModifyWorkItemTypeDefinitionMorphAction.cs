@@ -64,6 +64,35 @@ namespace WitMorph.Actions
         }
     }
 
+    public class ReplaceFieldModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
+    {
+        private readonly WitdField _field;
+
+        public ReplaceFieldModifyWorkItemTypeDefinitionSubAction(WitdField field)
+        {
+            _field = field;
+        }
+
+        public string ReferenceName
+        {
+            get { return _field.ReferenceName; }
+        }
+
+        public override void Execute(XmlElement witdElement)
+        {
+            var fieldsElement = FieldsElement(witdElement);
+            var originalFieldElement = fieldsElement.SelectSingleNode(string.Format("FIELD[@refname='{0}']", _field.ReferenceName));
+            if (originalFieldElement == null)
+            {
+                throw new ArgumentException("Original field not found.");
+            }
+
+            var importedFieldElement = fieldsElement.OwnerDocument.ImportNode(_field.Element, deep: true);
+            fieldsElement.InsertAfter(importedFieldElement, originalFieldElement);
+            fieldsElement.RemoveChild(originalFieldElement);
+        }
+    }
+
     public class RemoveFieldModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
     {
         private readonly string _referenceName;
@@ -254,21 +283,9 @@ namespace WitMorph.Actions
         }
 
 
-        public void ReplaceFieldDefinition(string originalRefName, XmlElement newFieldElement)
+        public void ReplaceFieldDefinition(WitdField field)
         {
-            _actions.Add(e =>
-                         {
-                             var fieldsElement = FieldsElement(e);
-                             var originalFieldElement = fieldsElement.SelectSingleNode(string.Format("FIELD[@refname='{0}']", originalRefName));
-                             if (originalFieldElement == null)
-                             {
-                                 throw new ArgumentException("Original field not found.");
-                             }
-
-                             var importedFieldElement = fieldsElement.OwnerDocument.ImportNode(newFieldElement, deep: true);
-                             fieldsElement.InsertAfter(importedFieldElement, originalFieldElement);
-                             fieldsElement.RemoveChild(originalFieldElement);
-                         });
+            _actions.Add(new ReplaceFieldModifyWorkItemTypeDefinitionSubAction(field));
         }
 
         public void ReplaceWorkflow(XmlElement workflowElement)
