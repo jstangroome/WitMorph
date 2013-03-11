@@ -52,8 +52,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Convert_Scrum_2_To_Agile_6_Tests.cs" />
+    <Compile Include="Convert_Agile_6_To_Scrum_2_Scenario.cs" />
+    <Compile Include="Convert_Scrum_2_To_Agile_6_Scenario.cs" />
+    <Compile Include="Original_MorphEngine_Scrum_To_Agile_Tests.cs" />
     <Compile Include="Agile6ToScrum2DifferenceTests.cs" />
+    <Compile Include="Refactor_to_DiffEngine_Tests.cs" />
     <Compile Include="ProcessTemplates\EmbeddedProcessTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelativeAssert.cs" />
