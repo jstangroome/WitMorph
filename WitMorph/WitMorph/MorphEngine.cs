@@ -33,6 +33,11 @@ namespace WitMorph
         {
             var actionSet = new MorphActionSet();
 
+            foreach (var witdAdd in differences.OfType<AddedWorkItemTypeDefinitionDifference>())
+            {
+                actionSet.PrepareWorkItemTypeDefinitions.Add(new ImportWorkItemTypeDefinitionMorphAction(witdAdd.WorkItemTypeDefinition));
+            }
+
             foreach (var witdRename in differences.OfType<RenamedWorkItemTypeDefinitionDifference>())
             {
                 actionSet.FinaliseWorkItemTypeDefinitions.Add(new RenameWitdMorphAction(witdRename.CurrentTypeName, witdRename.GoalTypeName));
@@ -85,6 +90,15 @@ namespace WitMorph
                     finalModifyTypeAction.ReplaceFieldDefinition(fieldChange.GoalField);
                 }
 
+                foreach (var formChange in workItemTypeGroup.OfType<ChangedWorkItemFormDifference>())
+                {
+                    finalModifyTypeAction.ReplaceForm(formChange.FormElement);
+                }
+
+                foreach (var formChange in workItemTypeGroup.OfType<ChangedWorkItemWorkflowDifference>())
+                {
+                    finalModifyTypeAction.ReplaceWorkflow(formChange.WorkflowElement);
+                }
             }
 
             foreach (var witdRemove in differences.OfType<RemovedWorkItemTypeDefinitionDifference>())

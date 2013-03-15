@@ -164,6 +164,17 @@ namespace WitMorph
 
             FindFieldDifferences(current.Name, current.Fields, goal.Fields, differences);
 
+            if (current.FormElement.OuterXml != goal.FormElement.OuterXml)
+            {
+                differences.Add(new ChangedWorkItemFormDifference(current.Name, goal.FormElement));
+            }
+
+            if (current.WorkflowElement.OuterXml != goal.WorkflowElement.OuterXml)
+            {
+                differences.Add(new ChangedWorkItemWorkflowDifference(current.Name, goal.WorkflowElement)); 
+                // TODO make this obsolete with comprehensive state and transition difference detection
+            }
+
             return differences;
         }
 
@@ -191,7 +202,9 @@ namespace WitMorph
                 }
                 else if (!pair.Current.Equals(pair.Goal))
                 {
-                    differences.Add(new ChangedWorkItemFieldDifference(currentWorkItemTypeName, pair.Current.ReferenceName, pair.Goal));
+                    // TODO consider that the decision to exclude system items may not belong here
+                    if (!_processTemplateMap.SystemFieldReferenceNames.Contains(pair.Current.ReferenceName))
+                        differences.Add(new ChangedWorkItemFieldDifference(currentWorkItemTypeName, pair.Current.ReferenceName, pair.Goal));
                 }
                 // TODO field changes (friendly name, data type, helptext, reporting options, validation, etc)
             }

@@ -14,6 +14,11 @@ namespace WitMorph.Actions
             _typeDefinition = typeDefinition;
         }
 
+        public string WorkItemTypeName
+        {
+            get { return _typeDefinition.Name; }
+        }
+
         public void Execute(ExecutionContext context)
         {
             var project = context.GetWorkItemProject();

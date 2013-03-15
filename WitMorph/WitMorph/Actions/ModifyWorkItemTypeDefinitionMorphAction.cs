@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Xml;
 
 namespace WitMorph.Actions
@@ -29,21 +30,6 @@ namespace WitMorph.Actions
         }
     }
 
-    public class AnonymousModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
-    {
-        private readonly Action<XmlElement> _action;
-
-        public AnonymousModifyWorkItemTypeDefinitionSubAction(Action<XmlElement> action)
-        {
-            _action = action;
-        }
-
-        public override void Execute(XmlElement witdElement)
-        {
-            _action(witdElement);
-        }
-    }
-
     public class AddFieldModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
     {
         private readonly WitdField _field;
@@ -61,6 +47,11 @@ namespace WitMorph.Actions
         public override void Execute(XmlElement witdElement)
         {
             AppendImportedChild(FieldsElement(witdElement), _field.Element);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Add field '{0}'", ReferenceName);
         }
     }
 
@@ -91,6 +82,11 @@ namespace WitMorph.Actions
             fieldsElement.InsertAfter(importedFieldElement, originalFieldElement);
             fieldsElement.RemoveChild(originalFieldElement);
         }
+
+        public override string ToString()
+        {
+            return string.Format("Replace field '{0}'", ReferenceName);
+        }
     }
 
     public class RemoveFieldModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
@@ -118,6 +114,11 @@ namespace WitMorph.Actions
         {
             get { return _referenceName; }
         }
+
+        public override string ToString()
+        {
+            return string.Format("Remove field '{0}'", ReferenceName);
+        }
     }
 
     public class AddStateModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
@@ -137,6 +138,11 @@ namespace WitMorph.Actions
         public string Name
         {
             get { return _state.Value; }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Add state '{0}'", Name);
         }
     }
 
@@ -173,6 +179,11 @@ namespace WitMorph.Actions
         public string Name
         {
             get { return _name; }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Remove state '{0}'", Name);
         }
     }
 
@@ -213,14 +224,45 @@ namespace WitMorph.Actions
 
             transitionsElement.AppendChild(transitionElement);
         }
+
+        public override string ToString()
+        {
+            return string.Format("Add transition from state '{0}' to '{1}' with reason '{2}'", FromState, ToState, _defaultReason);
+        }
     }
 
-
-    public static class AnonymousModifyWorkItemTypeDefinitionSubActionExtension
+    public class ReplaceFormModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
     {
-        public static void Add(this IList<ModifyWorkItemTypeDefinitionSubAction> actions, Action<XmlElement> action)
+        private readonly XmlElement _formElement;
+
+        public ReplaceFormModifyWorkItemTypeDefinitionSubAction(XmlElement formElement)
         {
-            actions.Add(new AnonymousModifyWorkItemTypeDefinitionSubAction(action));
+            _formElement = formElement;
+        }
+
+        public override void Execute(XmlElement witdElement)
+        {
+            var oldElement = SelectSingleElement(witdElement, "WORKITEMTYPE/FORM");
+            AppendImportedChild(oldElement.ParentNode, _formElement);
+            oldElement.ParentNode.RemoveChild(oldElement);
+        }
+    }
+
+    [Obsolete("Update states and transitions directly instead.")]
+    public class ReplaceWorkflowModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
+    {
+        private readonly XmlElement _workflowElement;
+
+        public ReplaceWorkflowModifyWorkItemTypeDefinitionSubAction(XmlElement workflowElement)
+        {
+            _workflowElement = workflowElement;
+        }
+
+        public override void Execute(XmlElement witdElement)
+        {
+            var oldElement = SelectSingleElement(witdElement, "WORKITEMTYPE/WORKFLOW");
+            AppendImportedChild(oldElement.ParentNode, _workflowElement);
+            oldElement.ParentNode.RemoveChild(oldElement);
         }
     }
 
@@ -290,24 +332,12 @@ namespace WitMorph.Actions
 
         public void ReplaceWorkflow(XmlElement workflowElement)
         {
-            _actions.Add(witd =>
-                         {
-                             var oldElement = SelectSingleElement(witd, "WORKITEMTYPE/WORKFLOW");
-                             AppendImportedChild(oldElement.ParentNode, workflowElement);
-                             oldElement.ParentNode.RemoveChild(oldElement);
-                             //_isDirty = true;
-                         });
+            _actions.Add(new ReplaceWorkflowModifyWorkItemTypeDefinitionSubAction(workflowElement));
         }
 
         public void ReplaceForm(XmlElement formElement)
         {
-            _actions.Add(witd =>
-                         {
-                             var oldElement = SelectSingleElement(witd, "WORKITEMTYPE/FORM");
-                             AppendImportedChild(oldElement.ParentNode, formElement);
-                             oldElement.ParentNode.RemoveChild(oldElement);
-                             //_isDirty = true;
-                         });
+            _actions.Add(new ReplaceFormModifyWorkItemTypeDefinitionSubAction(formElement));
         }
 
         public void Execute(ExecutionContext context)
@@ -342,7 +372,13 @@ namespace WitMorph.Actions
             {
                 return string.Format("No action required. {0}", base.ToString());
             }
-            return string.Format("Import {0} schema change(s) to work item type definition '{1}'", _actions.Count, _workItemTypeName); //TODO list details of changes
+            var builder = new StringBuilder();
+            builder.AppendLine(string.Format("Import {0} schema change(s) to work item type definition '{1}':", _actions.Count, _workItemTypeName));
+            foreach (var action in _actions)
+            {
+                builder.AppendLine(" " + action);
+            }
+            return builder.ToString();
         }
     }
 

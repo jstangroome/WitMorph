@@ -57,6 +57,8 @@
     <Compile Include="Differences\AddedWorkItemTypeDefinitionDifference.cs" />
     <Compile Include="Differences\AddedWorkItemFieldDifference.cs" />
     <Compile Include="Differences\ChangedWorkItemFieldDifference.cs" />
+    <Compile Include="Differences\ChangedWorkItemFormDifference.cs" />
+    <Compile Include="Differences\ChangedWorkItemWorkflowDifference.cs" />
     <Compile Include="Differences\IWorkItemTypeDifference.cs" />
     <Compile Include="Differences\RemovedWorkItemFieldDifference.cs" />
     <Compile Include="Differences\RenamedWorkItemStateDifference.cs" />

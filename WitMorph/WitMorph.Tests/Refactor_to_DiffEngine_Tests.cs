@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WitMorph.Actions;
 
@@ -31,7 +33,11 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_produce_the_same_number_of_actions_directly_as_via_the_DiffEngine()
         {
-            var actionsViaDiffEngine = GenerateActionsViaDiffEngine();
+            var actionsViaDiffEngine = GenerateActionsViaDiffEngine().Where(a =>
+            {
+                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
+                return m == null || m.Actions.Count > 0;
+            });
 
             var optimizedActions = Actions.Where(a =>
             {
@@ -39,7 +45,86 @@ namespace WitMorph.Tests
                 return m == null || m.Actions.Count > 0;
             });
 
-            Assert.AreEqual(optimizedActions.Count(), actionsViaDiffEngine.Count(), "Should produce the same number of actions");
+            if (optimizedActions.Count() == actionsViaDiffEngine.Count()) return;
+
+            var builder = new StringBuilder();
+            builder.AppendLine("Original MorphEngine actions missing from DiffEngine action list:");
+            foreach (var originalMorphAction in optimizedActions)
+            {
+                if (!actionsViaDiffEngine.Contains(originalMorphAction, new MorphActionEqualityComparer()))
+                {
+                    builder.AppendLine(originalMorphAction.ToString());
+                }
+            }
+
+            builder.AppendLine();
+            builder.AppendLine("Additional DiffEngine actions missing from MorphEngine action list:");
+            foreach (var diffEngineAction in actionsViaDiffEngine)
+            {
+                if (!optimizedActions.Contains(diffEngineAction, new MorphActionEqualityComparer()))
+                {
+                    builder.AppendLine(diffEngineAction.ToString());
+                }
+            }
+
+            Assert.Fail(builder.ToString());
+        }
+
+        [TestMethod]
+        public void ScrumToAgile_should_produce_the_same_modify_subactions_via_DiffEngine_and_original_MorphEngine()
+        {
+            var originalGroups = Actions
+                .OfType<ModifyWorkItemTypeDefinitionMorphAction>()
+                .GroupBy(a => a.WorkItemTypeName);
+
+            var diffGroups = GenerateActionsViaDiffEngine()
+                .OfType<ModifyWorkItemTypeDefinitionMorphAction>()
+                .GroupBy(a => a.WorkItemTypeName);
+
+            var result = new StringBuilder();
+
+            foreach (var originalGroup in originalGroups)
+            {
+                var diffGroup = diffGroups.Where(g => g.Key == originalGroup.Key).SingleOrDefault();
+                if (diffGroup == null)
+                {
+                    result.AppendLine(string.Format("diffGroup missing for '{0}'", originalGroup.Key));
+                }
+                else
+                {
+                    var originalGroupArray = originalGroup.ToArray();
+                    var diffGroupArray = diffGroup.ToArray();
+                    if (originalGroupArray.Length != diffGroupArray.Length)
+                    {
+                        result.AppendLine(string.Format("Original and diff group '{0}' have different counts.", originalGroup.Key));
+                    }
+                
+                    for (var i = 0; i < originalGroupArray.Length; i++)
+                    {
+                        var originalAction = originalGroupArray[i];
+                        var diffAction = diffGroupArray[i];
+                        foreach (var originalSubAction in originalAction.Actions)
+                        {
+                            var diffSubActions = diffAction.Actions.Where(a => a.ToString() == originalSubAction.ToString()).ToArray();
+                            if (diffSubActions.Length > 1)
+                            {
+                                result.AppendLine(string.Format("Original subaction '{0}' has multiple diff subactions for work item '{1}'", originalSubAction, originalAction.WorkItemTypeName));
+                            }
+                            else if (diffSubActions.Length == 0)
+                            {
+                                result.AppendLine(string.Format("Original subaction '{0}' missing from diff for work item '{1}'", originalSubAction, originalAction.WorkItemTypeName));
+                            }
+                        }
+                        // TODO also check diffs not in original
+                    }
+                }
+            }
+
+            if (result.Length > 0)
+            {
+                Assert.Fail(result.ToString());
+            }
+
         }
 
         [TestMethod]
@@ -161,5 +246,55 @@ namespace WitMorph.Tests
             RelativeAssert.IsGreaterThanOrEqual(0, addFieldIndex, "Should add field to task.");
         }
 
+        [TestMethod]
+        public void ScrumToAgile_should_add_Issue_work_item()
+        {
+            var actions = GenerateActionsViaDiffEngine();
+
+            var addIssueIndex = actions.FindIndex(a =>
+            {
+                var m = a as ImportWorkItemTypeDefinitionMorphAction;
+                return m != null && m.WorkItemTypeName == "Issue";
+            });
+
+            RelativeAssert.IsGreaterThanOrEqual(0, addIssueIndex, "Should add Issue work item.");
+        }
+
+        [TestMethod]
+        public void ScrumToAgile_should_replace_Task_work_item_form()
+        {
+            var actions = GenerateActionsViaDiffEngine();
+
+            var replaceFormIndex = actions.FindIndex(a =>
+            {
+                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
+                return m != null && m.WorkItemTypeName == "Task"
+                    && m.Actions.OfType<ReplaceFormModifyWorkItemTypeDefinitionSubAction>().Any();
+            });
+
+            RelativeAssert.IsGreaterThanOrEqual(0, replaceFormIndex, "Should replace form for Task work item.");
+        }
+
+    }
+
+    public class MorphActionEqualityComparer : IEqualityComparer<IMorphAction>
+    {
+        public bool Equals(IMorphAction x, IMorphAction y)
+        {
+            var mx = x as ModifyWorkItemTypeDefinitionMorphAction;
+            var my = y as ModifyWorkItemTypeDefinitionMorphAction;
+
+            if (mx == null || my == null)
+            {
+                return x.ToString() == y.ToString();
+            }
+
+            return mx.WorkItemTypeName == my.WorkItemTypeName; // TODO compare sub actions
+        }
+
+        public int GetHashCode(IMorphAction obj)
+        {
+            return obj.ToString().GetHashCode();
+        }
     }
 }
