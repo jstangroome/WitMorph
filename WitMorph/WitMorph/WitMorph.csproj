@@ -70,6 +70,7 @@
     <Compile Include="MorphEngine.cs" />
     <Compile Include="Actions\IMorphAction.cs" />
     <Compile Include="ProcessTemplateDownloader.cs" />
+    <Compile Include="ProcessTemplateFactory.cs" />
     <Compile Include="ProcessTemplateMap.cs" />
     <Compile Include="ProcessTemplateReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

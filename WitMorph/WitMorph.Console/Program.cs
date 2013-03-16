@@ -16,9 +16,17 @@ namespace WitMorph.Console
             var projectName = args[1];
             var newProcessTemplateName = args[2];
 
+            var factory = new ProcessTemplateFactory();
+
+            var currentTemplate = factory.FromActiveTeamProject(collectionUri, projectName);
+            var goalTemplate = factory.FromCollectionTemplates(collectionUri, newProcessTemplateName);
+
+            var diffEngine = new DiffEngine(ProcessTemplateMap.ConvertScrum2ToAgile6());
+            var differences = diffEngine.CompareProcessTemplates(currentTemplate, goalTemplate);
+
             var engine = new MorphEngine();
 
-            var actions = engine.GenerateActions(collectionUri, projectName, newProcessTemplateName, ProcessTemplateMap.ConvertScrum2ToAgile6());
+            var actions = engine.GenerateActions(differences);
             foreach (var action in actions)
             {
                 System.Console.WriteLine(action.ToString());

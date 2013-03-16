@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.TeamFoundation.Client;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using WitMorph.Actions;
 using WitMorph.Differences;
 using WitMorph.Structures;
@@ -13,18 +11,14 @@ namespace WitMorph
     {
         public IEnumerable<IMorphAction> GenerateActions(Uri collectionUri, string projectName, string newProcessTemplateName, ProcessTemplateMap processTemplateMap)
         {
-            var collection = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(collectionUri);
+            var factory = new ProcessTemplateFactory();
 
-            IEnumerable<WorkItemTypeDefinition> processTemplateWitds;
-            using (var downloader = new ProcessTemplateDownloader(collection, newProcessTemplateName))
-            {
-                var processTemplateReader = new ProcessTemplateReader(downloader.TemplatePath);
-                processTemplateWitds = processTemplateReader.WorkItemTypeDefinitions;
-            }
+            var currentTemplate = factory.FromActiveTeamProject(collectionUri, projectName);
+            var goalTemplate = factory.FromCollectionTemplates(collectionUri, newProcessTemplateName);
 
             var actionSet = new MorphActionSet();
             var witdCollectionComparer = new WitdCollectionComparer(processTemplateMap, actionSet);
-            witdCollectionComparer.Compare(processTemplateWitds, GetTeamProjectWorkItemTypeDefinitions(collection, projectName));
+            witdCollectionComparer.Compare(currentTemplate.WorkItemTypeDefinitions, goalTemplate.WorkItemTypeDefinitions);
 
             return actionSet.Combine();
         }
@@ -119,17 +113,5 @@ namespace WitMorph
             }
         }
 
-        private IEnumerable<WorkItemTypeDefinition> GetTeamProjectWorkItemTypeDefinitions(TfsTeamProjectCollection collection, string projectName)
-        {
-            var store = collection.GetService<WorkItemStore>();
-            var project = store.Projects[projectName];
-
-            var witds = new List<WorkItemTypeDefinition>();
-            foreach (WorkItemType wit in project.WorkItemTypes)
-            {
-                witds.Add(new WorkItemTypeDefinition(wit.Export(false)));
-            }
-            return witds;
-        }
     }
 }
