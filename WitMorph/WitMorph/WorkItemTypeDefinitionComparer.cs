@@ -190,8 +190,9 @@ namespace WitMorph
 
             foreach (var currentField in fieldMatchResult.CurrentOnly)
             {
-                // TODO ignore removal of system fields - perhaps during action generation though
-                differences.Add(new RemovedWorkItemFieldDifference(currentWorkItemTypeName, currentField.ReferenceName));
+                // ignore removal of system fields as they are often omitted from templates
+                if (!_processTemplateMap.SystemFieldReferenceNames.Contains(currentField.ReferenceName))
+                    differences.Add(new RemovedWorkItemFieldDifference(currentWorkItemTypeName, currentField.ReferenceName));
             }
 
             foreach (var pair in fieldMatchResult.Pairs)
@@ -204,7 +205,9 @@ namespace WitMorph
                 {
                     // TODO consider that the decision to exclude system items may not belong here
                     if (!_processTemplateMap.SystemFieldReferenceNames.Contains(pair.Current.ReferenceName))
+                    {
                         differences.Add(new ChangedWorkItemFieldDifference(currentWorkItemTypeName, pair.Current.ReferenceName, pair.Goal));
+                    }
                 }
                 // TODO field changes (friendly name, data type, helptext, reporting options, validation, etc)
             }

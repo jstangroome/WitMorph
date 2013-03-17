@@ -11,6 +11,11 @@ namespace WitMorph
         private readonly CurrentToGoalMap<string> _workItemFieldMap;
         private readonly Dictionary<string, CurrentToGoalMap<string>> _workItemStateMaps;
 
+        public static ProcessTemplateMap Empty()
+        {
+            return new ProcessTemplateMap();
+        }
+
         public static ProcessTemplateMap ConvertScrum2ToAgile6()
         {
             var map = new ProcessTemplateMap();
@@ -69,7 +74,16 @@ namespace WitMorph
 
         private ProcessTemplateMap()
         {
-            _systemFieldReferenceNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "System.Watermark", "System.TeamProject", "System.IterationId", "System.ExternalLinkCount", "System.HyperLinkCount", "System.AttachedFileCount", "System.NodeName", "System.RevisedDate", "System.AreaId", "System.AuthorizedAs", "System.AuthorizedDate", "System.Rev", "System.WorkItemType", "System.Description", "System.RelatedLinkCount", "System.ChangedDate", "System.ChangedBy", "System.CreatedDate", "System.CreatedBy", "System.History" };
+            _systemFieldReferenceNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                                         {
+                                             "System.Id", "System.Watermark", "System.TeamProject", "System.IterationId",
+                                             "System.ExternalLinkCount", "System.HyperLinkCount", "System.AttachedFileCount",
+                                             "System.NodeName", "System.RevisedDate", "System.AreaId", "System.AuthorizedAs",
+                                             "System.AuthorizedDate", "System.Rev", "System.WorkItemType", "System.Description",
+                                             "System.RelatedLinkCount", "System.ChangedDate", "System.ChangedBy",
+                                             "System.CreatedDate", "System.CreatedBy", "System.History",
+                                             "System.Tags" // tags?
+                                         };
 
             _workItemTypeMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
             _workItemStateMaps = new Dictionary<string, CurrentToGoalMap<string>>(StringComparer.OrdinalIgnoreCase);
