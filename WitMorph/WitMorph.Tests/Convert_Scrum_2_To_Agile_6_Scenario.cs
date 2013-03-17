@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using WitMorph.Actions;
+using WitMorph.Model;
 using WitMorph.Structures;
 using WitMorph.Tests.ProcessTemplates;
 

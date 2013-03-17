@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using WitMorph.Actions;
 using WitMorph.Differences;
+using WitMorph.Model;
 using WitMorph.Structures;
 
 namespace WitMorph

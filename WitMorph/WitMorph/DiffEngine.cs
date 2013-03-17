@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WitMorph.Differences;
+using WitMorph.Model;
 using WitMorph.Structures;
 
 namespace WitMorph

@@ -1,4 +1,6 @@
-﻿namespace WitMorph.Differences
+﻿using WitMorph.Model;
+
+namespace WitMorph.Differences
 {
     public class AddedWorkItemTypeDefinitionDifference : IDifference
     {

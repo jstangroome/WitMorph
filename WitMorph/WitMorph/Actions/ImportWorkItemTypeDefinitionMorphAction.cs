@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client.Provision;
+using WitMorph.Model;
 
 namespace WitMorph.Actions
 {

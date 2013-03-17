@@ -67,6 +67,12 @@
     <Compile Include="Differences\RemovedWorkItemTypeDefinitionDifference.cs" />
     <Compile Include="Differences\RenamedWorkItemFieldDifference.cs" />
     <Compile Include="Differences\RenamedWorkItemTypeDefinitionDifference.cs" />
+    <Compile Include="Model\IWitdFieldChildElement.cs" />
+    <Compile Include="Model\WitdFieldChildElementFactory.cs" />
+    <Compile Include="Model\WitdFieldNamedChildElement.cs" />
+    <Compile Include="Model\WitdFieldUnrecognisedChildElement.cs" />
+    <Compile Include="Model\WitdFieldWhenChanged.cs" />
+    <Compile Include="Model\WitdFieldWhenValue.cs" />
     <Compile Include="MorphEngine.cs" />
     <Compile Include="Actions\IMorphAction.cs" />
     <Compile Include="ProcessTemplateDownloader.cs" />
@@ -80,10 +86,12 @@
     <Compile Include="Structures\CurrentToGoalMap.cs" />
     <Compile Include="Structures\CurrentAndGoalPair.cs" />
     <Compile Include="WitdCollectionComparer.cs" />
-    <Compile Include="WitdField.cs" />
-    <Compile Include="WitdState.cs" />
-    <Compile Include="WorkItemTypeDefinition.cs" />
+    <Compile Include="Model\WitdField.cs" />
+    <Compile Include="Model\WitdFieldPickList.cs" />
+    <Compile Include="Model\WitdState.cs" />
+    <Compile Include="Model\WorkItemTypeDefinition.cs" />
     <Compile Include="WorkItemTypeDefinitionComparer.cs" />
+    <Compile Include="XmlElementExtensions.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

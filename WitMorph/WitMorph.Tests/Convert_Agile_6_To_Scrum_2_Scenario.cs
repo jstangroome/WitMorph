@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using WitMorph.Differences;
+using WitMorph.Model;
 using WitMorph.Tests.ProcessTemplates;
 
 namespace WitMorph.Tests

@@ -1,3 +1,5 @@
+using WitMorph.Model;
+
 namespace WitMorph.Differences
 {
     public class ChangedWorkItemFieldDifference : IWorkItemTypeDifference

@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace WitMorph
+namespace WitMorph.Model
 {
     public class WitdState // invariant readonly
     {
