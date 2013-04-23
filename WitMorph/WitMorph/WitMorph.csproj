@@ -48,7 +48,6 @@
     <Compile Include="Actions\ExecutionContext.cs" />
     <Compile Include="Actions\ExportWorkItemDataMorphAction.cs" />
     <Compile Include="Actions\ImportWorkItemTypeDefinitionMorphAction.cs" />
-    <Compile Include="Actions\IWorkItemTypeDefinitionSchemaChange.cs" />
     <Compile Include="Actions\ModifyWorkItemStateMorphAction.cs" />
     <Compile Include="Actions\ModifyWorkItemTypeDefinitionMorphAction.cs" />
     <Compile Include="Actions\RenameWitdMorphAction.cs" />
@@ -78,6 +77,7 @@
     <Compile Include="Model\WitdTransition.cs" />
     <Compile Include="MorphEngine.cs" />
     <Compile Include="Actions\IMorphAction.cs" />
+    <Compile Include="ProcessTemplate.cs" />
     <Compile Include="ProcessTemplateDownloader.cs" />
     <Compile Include="ProcessTemplateFactory.cs" />
     <Compile Include="ProcessTemplateMap.cs" />
@@ -89,7 +89,6 @@
     <Compile Include="Structures\MorphActionSet.cs" />
     <Compile Include="Structures\CurrentToGoalMap.cs" />
     <Compile Include="Structures\CurrentAndGoalPair.cs" />
-    <Compile Include="WitdCollectionComparer.cs" />
     <Compile Include="Model\WitdField.cs" />
     <Compile Include="Model\WitdFieldPickList.cs" />
     <Compile Include="Model\WitdState.cs" />

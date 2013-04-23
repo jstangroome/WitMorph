@@ -10,7 +10,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_rename_PBI_to_User_Story()
         {
-            var renameAction = Actions
+            var renameAction = GenerateActionsViaDiffEngine()
                     .OfType<RenameWitdMorphAction>()
                     .SingleOrDefault(a => a.TypeName == "Product Backlog Item" && a.NewName == "User Story");
 
@@ -20,7 +20,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_export_and_remove_Impediment()
         {
-            var actions = Actions.ToList();
+            var actions = GenerateActionsViaDiffEngine();
 
             var exportIndex = actions.FindIndex(a =>
             {
@@ -41,7 +41,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_export_extra_Bug_fields()
         {
-            var actions = Actions.ToList();
+            var actions = GenerateActionsViaDiffEngine();
 
             var exportIndex = actions.FindIndex(a =>
             {
@@ -57,7 +57,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_export_extra_Task_fields()
         {
-            var actions = Actions.ToList();
+            var actions = GenerateActionsViaDiffEngine();
 
             var exportIndex = actions.FindIndex(a =>
             {
@@ -72,7 +72,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_copy_BacklogPriority_to_StackRank_for_Bug_Task_and_PBI()
         {
-            var actions = Actions.ToList();
+            var actions = GenerateActionsViaDiffEngine();
 
             var bugCopyIndex = actions.FindIndex(a =>
             {
@@ -100,7 +100,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_copy_Effort_to_StoryPoints_for_PBI()
         {
-            var actions = Actions.ToList();
+            var actions = GenerateActionsViaDiffEngine();
 
             var pbiCopyIndex = actions.FindIndex(a =>
             {
@@ -115,7 +115,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_modify_Done_state_to_Closed_for_Task()
         {
-            var actions = Actions.ToList();
+            var actions = GenerateActionsViaDiffEngine();
 
             var taskIndex = actions.FindIndex(a =>
             {
@@ -129,7 +129,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_modify_Done_state_to_Resolved_for_PBI()
         {
-            var actions = Actions.ToList();
+            var actions = GenerateActionsViaDiffEngine();
 
             var pbiIndex = actions.FindIndex(a =>
             {
@@ -143,7 +143,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_modify_Done_state_to_Resolved_for_Bug()
         {
-            var actions = Actions.ToList();
+            var actions = GenerateActionsViaDiffEngine();
 
             var bugIndex = actions.FindIndex(a =>
             {
@@ -157,7 +157,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_modify_InProgress_state_to_Active_for_Task()
         {
-            var actions = Actions.ToList();
+            var actions = GenerateActionsViaDiffEngine();
 
             var taskIndex = actions.FindIndex(a =>
             {
@@ -171,7 +171,7 @@ namespace WitMorph.Tests
         [TestMethod]
         public void ScrumToAgile_should_modify_ToDo_state_to_New_for_Task()
         {
-            var actions = Actions.ToList();
+            var actions = GenerateActionsViaDiffEngine();
 
             var taskIndex = actions.FindIndex(a =>
             {

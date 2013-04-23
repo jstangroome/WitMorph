@@ -32,7 +32,7 @@ namespace WitMorph
                differences.Add(new RemovedWorkItemTypeDefinitionDifference(currentItem.Name));
             }
 
-            var witdComparer = new WorkItemTypeDefinitionComparer(_processTemplateMap, null);
+            var witdComparer = new WorkItemTypeDefinitionComparer(_processTemplateMap);
             foreach (var pair in matchResult.Pairs)
             {
                 differences.AddRange(witdComparer.FindDifferences(pair.Current, pair.Goal));
@@ -40,10 +40,5 @@ namespace WitMorph
 
             return differences;
         }
-    }
-
-    public class ProcessTemplate
-    {
-        public IReadOnlyList<WorkItemTypeDefinition> WorkItemTypeDefinitions { get; set; }
     }
 }

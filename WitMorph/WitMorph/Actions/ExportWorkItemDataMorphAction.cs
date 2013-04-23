@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
@@ -73,7 +74,7 @@ namespace WitMorph.Actions
                 {
                     Debug.WriteLine(workItem.Id);
                     xw.WriteStartElement("WorkItem");
-                    xw.WriteAttributeString("id", workItem.Id.ToString());
+                    xw.WriteAttributeString("id", workItem.Id.ToString(CultureInfo.InvariantCulture));
                     foreach (var fieldReferenceName in _fieldReferenceNames)
                     {
                         xw.WriteElementString(fieldReferenceName, workItem.Fields[fieldReferenceName].Value.ToString());

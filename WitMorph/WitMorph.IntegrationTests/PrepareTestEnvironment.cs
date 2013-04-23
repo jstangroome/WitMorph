@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace WitMorph.IntegrationTests
 {
-    public class PrepareTestEnvironment
+    public static class PrepareTestEnvironment
     {
         class CollectionInformation
         {
@@ -22,18 +22,16 @@ namespace WitMorph.IntegrationTests
         }
 
         private static readonly object Lock = new object();
-        private static volatile bool _hasReset = false;
+        private static volatile bool _hasReset;
 
         public static void ResetCollection()
         {
             if (_hasReset) return;
             lock (Lock)
             {
-                if (!_hasReset)
-                {
-                    ResetCollectionInternal();
-                    _hasReset = true;
-                }
+                if (_hasReset) return;
+                ResetCollectionInternal();
+                _hasReset = true;
             }
         }
 

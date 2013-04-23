@@ -287,24 +287,6 @@ namespace WitMorph.Actions
             get { return _workItemTypeName; }
         }
 
-        private XmlElement SelectSingleElement(XmlElement witdElement, string xpath)
-        {
-            return (XmlElement)witdElement.SelectSingleNode(xpath);
-        }
-
-        private XmlElement FieldsElement(XmlElement witdElement) { return SelectSingleElement(witdElement, "WORKITEMTYPE/FIELDS"); }
-        private XmlElement StatesElement(XmlElement witdElement) { return SelectSingleElement(witdElement, "WORKITEMTYPE/WORKFLOW/STATES"); } 
-        private XmlElement TransitionsElement(XmlElement witdElement) { return SelectSingleElement(witdElement, "WORKITEMTYPE/WORKFLOW/TRANSITIONS"); }
-
-        private void AppendImportedChild(XmlNode parent, XmlElement child)
-        {
-            if (parent.OwnerDocument == null)
-            {
-                throw new ArgumentException("OwnerDocument property value is null.", "parent");
-            }
-            parent.AppendChild(parent.OwnerDocument.ImportNode(child, deep: true));
-        }
-
         public void AddFieldDefinition(WitdField field)
         {
             _actions.Add(new AddFieldModifyWorkItemTypeDefinitionSubAction(field));

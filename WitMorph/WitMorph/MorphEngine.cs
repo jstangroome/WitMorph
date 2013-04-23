@@ -10,20 +10,6 @@ namespace WitMorph
 {
     public class MorphEngine
     {
-        public IEnumerable<IMorphAction> GenerateActions(Uri collectionUri, string projectName, string newProcessTemplateName, ProcessTemplateMap processTemplateMap)
-        {
-            var factory = new ProcessTemplateFactory();
-
-            var currentTemplate = factory.FromActiveTeamProject(collectionUri, projectName);
-            var goalTemplate = factory.FromCollectionTemplates(collectionUri, newProcessTemplateName);
-
-            var actionSet = new MorphActionSet();
-            var witdCollectionComparer = new WitdCollectionComparer(processTemplateMap, actionSet);
-            witdCollectionComparer.Compare(currentTemplate.WorkItemTypeDefinitions, goalTemplate.WorkItemTypeDefinitions);
-
-            return actionSet.Combine();
-        }
-
         public IEnumerable<IMorphAction> GenerateActions(IEnumerable<IDifference> differences)
         {
             var actionSet = new MorphActionSet();
@@ -107,8 +93,7 @@ namespace WitMorph
 
         public void Apply(Uri collectionUri, string projectName, IEnumerable<IMorphAction> actions, string outputPath)
         {
-            var context = new ExecutionContext(collectionUri, projectName, outputPath);
-            context.TraceLevel = TraceLevel.Verbose;
+            var context = new ExecutionContext(collectionUri, projectName, outputPath) {TraceLevel = TraceLevel.Verbose};
             foreach (var action in actions)
             {
                 action.Execute(context);

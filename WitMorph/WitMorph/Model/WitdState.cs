@@ -45,5 +45,10 @@ namespace WitMorph.Model
 
             return true;
         }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode() ^ Fields.Aggregate(0, (seed, x) => seed ^ x.GetHashCode());
+        }
     }
 }

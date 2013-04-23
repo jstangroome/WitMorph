@@ -27,9 +27,10 @@ namespace WitMorph
         {
             var collection = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(collectionUri);
 
-            var processTemplate = new ProcessTemplate();
-
-            processTemplate.WorkItemTypeDefinitions = GetTeamProjectWorkItemTypeDefinitions(collection, projectName);
+            var processTemplate = new ProcessTemplate
+                                  {
+                                      WorkItemTypeDefinitions = GetTeamProjectWorkItemTypeDefinitions(collection, projectName)
+                                  };
 
             return processTemplate;
         }

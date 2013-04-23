@@ -85,14 +85,6 @@ namespace WitMorph.Model
             }
         }
 
-        public string HelpText // never used, consider removing
-        {
-            get { 
-                var helpTextElement = (XmlElement) _fieldElement.SelectSingleNode("HELPTEXT");
-                return helpTextElement == null ? string.Empty : helpTextElement.InnerText;
-            }
-        }
-
         private ISet<IWitdFieldChildElement> AllChildElements
         {
             get
@@ -134,5 +126,20 @@ namespace WitMorph.Model
             return true;
         }
 
+        public override int GetHashCode()
+        {
+            var hashcode = ReferenceName.GetHashCode()
+                ^ Name.GetHashCode()
+                ^ Type.GetHashCode()
+                ^ SyncNameChanges.GetHashCode()
+                ^ Reportable.GetHashCode()
+                ^ AllChildElements.Aggregate(0, (seed, x) => seed ^ x.GetHashCode());
+
+            if (Reportable == ReportingType.Measure) hashcode ^= Formula.GetHashCode();
+
+            if (Reportable != ReportingType.None) hashcode ^= ReportingRefName.GetHashCode() ^ ReportingName.GetHashCode();
+
+            return hashcode;
+        }
     }
 }

@@ -49,11 +49,6 @@ namespace WitMorph.Model
             _transitionElement = transitionElement;
         }
 
-        public XmlElement Element
-        {
-            get { return (XmlElement)_transitionElement.Clone(); }
-        }
-
         public string From
         {
             get { return _transitionElement.GetAttribute("from"); }

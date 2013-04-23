@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WitMorph.Actions;
 
@@ -9,12 +7,6 @@ namespace WitMorph.Tests
     [TestClass]
     public class Refactor_to_DiffEngine_Tests : Convert_Scrum_2_To_Agile_6_Scenario
     {
-        [TestMethod]
-        public void ScrumToAgile_should_maintain_same_baseline_number_of_actions_in_original_MorphEngine_code()
-        {
-            Assert.AreEqual(46, Actions.Count(), "Baseline for direct actions has changed");
-        }
-
         [TestMethod]
         public void ScrumToAgile_should_replace_IntegrationBuild_field_for_Task()
         {
@@ -30,103 +22,6 @@ namespace WitMorph.Tests
             RelativeAssert.IsGreaterThanOrEqual(0, replaceActionIndex, "Will not replace IntegrationBuild field for Task");
         }
     
-        [TestMethod]
-        public void ScrumToAgile_should_produce_the_same_number_of_actions_directly_as_via_the_DiffEngine()
-        {
-            var actionsViaDiffEngine = GenerateActionsViaDiffEngine().Where(a =>
-            {
-                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
-                return m == null || m.Actions.Count > 0;
-            });
-
-            var optimizedActions = Actions.Where(a =>
-            {
-                var m = a as ModifyWorkItemTypeDefinitionMorphAction;
-                return m == null || m.Actions.Count > 0;
-            });
-
-            if (optimizedActions.Count() == actionsViaDiffEngine.Count()) return;
-
-            var builder = new StringBuilder();
-            builder.AppendLine("Original MorphEngine actions missing from DiffEngine action list:");
-            foreach (var originalMorphAction in optimizedActions)
-            {
-                if (!actionsViaDiffEngine.Contains(originalMorphAction, new MorphActionEqualityComparer()))
-                {
-                    builder.AppendLine(originalMorphAction.ToString());
-                }
-            }
-
-            builder.AppendLine();
-            builder.AppendLine("Additional DiffEngine actions missing from MorphEngine action list:");
-            foreach (var diffEngineAction in actionsViaDiffEngine)
-            {
-                if (!optimizedActions.Contains(diffEngineAction, new MorphActionEqualityComparer()))
-                {
-                    builder.AppendLine(diffEngineAction.ToString());
-                }
-            }
-
-            Assert.Fail(builder.ToString());
-        }
-
-        [TestMethod]
-        public void ScrumToAgile_should_produce_the_same_modify_subactions_via_DiffEngine_and_original_MorphEngine()
-        {
-            var originalGroups = Actions
-                .OfType<ModifyWorkItemTypeDefinitionMorphAction>()
-                .GroupBy(a => a.WorkItemTypeName);
-
-            var diffGroups = GenerateActionsViaDiffEngine()
-                .OfType<ModifyWorkItemTypeDefinitionMorphAction>()
-                .GroupBy(a => a.WorkItemTypeName);
-
-            var result = new StringBuilder();
-
-            foreach (var originalGroup in originalGroups)
-            {
-                var diffGroup = diffGroups.Where(g => g.Key == originalGroup.Key).SingleOrDefault();
-                if (diffGroup == null)
-                {
-                    result.AppendLine(string.Format("diffGroup missing for '{0}'", originalGroup.Key));
-                }
-                else
-                {
-                    var originalGroupArray = originalGroup.ToArray();
-                    var diffGroupArray = diffGroup.ToArray();
-                    if (originalGroupArray.Length != diffGroupArray.Length)
-                    {
-                        result.AppendLine(string.Format("Original and diff group '{0}' have different counts.", originalGroup.Key));
-                    }
-                
-                    for (var i = 0; i < originalGroupArray.Length; i++)
-                    {
-                        var originalAction = originalGroupArray[i];
-                        var diffAction = diffGroupArray[i];
-                        foreach (var originalSubAction in originalAction.Actions)
-                        {
-                            var diffSubActions = diffAction.Actions.Where(a => a.ToString() == originalSubAction.ToString()).ToArray();
-                            if (diffSubActions.Length > 1)
-                            {
-                                result.AppendLine(string.Format("Original subaction '{0}' has multiple diff subactions for work item '{1}'", originalSubAction, originalAction.WorkItemTypeName));
-                            }
-                            else if (diffSubActions.Length == 0)
-                            {
-                                result.AppendLine(string.Format("Original subaction '{0}' missing from diff for work item '{1}'", originalSubAction, originalAction.WorkItemTypeName));
-                            }
-                        }
-                        // TODO also check diffs not in original
-                    }
-                }
-            }
-
-            if (result.Length > 0)
-            {
-                Assert.Fail(result.ToString());
-            }
-
-        }
-
         [TestMethod]
         public void ScrumToAgile_should_produce_the_same_types_of_actions_directly_as_via_the_DiffEngine_combined()
         {
@@ -277,24 +172,4 @@ namespace WitMorph.Tests
 
     }
 
-    public class MorphActionEqualityComparer : IEqualityComparer<IMorphAction>
-    {
-        public bool Equals(IMorphAction x, IMorphAction y)
-        {
-            var mx = x as ModifyWorkItemTypeDefinitionMorphAction;
-            var my = y as ModifyWorkItemTypeDefinitionMorphAction;
-
-            if (mx == null || my == null)
-            {
-                return x.ToString() == y.ToString();
-            }
-
-            return mx.WorkItemTypeName == my.WorkItemTypeName; // TODO compare sub actions
-        }
-
-        public int GetHashCode(IMorphAction obj)
-        {
-            return obj.ToString().GetHashCode();
-        }
-    }
 }
