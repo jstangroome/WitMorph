@@ -1,3 +1,4 @@
+using System.Xml;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
@@ -33,6 +34,17 @@ namespace WitMorph.Actions
 
             InternalAdmin.RenameWorkItemType(workItemType, _newName);
             project.Store.RefreshCache(true);
+        }
+
+        public void Serialize(XmlWriter writer)
+        {
+            writer.WriteAttributeString("typename", _typeName);
+            writer.WriteAttributeString("newname", _newName);
+        }
+
+        public static IMorphAction Deserialize(XmlReader reader)
+        {
+            return new RenameWitdMorphAction(reader.GetAttribute("typename"), reader.GetAttribute("newname"));
         }
 
         public override string ToString()

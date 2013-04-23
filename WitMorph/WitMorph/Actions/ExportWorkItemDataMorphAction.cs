@@ -85,6 +85,37 @@ namespace WitMorph.Actions
             }
         }
 
+        public void Serialize(XmlWriter writer)
+        {
+            //TODO skip serialization if not all fields and list is empty
+            writer.WriteAttributeString("typename", _workItemTypeName);
+            writer.WriteAttributeString("allfields", _allFields.ToString());
+            if (!_allFields)
+            {
+                foreach (var refName in _fieldReferenceNames)
+                {
+                    writer.WriteStartElement("field");
+                    writer.WriteAttributeString("refname", refName);
+                    writer.WriteEndElement();
+                }
+            }
+        }
+
+        public static IMorphAction Deserialize(XmlReader reader)
+        {
+            var action = new ExportWorkItemDataMorphAction(reader.GetAttribute("typename"), Convert.ToBoolean(reader.GetAttribute("allfields")));
+
+            while (reader.Read() && reader.NodeType != XmlNodeType.EndElement)
+            {
+                if (reader.NodeType == XmlNodeType.Element && reader.Name == "field")
+                {
+                    action.AddExportField(reader.GetAttribute("refname"));
+                }
+            }
+
+            return action;
+        }
+
         private string BuildWiqlFieldList()
         {
             return "[" + string.Join("], [", _fieldReferenceNames) + "]";

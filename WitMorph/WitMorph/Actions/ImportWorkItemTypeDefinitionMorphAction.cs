@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Xml;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client.Provision;
 using WitMorph.Model;
@@ -56,6 +58,26 @@ namespace WitMorph.Actions
             {
                 project.WorkItemTypes.ImportEventHandler -= accumulator.Handler;
             }
+        }
+
+        public void Serialize(XmlWriter writer)
+        {
+            writer.WriteCData(_typeDefinition.WITDElement.OuterXml);
+        }
+
+        public static IMorphAction Deserialize(XmlReader reader)
+        {
+            reader.Read();
+            if (reader.NodeType != XmlNodeType.CDATA)
+            {
+                throw new InvalidOperationException(string.Format("Expected CDATA node but was '{0}'", reader.NodeType));
+            }
+            var doc = new XmlDocument();
+            doc.LoadXml(reader.Value);
+            reader.Read();
+
+            var typeDef = new WorkItemTypeDefinition(doc);
+            return new ImportWorkItemTypeDefinitionMorphAction(typeDef);
         }
 
         public override string ToString()

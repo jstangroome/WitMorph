@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using WitMorph.Model;
@@ -34,6 +35,8 @@ namespace WitMorph.Actions
         {
             parent.InsertAfter(parent.OwnerDocument.ImportNode(child, deep: true), refChild);
         }
+
+        public abstract void Serialize(XmlWriter writer);
     }
 
     public class AddFieldModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
@@ -53,6 +56,26 @@ namespace WitMorph.Actions
         public override void Execute(XmlElement witdElement)
         {
             AppendImportedChild(FieldsElement(witdElement), _field.Element);
+        }
+
+        public override void Serialize(XmlWriter writer)
+        {
+            writer.WriteCData(_field.Element.OuterXml);
+        }
+
+        public static ModifyWorkItemTypeDefinitionSubAction Deserialize(XmlReader reader)
+        {
+            reader.Read();
+            if (reader.NodeType != XmlNodeType.CDATA)
+            {
+                throw new InvalidOperationException(string.Format("Expected CDATA node but was '{0}'", reader.NodeType));
+            }
+            var doc = new XmlDocument();
+            doc.LoadXml(reader.Value);
+            reader.Read();
+
+            var field = new WitdField(doc.DocumentElement);
+            return new AddFieldModifyWorkItemTypeDefinitionSubAction(field);
         }
 
         public override string ToString()
@@ -89,6 +112,26 @@ namespace WitMorph.Actions
             fieldsElement.RemoveChild(originalFieldElement);
         }
 
+        public override void Serialize(XmlWriter writer)
+        {
+            writer.WriteCData(_field.Element.OuterXml);
+        }
+
+        public static ModifyWorkItemTypeDefinitionSubAction Deserialize(XmlReader reader)
+        {
+            reader.Read();
+            if (reader.NodeType != XmlNodeType.CDATA)
+            {
+                throw new InvalidOperationException(string.Format("Expected CDATA node but was '{0}'", reader.NodeType));
+            }
+            var doc = new XmlDocument();
+            doc.LoadXml(reader.Value);
+            reader.Read();
+
+            var field = new WitdField(doc.DocumentElement);
+            return new ReplaceFieldModifyWorkItemTypeDefinitionSubAction(field);
+        }
+
         public override string ToString()
         {
             return string.Format("Replace field '{0}'", ReferenceName);
@@ -116,6 +159,11 @@ namespace WitMorph.Actions
             fieldsElement.RemoveChild(originalFieldElement);
         }
 
+        public override void Serialize(XmlWriter writer)
+        {
+            writer.WriteAttributeString("refname", _referenceName);
+        }
+
         public string ReferenceName
         {
             get { return _referenceName; }
@@ -139,6 +187,26 @@ namespace WitMorph.Actions
         public override void Execute(XmlElement witdElement)
         {
             AppendImportedChild(StatesElement(witdElement), _state.Element);
+        }
+
+        public override void Serialize(XmlWriter writer)
+        {
+            writer.WriteCData(_state.Element.OuterXml);
+        }
+
+        public static ModifyWorkItemTypeDefinitionSubAction Deserialize(XmlReader reader)
+        {
+            reader.Read();
+            if (reader.NodeType != XmlNodeType.CDATA)
+            {
+                throw new InvalidOperationException(string.Format("Expected CDATA node but was '{0}'", reader.NodeType));
+            }
+            var doc = new XmlDocument();
+            doc.LoadXml(reader.Value);
+            reader.Read();
+
+            var state= new WitdState(doc.DocumentElement);
+            return new AddStateModifyWorkItemTypeDefinitionSubAction(state);
         }
 
         public string Name
@@ -180,6 +248,11 @@ namespace WitMorph.Actions
                 transitionsElement.RemoveChild(transitionElement);
                 //_isDirty = true;
             }
+        }
+
+        public override void Serialize(XmlWriter writer)
+        {
+            writer.WriteAttributeString("name", _name);
         }
 
         public string Name
@@ -231,6 +304,22 @@ namespace WitMorph.Actions
             transitionsElement.AppendChild(transitionElement);
         }
 
+        public override void Serialize(XmlWriter writer)
+        {
+            writer.WriteAttributeString("fromstate", _fromState);
+            writer.WriteAttributeString("tostate", _toState);
+            writer.WriteAttributeString("defaultreason", _defaultReason);
+        }
+
+        public static ModifyWorkItemTypeDefinitionSubAction Deserialize(XmlReader reader)
+        {
+            return new AddTransitionModifyWorkItemTypeDefinitionSubAction(
+                reader.GetAttribute("fromstate"),
+                reader.GetAttribute("tostate"),
+                reader.GetAttribute("defaultreason")
+                );
+        }
+
         public override string ToString()
         {
             return string.Format("Add transition from state '{0}' to '{1}' with reason '{2}'", FromState, ToState, _defaultReason);
@@ -252,6 +341,26 @@ namespace WitMorph.Actions
             InsertImportedChildAfter(oldElement.ParentNode, _formElement, oldElement);
             oldElement.ParentNode.RemoveChild(oldElement);
         }
+
+        public override void Serialize(XmlWriter writer)
+        {
+            writer.WriteCData(_formElement.OuterXml);
+        }
+
+        public static ModifyWorkItemTypeDefinitionSubAction Deserialize(XmlReader reader)
+        {
+            reader.Read();
+            if (reader.NodeType != XmlNodeType.CDATA)
+            {
+                throw new InvalidOperationException(string.Format("Expected CDATA node but was '{0}'", reader.NodeType));
+            }
+            var doc = new XmlDocument();
+            doc.LoadXml(reader.Value);
+            reader.Read();
+
+            return new ReplaceFormModifyWorkItemTypeDefinitionSubAction(doc.DocumentElement);
+        }
+
     }
 
     [Obsolete("Update states and transitions directly instead.")]
@@ -269,6 +378,11 @@ namespace WitMorph.Actions
             var oldElement = SelectSingleElement(witdElement, "WORKITEMTYPE/WORKFLOW");
             InsertImportedChildAfter(oldElement.ParentNode, _workflowElement, oldElement);
             oldElement.ParentNode.RemoveChild(oldElement);
+        }
+
+        public override void Serialize(XmlWriter writer)
+        {
+            writer.WriteCData(_workflowElement.OuterXml);
         }
     }
 
@@ -348,6 +462,46 @@ namespace WitMorph.Actions
 
             var importAction = new ImportWorkItemTypeDefinitionMorphAction(workItemTypeDefinition); 
             importAction.Execute(context);
+        }
+
+        public void Serialize(XmlWriter writer)
+        {
+            writer.WriteAttributeString("typename", _workItemTypeName);
+            foreach (var action in _actions)
+            {
+                writer.WriteStartElement(action.GetType().Name.ToLowerInvariant());
+                action.Serialize(writer);
+                writer.WriteEndElement();
+            }
+        }
+
+        public static IMorphAction Deserialize(XmlReader reader)
+        {
+            var action = new ModifyWorkItemTypeDefinitionMorphAction(reader.GetAttribute("typename"));
+            
+            var expectedAssembly = action.GetType().Assembly;
+
+            while (reader.Read() && reader.NodeType != XmlNodeType.EndElement)
+            {
+                if (reader.NodeType == XmlNodeType.Element)
+                {
+                    var typeName = reader.LocalName;
+                    var qualifiedTypeName = string.Format("{0}.{1}", action.GetType().Namespace, typeName);
+                    var actionType = expectedAssembly.GetType(qualifiedTypeName, throwOnError: false, ignoreCase: true);
+                    if (actionType == null)
+                    {
+                        throw new InvalidOperationException(string.Format("Cannot find type '{0}' in assembly '{1}'.", qualifiedTypeName, expectedAssembly));
+                    }
+                    var deserializeMethod = actionType.GetMethod("Deserialize", BindingFlags.Static | BindingFlags.Public);
+                    if (deserializeMethod == null)
+                    {
+                        throw new InvalidOperationException(string.Format("Cannot find static method 'Deserialize' on type '{0}'.", actionType.FullName));
+                    }
+                    action._actions.Add((ModifyWorkItemTypeDefinitionSubAction)deserializeMethod.Invoke(null, new object[] { reader }));
+                }
+            }
+
+            return action;
         }
 
         public IReadOnlyList<ModifyWorkItemTypeDefinitionSubAction> Actions

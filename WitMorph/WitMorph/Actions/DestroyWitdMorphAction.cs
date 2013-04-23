@@ -1,3 +1,4 @@
+using System.Xml;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
@@ -23,6 +24,11 @@ namespace WitMorph.Actions
 
             InternalAdmin.DestroyWorkItemType(workItemType);
             project.Store.RefreshCache(true);
+        }
+
+        public void Serialize(XmlWriter writer)
+        {
+            writer.WriteAttributeString("typename", _typeName);
         }
 
         public override string ToString()

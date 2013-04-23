@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics;
+using System.Xml;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
@@ -37,6 +38,18 @@ namespace WitMorph.Actions
                 workItem.Save();
             }
 
+        }
+
+        public void Serialize(XmlWriter writer)
+        {
+            writer.WriteAttributeString("typename", _workItemTypeName);
+            writer.WriteAttributeString("fromvalue", _fromValue);
+            writer.WriteAttributeString("tovalue", _toValue);
+        }
+
+        public static IMorphAction Deserialize(XmlReader reader)
+        {
+            return new ModifyWorkItemStateMorphAction(reader.GetAttribute("typename"), reader.GetAttribute("fromvalue"), reader.GetAttribute("tovalue"));
         }
 
         public override string ToString()

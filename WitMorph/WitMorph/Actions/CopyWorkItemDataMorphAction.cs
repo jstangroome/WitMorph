@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics;
+using System.Xml;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
@@ -38,6 +39,13 @@ namespace WitMorph.Actions
                 workItem.Save();
             }
 
+        }
+
+        public void Serialize(XmlWriter writer)
+        {
+            writer.WriteAttributeString("typename", _workItemTypeName);
+            writer.WriteAttributeString("fromfieldrefname", _fromFieldReferenceName);
+            writer.WriteAttributeString("tofieldrefname", _toFieldReferenceName);
         }
 
         public override string ToString()

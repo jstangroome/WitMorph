@@ -38,6 +38,7 @@
     <Reference Include="System" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -52,6 +53,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="Convert_Agile_6_To_Scrum_2_Scenario.cs" />
     <Compile Include="Convert_Scrum_2_To_Agile_6_Scenario.cs" />
     <Compile Include="Original_MorphEngine_Scrum_To_Agile_Tests.cs" />
