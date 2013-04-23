@@ -8,9 +8,9 @@ namespace WitMorph.Structures
     {
         private readonly Func<TItem, TKey> _keySelector;
         private readonly IEqualityComparer<TKey> _keyEqualityComparer;
-        private readonly CurrentToGoalMap<TKey> _keyMap;
+        private readonly ICurrentToGoalMap<TKey> _keyMap;
 
-        public MatchAndMap(Func<TItem, TKey> keySelector, IEqualityComparer<TKey> keyEqualityComparer, CurrentToGoalMap<TKey> keyMap)
+        public MatchAndMap(Func<TItem, TKey> keySelector, IEqualityComparer<TKey> keyEqualityComparer, ICurrentToGoalMap<TKey> keyMap)
         {
             _keySelector = keySelector;
             _keyEqualityComparer = keyEqualityComparer;

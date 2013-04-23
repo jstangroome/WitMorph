@@ -65,22 +65,23 @@ namespace WitMorph.Actions
 
             var workItems = project.Store.Query(wiql, queryContext);
 
-            var xw = XmlWriter.Create(Path.Combine(context.OutputPath, string.Format("{0}.xml", _workItemTypeName)));
-            xw.WriteStartElement("WorkItemDataExport");
-            xw.WriteAttributeString("workitemtypename", _workItemTypeName);
-            foreach (WorkItem workItem in workItems)
+            using (var xw = XmlWriter.Create(Path.Combine(context.OutputPath, string.Format("{0}-data.xml", _workItemTypeName))))
             {
-                Debug.WriteLine(workItem.Id);
-                xw.WriteStartElement("WorkItem");
-                xw.WriteAttributeString("id", workItem.Id.ToString());
-                foreach (var fieldReferenceName in _fieldReferenceNames)
+                xw.WriteStartElement("WorkItemDataExport");
+                xw.WriteAttributeString("workitemtypename", _workItemTypeName);
+                foreach (WorkItem workItem in workItems)
                 {
-                    xw.WriteElementString(fieldReferenceName, workItem.Fields[fieldReferenceName].Value.ToString());
+                    Debug.WriteLine(workItem.Id);
+                    xw.WriteStartElement("WorkItem");
+                    xw.WriteAttributeString("id", workItem.Id.ToString());
+                    foreach (var fieldReferenceName in _fieldReferenceNames)
+                    {
+                        xw.WriteElementString(fieldReferenceName, workItem.Fields[fieldReferenceName].Value.ToString());
+                    }
+                    xw.WriteEndElement();
                 }
                 xw.WriteEndElement();
             }
-            xw.WriteEndElement();
-
         }
 
         private string BuildWiqlFieldList()

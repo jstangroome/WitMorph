@@ -32,6 +32,7 @@ namespace WitMorph.Actions
             var workItemType = project.WorkItemTypes[_typeName];
 
             InternalAdmin.RenameWorkItemType(workItemType, _newName);
+            project.Store.RefreshCache(true);
         }
 
         public override string ToString()

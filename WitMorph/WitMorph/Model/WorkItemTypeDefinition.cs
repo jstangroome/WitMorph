@@ -11,6 +11,7 @@ namespace WitMorph.Model
         private readonly bool _isWritable;
         private readonly WitdField[] _fields;
         private readonly WitdState[] _states;
+        private readonly ISet<WitdTransition> _transitions;
 
         public WorkItemTypeDefinition(XmlDocument document) : this(document.DocumentElement, false) {}
 
@@ -37,6 +38,12 @@ namespace WitMorph.Model
                     .Cast<XmlElement>()
                     .Select(e => new WitdState(e))
                     .ToArray();
+
+                _transitions = new HashSet<WitdTransition>(witdElement
+                                                               .SelectNodes("WORKITEMTYPE/WORKFLOW/TRANSITIONS/TRANSITION")
+                                                               .Cast<XmlElement>()
+                                                               .Select(e => new WitdTransition(e)));
+
             }
         }
 
@@ -52,6 +59,11 @@ namespace WitMorph.Model
         public ICollection<WitdState> States
         {
             get { return _states; }
+        }
+
+        public ISet<WitdTransition> Transitions
+        {
+            get { return _transitions; }
         }
 
         public XmlElement WITDElement

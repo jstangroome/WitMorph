@@ -20,6 +20,7 @@ namespace WitMorph
             _actionSet = actionSet;
         }
 
+        [Obsolete]
         public void Compare(WorkItemTypeDefinition current, WorkItemTypeDefinition goal)
         {
             // in hindsight, for better separation of concerns, the code for identifying differences should be distinct from the code for creating actions to resolve the differences
@@ -170,10 +171,11 @@ namespace WitMorph
                 differences.Add(new ChangedWorkItemFormDifference(current.Name, goal.FormElement));
             }
 
-            if (current.WorkflowElement.OuterXml != goal.WorkflowElement.OuterXml)
+            if (FindTransitionDifferences(current.Name, current.Transitions, goal.Transitions))
+            //if (current.WorkflowElement.OuterXml != goal.WorkflowElement.OuterXml)
             {
                 differences.Add(new ChangedWorkItemWorkflowDifference(current.Name, goal.WorkflowElement)); 
-                // TODO make this obsolete with comprehensive state and transition difference detection
+                // TODO make this obsolete with comprehensive state and transition difference instances
             }
 
             return differences;
@@ -235,8 +237,72 @@ namespace WitMorph
                 if (!string.Equals(pair.Current.Value, pair.Goal.Value, StringComparison.OrdinalIgnoreCase))
                 {
                     differences.Add(new RenamedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
+                } 
+                else if (!pair.Current.Equals(pair.Goal))
+                {
+                    differences.Add(new ChangedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
                 }
                 // TODO state validation changes and transition differences
+            }
+        }
+
+        private bool FindTransitionDifferences(string currentWorkItemTypeName, ISet<WitdTransition> currentTransitions, ISet<WitdTransition> goalTransitions)
+        {
+            var map = new TransitionKeyMap(_processTemplateMap.GetWorkItemStateMap(currentWorkItemTypeName));
+            var transitionMatchAndMap = new MatchAndMap<WitdTransition, TransitionKey>(t => new TransitionKey(t), EqualityComparer<TransitionKey>.Default, map);
+            var result = transitionMatchAndMap.Match(currentTransitions, goalTransitions);
+
+            var isDifferent = result.GoalOnly.Any() || result.CurrentOnly.Any() || result.Pairs.Any(p => !p.Current.Equals(p.Goal));
+
+            return isDifferent;
+        }
+
+        class TransitionKey
+        {
+            private readonly WitdTransition _transition;
+            private readonly string _from;
+            private readonly string _to;
+
+            public TransitionKey(WitdTransition transition) : this(transition, transition.From, transition.To) {}
+
+            public TransitionKey(TransitionKey key, string from, string to) :this(key._transition, from, to) {}
+
+            TransitionKey(WitdTransition transition, string from, string to)
+            {
+                _transition = transition;
+                _from = from;
+                _to = to;
+            }
+
+            public string From { get { return _from; } }
+            public string To { get { return _to; } }
+
+            public override bool Equals(object obj)
+            {
+                var other = obj as TransitionKey;
+                if (other == null) return false;
+
+                if (other._from != _from) return false;
+                if (other._to != _to) return false;
+                if (other._transition.For != _transition.For) return false;
+                if (other._transition.Not != _transition.Not) return false;
+
+                return true;
+            }
+        }
+
+        class TransitionKeyMap : ICurrentToGoalMap<TransitionKey>
+        {
+            private readonly ICurrentToGoalMap<string> _stateMap;
+
+            public TransitionKeyMap(ICurrentToGoalMap<string> stateMap)
+            {
+                _stateMap = stateMap;
+            }
+
+            public TransitionKey GetGoalByCurrent(TransitionKey current)
+            {
+                return new TransitionKey(current, _stateMap.GetGoalByCurrent(current.From), _stateMap.GetGoalByCurrent(current.To));
             }
         }
     }

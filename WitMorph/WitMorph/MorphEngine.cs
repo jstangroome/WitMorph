@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using WitMorph.Actions;
 using WitMorph.Differences;
@@ -30,11 +31,6 @@ namespace WitMorph
             foreach (var witdAdd in differences.OfType<AddedWorkItemTypeDefinitionDifference>())
             {
                 actionSet.PrepareWorkItemTypeDefinitions.Add(new ImportWorkItemTypeDefinitionMorphAction(witdAdd.WorkItemTypeDefinition));
-            }
-
-            foreach (var witdRename in differences.OfType<RenamedWorkItemTypeDefinitionDifference>())
-            {
-                actionSet.FinaliseWorkItemTypeDefinitions.Add(new RenameWitdMorphAction(witdRename.CurrentTypeName, witdRename.GoalTypeName));
             }
 
             var workItemTypeDifferences = differences
@@ -95,6 +91,11 @@ namespace WitMorph
                 }
             }
 
+            foreach (var witdRename in differences.OfType<RenamedWorkItemTypeDefinitionDifference>())
+            {
+                actionSet.FinaliseWorkItemTypeDefinitions.Add(new RenameWitdMorphAction(witdRename.CurrentTypeName, witdRename.GoalTypeName));
+            }
+
             foreach (var witdRemove in differences.OfType<RemovedWorkItemTypeDefinitionDifference>())
             {
                 actionSet.ProcessWorkItemData.Add(new ExportWorkItemDataMorphAction(witdRemove.TypeName, allFields: true));
@@ -107,6 +108,7 @@ namespace WitMorph
         public void Apply(Uri collectionUri, string projectName, IEnumerable<IMorphAction> actions, string outputPath)
         {
             var context = new ExecutionContext(collectionUri, projectName, outputPath);
+            context.TraceLevel = TraceLevel.Verbose;
             foreach (var action in actions)
             {
                 action.Execute(context);

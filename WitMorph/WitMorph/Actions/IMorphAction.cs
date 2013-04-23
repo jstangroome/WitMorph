@@ -1,5 +1,3 @@
-using WitMorph.Structures;
-
 namespace WitMorph.Actions
 {
     public interface IMorphAction

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.TeamFoundation.Client;
@@ -10,7 +12,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace WitMorph.IntegrationTests
 {
-    [TestClass]
     public class PrepareTestEnvironment
     {
         class CollectionInformation
@@ -20,9 +21,23 @@ namespace WitMorph.IntegrationTests
             public string VirtualDir { get; set; }
         }
 
-        [Ignore]
-        [TestMethod]
-        public void Reset_tfs_test_collection()
+        private static readonly object Lock = new object();
+        private static volatile bool _hasReset = false;
+
+        public static void ResetCollection()
+        {
+            if (_hasReset) return;
+            lock (Lock)
+            {
+                if (!_hasReset)
+                {
+                    ResetCollectionInternal();
+                    _hasReset = true;
+                }
+            }
+        }
+
+        private static void ResetCollectionInternal()
         {
 
             /*
@@ -36,7 +51,9 @@ namespace WitMorph.IntegrationTests
 
             const string testServerUri = "http://localhost:8080/tfs";
             const string testCollectionName = "WitMorphTests";
-            var databaseBackupFile = @"<path_to_tfs_witmorphtests.bak>";
+            const string databaseBackupRelativePath = @"..\..\..\..\tfs_witmorphtests.bak";
+
+            var databaseBackupFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), databaseBackupRelativePath);
 
             var server = new TfsConfigurationServer(new Uri(testServerUri));
 

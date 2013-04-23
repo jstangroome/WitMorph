@@ -21,13 +21,18 @@ namespace WitMorph.Actions
         protected XmlElement StatesElement(XmlElement witdElement) { return SelectSingleElement(witdElement, "WORKITEMTYPE/WORKFLOW/STATES"); }
         protected XmlElement TransitionsElement(XmlElement witdElement) { return SelectSingleElement(witdElement, "WORKITEMTYPE/WORKFLOW/TRANSITIONS"); }
 
-        protected void AppendImportedChild(XmlNode parent, XmlElement child)
+        protected void AppendImportedChild(XmlNode parent, XmlNode child)
         {
             if (parent.OwnerDocument == null)
             {
                 throw new ArgumentException("OwnerDocument property value is null.", "parent");
             }
             parent.AppendChild(parent.OwnerDocument.ImportNode(child, deep: true));
+        }
+
+        protected void InsertImportedChildAfter(XmlNode parent, XmlNode child, XmlNode refChild)
+        {
+            parent.InsertAfter(parent.OwnerDocument.ImportNode(child, deep: true), refChild);
         }
     }
 
@@ -244,7 +249,7 @@ namespace WitMorph.Actions
         public override void Execute(XmlElement witdElement)
         {
             var oldElement = SelectSingleElement(witdElement, "WORKITEMTYPE/FORM");
-            AppendImportedChild(oldElement.ParentNode, _formElement);
+            InsertImportedChildAfter(oldElement.ParentNode, _formElement, oldElement);
             oldElement.ParentNode.RemoveChild(oldElement);
         }
     }
@@ -262,7 +267,7 @@ namespace WitMorph.Actions
         public override void Execute(XmlElement witdElement)
         {
             var oldElement = SelectSingleElement(witdElement, "WORKITEMTYPE/WORKFLOW");
-            AppendImportedChild(oldElement.ParentNode, _workflowElement);
+            InsertImportedChildAfter(oldElement.ParentNode, _workflowElement, oldElement);
             oldElement.ParentNode.RemoveChild(oldElement);
         }
     }
@@ -349,6 +354,7 @@ namespace WitMorph.Actions
             }
 
             var project = context.GetWorkItemProject();
+            project.Store.RefreshCache(true);
             var witdElement = project.WorkItemTypes[_workItemTypeName].Export(false).DocumentElement;
 
             foreach (var action in _actions)

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace WitMorph.Structures
 {
-    public class CurrentToGoalMap<T>
+    public class CurrentToGoalMap<T> : ICurrentToGoalMap<T>
     {
         private readonly IDictionary<T, T> _goalKeyedByCurrent = new Dictionary<T, T>();
 

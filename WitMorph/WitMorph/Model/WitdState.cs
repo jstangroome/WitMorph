@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace WitMorph.Model
@@ -19,6 +21,29 @@ namespace WitMorph.Model
         public string Value
         {
             get { return _stateElement.GetAttribute("value"); }
+        }
+
+        private ISet<WitdFieldReference> Fields
+        {
+            get
+            {
+                var fields = _stateElement.HasChildNodes
+                                 ? _stateElement.FirstChild.ChildNodes.OfType<XmlElement>().Select(x => new WitdFieldReference(x))
+                                 : new WitdFieldReference[] { };
+                return new HashSet<WitdFieldReference>(fields);
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as WitdState;
+            if (other == null) return false;
+
+            if (other.Value != Value) return false;
+
+            if (!other.Fields.SetEquals(Fields)) return false;
+
+            return true;
         }
     }
 }

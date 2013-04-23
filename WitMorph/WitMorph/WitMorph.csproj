@@ -58,6 +58,7 @@
     <Compile Include="Differences\AddedWorkItemFieldDifference.cs" />
     <Compile Include="Differences\ChangedWorkItemFieldDifference.cs" />
     <Compile Include="Differences\ChangedWorkItemFormDifference.cs" />
+    <Compile Include="Differences\ChangedWorkItemStateDifference.cs" />
     <Compile Include="Differences\ChangedWorkItemWorkflowDifference.cs" />
     <Compile Include="Differences\IWorkItemTypeDifference.cs" />
     <Compile Include="Differences\RemovedWorkItemFieldDifference.cs" />
@@ -70,9 +71,11 @@
     <Compile Include="Model\IWitdFieldChildElement.cs" />
     <Compile Include="Model\WitdFieldChildElementFactory.cs" />
     <Compile Include="Model\WitdFieldNamedChildElement.cs" />
+    <Compile Include="Model\WitdFieldReference.cs" />
     <Compile Include="Model\WitdFieldUnrecognisedChildElement.cs" />
     <Compile Include="Model\WitdFieldWhenChanged.cs" />
     <Compile Include="Model\WitdFieldWhenValue.cs" />
+    <Compile Include="Model\WitdTransition.cs" />
     <Compile Include="MorphEngine.cs" />
     <Compile Include="Actions\IMorphAction.cs" />
     <Compile Include="ProcessTemplateDownloader.cs" />
@@ -80,6 +83,7 @@
     <Compile Include="ProcessTemplateMap.cs" />
     <Compile Include="ProcessTemplateReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Structures\ICurrentToGoalMap.cs" />
     <Compile Include="Structures\MatchAndMap.cs" />
     <Compile Include="Structures\MatchResult.cs" />
     <Compile Include="Structures\MorphActionSet.cs" />

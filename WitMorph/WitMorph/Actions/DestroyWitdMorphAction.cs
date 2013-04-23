@@ -22,6 +22,7 @@ namespace WitMorph.Actions
             var workItemType = project.WorkItemTypes[_typeName];
 
             InternalAdmin.DestroyWorkItemType(workItemType);
+            project.Store.RefreshCache(true);
         }
 
         public override string ToString()

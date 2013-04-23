@@ -8,5 +8,7 @@
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/WRAP_LINES/@EntryValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=3E8AAF656653DF43B1C1623404D8612C/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=3E8AAF656653DF43B1C1623404D8612C/AbsolutePath/@EntryValue">D:\jason\dev\witmorph\WitMorph\WitMorph.sln.DotSettings</s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File3E8AAF656653DF43B1C1623404D8612C/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File3E8AAF656653DF43B1C1623404D8612C/RelativePriority/@EntryValue">2</s:Double>
 	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File_003A_003AD_003A_005Cjason_005Cdev_005Cwitmorph_005CWitMorph_005CWitMorph_002Esln_002EDotSettings/@KeyIndexDefined">True</s:Boolean>
 	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File_003A_003AD_003A_005Cjason_005Cdev_005Cwitmorph_005CWitMorph_005CWitMorph_002Esln_002EDotSettings/RelativePriority/@EntryValue">1</s:Double></wpf:ResourceDictionary>
