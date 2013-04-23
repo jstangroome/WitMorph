@@ -6,3 +6,4 @@ obj/
 *.user
 packages/
 *.cache
+*.bak

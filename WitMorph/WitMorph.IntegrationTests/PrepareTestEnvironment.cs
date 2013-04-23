@@ -39,19 +39,19 @@ namespace WitMorph.IntegrationTests
         {
 
             /*
-             * add user to server admins
+             * add test run user to TFS Server admins and SQL admins
              * create new collection WitMorphTests
              * add new team project 'Scrum-2.1' with empty source folder, no SP or reports
              * add new team project 'Agile-6.1'
-             * add test projects
              * detach collection and backup db
              */
 
             const string testServerUri = "http://localhost:8080/tfs";
             const string testCollectionName = "WitMorphTests";
-            const string databaseBackupRelativePath = @"..\..\..\..\tfs_witmorphtests.bak";
+            const string databaseBackupRelativePath = @"tfs_witmorphtests.bak";
 
             var databaseBackupFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), databaseBackupRelativePath);
+            Assert.IsTrue(File.Exists(databaseBackupFile), "Collection database backup not found at '{0}'", databaseBackupFile);
 
             var server = new TfsConfigurationServer(new Uri(testServerUri));
 
