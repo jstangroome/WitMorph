@@ -105,11 +105,14 @@ namespace WitMorph.Actions
         {
             var action = new ExportWorkItemDataMorphAction(reader.GetAttribute("typename"), Convert.ToBoolean(reader.GetAttribute("allfields")));
 
-            while (reader.Read() && reader.NodeType != XmlNodeType.EndElement)
+            if (!reader.IsEmptyElement)
             {
-                if (reader.NodeType == XmlNodeType.Element && reader.Name == "field")
+                while (reader.Read() && reader.NodeType != XmlNodeType.EndElement)
                 {
-                    action.AddExportField(reader.GetAttribute("refname"));
+                    if (reader.NodeType == XmlNodeType.Element && reader.Name == "field")
+                    {
+                        action.AddExportField(reader.GetAttribute("refname"));
+                    }
                 }
             }
 

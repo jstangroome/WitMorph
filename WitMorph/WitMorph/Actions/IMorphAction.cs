@@ -7,4 +7,5 @@ namespace WitMorph.Actions
         void Execute(ExecutionContext context);
         void Serialize(XmlWriter writer);
     }
+
 }

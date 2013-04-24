@@ -31,6 +31,11 @@ namespace WitMorph.Actions
             writer.WriteAttributeString("typename", _typeName);
         }
 
+        public static IMorphAction Deserialize(XmlReader reader)
+        {
+            return new DestroyWitdMorphAction(reader.GetAttribute("typename"));
+        }
+
         public override string ToString()
         {
             return string.Format("Destroy work item type '{0}'", _typeName);

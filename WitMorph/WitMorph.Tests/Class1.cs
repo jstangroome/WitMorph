@@ -98,10 +98,14 @@ namespace WitMorph.Tests
                         {
                             throw new InvalidOperationException(string.Format("Cannot find type '{0}' in assembly '{1}'.", qualifiedTypeName, expectedAssembly));
                         }
-                        var deserializeMethod = actionType.GetMethod("Deserialize", BindingFlags.Static | BindingFlags.Public);
+                        var deserializeMethod = actionType.GetMethod("Deserialize", BindingFlags.Static | BindingFlags.Public, null, new [] {typeof(XmlReader)}, null);
                         if (deserializeMethod == null)
                         {
-                            throw new InvalidOperationException(string.Format("Cannot find static method 'Deserialize' on type '{0}'.", actionType.FullName));
+                            throw new InvalidOperationException(string.Format("Cannot find static method 'Deserialize(XmlReader reader)' on type '{0}'.", actionType.FullName));
+                        }
+                        if (!typeof (IMorphAction).IsAssignableFrom(deserializeMethod.ReturnType))
+                        {
+                            throw new InvalidOperationException(string.Format("Deserialize method on type '{0}' must return '{1}'.", actionType.FullName, typeof(IMorphAction)));
                         }
                         actions.Add((IMorphAction)deserializeMethod.Invoke(null, new object[] { reader }));
                     }

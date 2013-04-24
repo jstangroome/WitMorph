@@ -48,6 +48,15 @@ namespace WitMorph.Actions
             writer.WriteAttributeString("tofieldrefname", _toFieldReferenceName);
         }
 
+        public static IMorphAction Deserialize(XmlReader reader)
+        {
+            return new CopyWorkItemDataMorphAction(
+                reader.GetAttribute("typename"), 
+                reader.GetAttribute("fromfieldrefname"), 
+                reader.GetAttribute("tofieldrefname")
+                );
+        }
+
         public override string ToString()
         {
             return string.Format("Copy data from field '{0}' to field '{1}' for work items of type '{2}'", _fromFieldReferenceName, _toFieldReferenceName, _workItemTypeName);
