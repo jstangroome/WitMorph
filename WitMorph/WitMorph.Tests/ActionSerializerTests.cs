@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WitMorph.Actions;
 using WitMorph.Differences;
 using WitMorph.Model;
 using WitMorph.Tests.ProcessTemplates;
@@ -13,12 +8,12 @@ using WitMorph.Tests.ProcessTemplates;
 namespace WitMorph.Tests
 {
     [TestClass]
-    public class Class1
+    public class ActionSerializerTests
     {
         public TestContext TestContext { get; set; }
 
         [TestMethod]
-        public void Morph_actions_should_be_recordable_for_inspection_and_playback()
+        public void ActionSerializer_Morph_actions_should_be_recordable_for_inspection_and_playback()
         {
             WorkItemTypeDefinition workItemTypeDefinition;
             WitdField field;
@@ -56,56 +51,5 @@ namespace WitMorph.Tests
             Assert.AreEqual(actions.Count(), rehydratedActions.Length);
         }
 
-    }
-
-    public class ActionSerializer {
-        public void Serialize(IEnumerable<MorphAction> actions, string path)
-        {
-            var settings = new XmlWriterSettings {Indent = true};
-            using (var writer = XmlWriter.Create(path, settings))
-            {
-                writer.WriteStartDocument();
-                writer.WriteStartElement("morphactions");
-                foreach (var action in actions)
-                {
-                    writer.WriteStartElement(action.GetType().Name.ToLowerInvariant());
-                    action.Serialize(writer);
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
-            }
-        }
-
-        public MorphAction[] Deserialize(string path)
-        {
-            var actions = new List<MorphAction>();
-
-            using (var reader = XmlReader.Create(path))
-            {
-                reader.ReadStartElement("morphactions");
-
-                var expectedAssembly = typeof (MorphAction).Assembly;
-                
-                while (reader.Read())
-                {
-                    if (reader.NodeType == XmlNodeType.Element)
-                    {
-                        var typeName = reader.LocalName;
-                        var qualifiedTypeName = string.Format("{0}.{1}", typeof(MorphAction).Namespace, typeName);
-                        var actionType = expectedAssembly.GetType(qualifiedTypeName, throwOnError: false, ignoreCase: true);
-                        if (actionType == null)
-                        {
-                            throw new InvalidOperationException(string.Format("Cannot find type '{0}' in assembly '{1}'.", qualifiedTypeName, expectedAssembly));
-                        }
-                        var deserializeMethod = MorphAction.GetDeserializeMethod(actionType);
-                        actions.Add((MorphAction)deserializeMethod.Invoke(null, new object[] { reader }));
-                    }
-                }
-
-            }
-
-            return actions.ToArray();
-        }
     }
 }

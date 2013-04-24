@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionSerializer.cs" />
     <Compile Include="Actions\DestroyWitdMorphAction.cs" />
     <Compile Include="Actions\CopyWorkItemDataMorphAction.cs" />
     <Compile Include="Actions\ExecutionContext.cs" />

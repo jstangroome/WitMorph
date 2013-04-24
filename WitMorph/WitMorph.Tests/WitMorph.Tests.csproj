@@ -53,7 +53,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="ActionSerializerTests.cs" />
     <Compile Include="Convert_Agile_6_To_Scrum_2_Scenario.cs" />
     <Compile Include="Convert_Scrum_2_To_Agile_6_Scenario.cs" />
     <Compile Include="Original_MorphEngine_Scrum_To_Agile_Tests.cs" />
