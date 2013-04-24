@@ -15,7 +15,7 @@ namespace WitMorph
             _processTemplateMap = processTemplateMap;
         }
 
-        public IEnumerable<IDifference> CompareProcessTemplates(ProcessTemplate current, ProcessTemplate goal)
+        public IDifference[] CompareProcessTemplates(ProcessTemplate current, ProcessTemplate goal)
         {
             var differences = new List<IDifference>();
             
@@ -38,7 +38,7 @@ namespace WitMorph
                 differences.AddRange(witdComparer.FindDifferences(pair.Current, pair.Goal));
             }
 
-            return differences;
+            return differences.ToArray();
         }
     }
 }

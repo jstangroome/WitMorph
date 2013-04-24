@@ -10,8 +10,10 @@ namespace WitMorph
 {
     public class MorphEngine
     {
-        public IEnumerable<MorphAction> GenerateActions(IEnumerable<IDifference> differences)
+        public MorphAction[] GenerateActions(IEnumerable<IDifference> differences)
         {
+            differences = differences.ToArray(); // avoid multi-enumeration issues
+
             var actionSet = new MorphActionSet();
 
             foreach (var witdAdd in differences.OfType<AddedWorkItemTypeDefinitionDifference>())
@@ -88,7 +90,7 @@ namespace WitMorph
                 actionSet.FinaliseWorkItemTypeDefinitions.Add(new DestroyWitdMorphAction(witdRemove.TypeName));
             }
 
-            return actionSet.Combine();
+            return actionSet.Combine().ToArray();
         }
 
         public void Apply(Uri collectionUri, string projectName, IEnumerable<MorphAction> actions, string outputPath)
