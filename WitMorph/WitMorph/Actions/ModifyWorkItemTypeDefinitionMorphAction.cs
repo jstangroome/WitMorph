@@ -442,7 +442,7 @@ namespace WitMorph.Actions
 
     }
 
-    public class ModifyWorkItemTypeDefinitionMorphAction : IMorphAction
+    public class ModifyWorkItemTypeDefinitionMorphAction : MorphAction
     {
         private readonly string _workItemTypeName;
         private readonly IList<ModifyWorkItemTypeDefinitionSubAction> _actions = new List<ModifyWorkItemTypeDefinitionSubAction>();
@@ -498,7 +498,7 @@ namespace WitMorph.Actions
             _actions.Add(new ReplaceFormModifyWorkItemTypeDefinitionSubAction(formElement));
         }
 
-        public void Execute(ExecutionContext context)
+        public override void Execute(ExecutionContext context)
         {
             if (_actions.Count == 0)
             {
@@ -520,7 +520,7 @@ namespace WitMorph.Actions
             importAction.Execute(context);
         }
 
-        public void Serialize(XmlWriter writer)
+        public override void Serialize(XmlWriter writer)
         {
             writer.WriteAttributeString("typename", _workItemTypeName);
             foreach (var action in _actions)
@@ -531,7 +531,7 @@ namespace WitMorph.Actions
             }
         }
 
-        public static IMorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlReader reader)
         {
             var action = new ModifyWorkItemTypeDefinitionMorphAction(reader.GetAttribute("typename"));
             

@@ -10,7 +10,7 @@ namespace WitMorph
 {
     public class MorphEngine
     {
-        public IEnumerable<IMorphAction> GenerateActions(IEnumerable<IDifference> differences)
+        public IEnumerable<MorphAction> GenerateActions(IEnumerable<IDifference> differences)
         {
             var actionSet = new MorphActionSet();
 
@@ -91,7 +91,7 @@ namespace WitMorph
             return actionSet.Combine();
         }
 
-        public void Apply(Uri collectionUri, string projectName, IEnumerable<IMorphAction> actions, string outputPath)
+        public void Apply(Uri collectionUri, string projectName, IEnumerable<MorphAction> actions, string outputPath)
         {
             var context = new ExecutionContext(collectionUri, projectName, outputPath) {TraceLevel = TraceLevel.Verbose};
             foreach (var action in actions)

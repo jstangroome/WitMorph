@@ -9,9 +9,9 @@ namespace WitMorph.Tests
 {
     public abstract class Convert_Scrum_2_To_Agile_6_Scenario 
     {
-        private static List<IMorphAction> _actionsViaDiffEngine;
+        private static List<MorphAction> _actionsViaDiffEngine;
 
-        protected static List<IMorphAction> GenerateActionsViaDiffEngine()
+        protected static List<MorphAction> GenerateActionsViaDiffEngine()
         {
             if (_actionsViaDiffEngine != null) return _actionsViaDiffEngine;
 

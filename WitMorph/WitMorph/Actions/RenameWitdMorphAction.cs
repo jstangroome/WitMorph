@@ -3,7 +3,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
 {
-    public class RenameWitdMorphAction : IMorphAction
+    public class RenameWitdMorphAction : MorphAction
     {
         private readonly string _typeName;
         private readonly string _newName;
@@ -24,7 +24,7 @@ namespace WitMorph.Actions
             get { return _newName; }
         }
 
-        public void Execute(ExecutionContext context)
+        public override void Execute(ExecutionContext context)
         {
             // most supported implementation would be to run witadmin.exe but that could be tricky with alternate credentials
 
@@ -36,13 +36,13 @@ namespace WitMorph.Actions
             project.Store.RefreshCache(true);
         }
 
-        public void Serialize(XmlWriter writer)
+        public override void Serialize(XmlWriter writer)
         {
             writer.WriteAttributeString("typename", _typeName);
             writer.WriteAttributeString("newname", _newName);
         }
 
-        public static IMorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlReader reader)
         {
             return new RenameWitdMorphAction(reader.GetAttribute("typename"), reader.GetAttribute("newname"));
         }

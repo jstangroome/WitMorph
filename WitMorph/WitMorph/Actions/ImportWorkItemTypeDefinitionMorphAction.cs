@@ -9,7 +9,7 @@ using WitMorph.Model;
 
 namespace WitMorph.Actions
 {
-    public class ImportWorkItemTypeDefinitionMorphAction : IMorphAction
+    public class ImportWorkItemTypeDefinitionMorphAction : MorphAction
     {
         private readonly WorkItemTypeDefinition _typeDefinition;
 
@@ -23,7 +23,7 @@ namespace WitMorph.Actions
             get { return _typeDefinition.Name; }
         }
 
-        public void Execute(ExecutionContext context)
+        public override void Execute(ExecutionContext context)
         {
             if (context.TraceLevel >= TraceLevel.Verbose)
             {
@@ -60,12 +60,12 @@ namespace WitMorph.Actions
             }
         }
 
-        public void Serialize(XmlWriter writer)
+        public override void Serialize(XmlWriter writer)
         {
             writer.WriteCData(_typeDefinition.WITDElement.OuterXml);
         }
 
-        public static IMorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlReader reader)
         {
             reader.Read();
             if (reader.NodeType != XmlNodeType.CDATA)

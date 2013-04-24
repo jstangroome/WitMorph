@@ -8,21 +8,21 @@ namespace WitMorph.Structures
     {
         public MorphActionSet()
         {
-            PrepareCollectionFieldDefinitions = new List<IMorphAction>();
-            PrepareWorkItemTypeDefinitions = new List<IMorphAction>();
-            ProcessWorkItemData = new List<IMorphAction>();
-            FinaliseWorkItemTypeDefinitions = new List<IMorphAction>();
+            PrepareCollectionFieldDefinitions = new List<MorphAction>();
+            PrepareWorkItemTypeDefinitions = new List<MorphAction>();
+            ProcessWorkItemData = new List<MorphAction>();
+            FinaliseWorkItemTypeDefinitions = new List<MorphAction>();
         }
 
-        public ICollection<IMorphAction> PrepareCollectionFieldDefinitions { get; private set; }
+        public ICollection<MorphAction> PrepareCollectionFieldDefinitions { get; private set; }
 
-        public ICollection<IMorphAction> PrepareWorkItemTypeDefinitions { get; private set; }
+        public ICollection<MorphAction> PrepareWorkItemTypeDefinitions { get; private set; }
 
-        public ICollection<IMorphAction> ProcessWorkItemData { get; private set; }
+        public ICollection<MorphAction> ProcessWorkItemData { get; private set; }
 
-        public ICollection<IMorphAction> FinaliseWorkItemTypeDefinitions { get; private set; }
+        public ICollection<MorphAction> FinaliseWorkItemTypeDefinitions { get; private set; }
 
-        public IEnumerable<IMorphAction> Combine()
+        public IEnumerable<MorphAction> Combine()
         {
             var collections = new[]
                               {

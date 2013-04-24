@@ -5,7 +5,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
 {
-    public class ModifyWorkItemStateMorphAction : IMorphAction
+    public class ModifyWorkItemStateMorphAction : MorphAction
     {
         private readonly string _workItemTypeName;
         private readonly string _fromValue;
@@ -22,7 +22,7 @@ namespace WitMorph.Actions
         public string FromValue { get { return _fromValue; } }
         public string ToValue { get { return _toValue; } }
 
-        public void Execute(ExecutionContext context)
+        public override void Execute(ExecutionContext context)
         {
             var project = context.GetWorkItemProject();
             var queryContext = new Hashtable {{"project", project.Name}, {"workitemtypename", _workItemTypeName}, {"fromvalue", _fromValue}};
@@ -40,14 +40,14 @@ namespace WitMorph.Actions
 
         }
 
-        public void Serialize(XmlWriter writer)
+        public override void Serialize(XmlWriter writer)
         {
             writer.WriteAttributeString("typename", _workItemTypeName);
             writer.WriteAttributeString("fromvalue", _fromValue);
             writer.WriteAttributeString("tovalue", _toValue);
         }
 
-        public static IMorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlReader reader)
         {
             return new ModifyWorkItemStateMorphAction(reader.GetAttribute("typename"), reader.GetAttribute("fromvalue"), reader.GetAttribute("tovalue"));
         }

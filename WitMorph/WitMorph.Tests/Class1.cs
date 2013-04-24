@@ -59,7 +59,7 @@ namespace WitMorph.Tests
     }
 
     public class ActionSerializer {
-        public void Serialize(IEnumerable<IMorphAction> actions, string path)
+        public void Serialize(IEnumerable<MorphAction> actions, string path)
         {
             var settings = new XmlWriterSettings {Indent = true};
             using (var writer = XmlWriter.Create(path, settings))
@@ -77,37 +77,29 @@ namespace WitMorph.Tests
             }
         }
 
-        public IMorphAction[] Deserialize(string path)
+        public MorphAction[] Deserialize(string path)
         {
-            var actions = new List<IMorphAction>();
+            var actions = new List<MorphAction>();
 
             using (var reader = XmlReader.Create(path))
             {
                 reader.ReadStartElement("morphactions");
 
-                var expectedAssembly = typeof (IMorphAction).Assembly;
+                var expectedAssembly = typeof (MorphAction).Assembly;
                 
                 while (reader.Read())
                 {
                     if (reader.NodeType == XmlNodeType.Element)
                     {
                         var typeName = reader.LocalName;
-                        var qualifiedTypeName = string.Format("{0}.{1}", typeof(IMorphAction).Namespace, typeName);
+                        var qualifiedTypeName = string.Format("{0}.{1}", typeof(MorphAction).Namespace, typeName);
                         var actionType = expectedAssembly.GetType(qualifiedTypeName, throwOnError: false, ignoreCase: true);
                         if (actionType == null)
                         {
                             throw new InvalidOperationException(string.Format("Cannot find type '{0}' in assembly '{1}'.", qualifiedTypeName, expectedAssembly));
                         }
-                        var deserializeMethod = actionType.GetMethod("Deserialize", BindingFlags.Static | BindingFlags.Public, null, new [] {typeof(XmlReader)}, null);
-                        if (deserializeMethod == null)
-                        {
-                            throw new InvalidOperationException(string.Format("Cannot find static method 'Deserialize(XmlReader reader)' on type '{0}'.", actionType.FullName));
-                        }
-                        if (!typeof (IMorphAction).IsAssignableFrom(deserializeMethod.ReturnType))
-                        {
-                            throw new InvalidOperationException(string.Format("Deserialize method on type '{0}' must return '{1}'.", actionType.FullName, typeof(IMorphAction)));
-                        }
-                        actions.Add((IMorphAction)deserializeMethod.Invoke(null, new object[] { reader }));
+                        var deserializeMethod = MorphAction.GetDeserializeMethod(actionType);
+                        actions.Add((MorphAction)deserializeMethod.Invoke(null, new object[] { reader }));
                     }
                 }
 

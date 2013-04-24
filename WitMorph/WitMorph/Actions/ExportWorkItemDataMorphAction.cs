@@ -9,7 +9,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
 {
-    public class ExportWorkItemDataMorphAction : IMorphAction
+    public class ExportWorkItemDataMorphAction : MorphAction
     {
         private readonly string _workItemTypeName;
         private readonly bool _allFields;
@@ -38,7 +38,7 @@ namespace WitMorph.Actions
             _fieldReferenceNames.Add(fieldReferenceName);
         }
 
-        public void Execute(ExecutionContext context)
+        public override void Execute(ExecutionContext context)
         {
             if (!_allFields && _fieldReferenceNames.Count == 0)
             {
@@ -85,7 +85,7 @@ namespace WitMorph.Actions
             }
         }
 
-        public void Serialize(XmlWriter writer)
+        public override void Serialize(XmlWriter writer)
         {
             //TODO skip serialization if not all fields and list is empty
             writer.WriteAttributeString("typename", _workItemTypeName);
@@ -101,7 +101,7 @@ namespace WitMorph.Actions
             }
         }
 
-        public static IMorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlReader reader)
         {
             var action = new ExportWorkItemDataMorphAction(reader.GetAttribute("typename"), Convert.ToBoolean(reader.GetAttribute("allfields")));
 

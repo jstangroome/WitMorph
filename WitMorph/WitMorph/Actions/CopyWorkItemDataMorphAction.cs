@@ -5,7 +5,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
 {
-    public class CopyWorkItemDataMorphAction : IMorphAction
+    public class CopyWorkItemDataMorphAction : MorphAction
     {
         private readonly string _workItemTypeName;
         private readonly string _fromFieldReferenceName;
@@ -22,7 +22,7 @@ namespace WitMorph.Actions
         public string FromField { get { return _fromFieldReferenceName; } }
         public string ToField { get { return _toFieldReferenceName; } }
 
-        public void Execute(ExecutionContext context)
+        public override void Execute(ExecutionContext context)
         {
             var project = context.GetWorkItemProject();
             var queryContext = new Hashtable { { "project", project.Name }, { "workitemtypename", _workItemTypeName }};
@@ -41,14 +41,14 @@ namespace WitMorph.Actions
 
         }
 
-        public void Serialize(XmlWriter writer)
+        public override void Serialize(XmlWriter writer)
         {
             writer.WriteAttributeString("typename", _workItemTypeName);
             writer.WriteAttributeString("fromfieldrefname", _fromFieldReferenceName);
             writer.WriteAttributeString("tofieldrefname", _toFieldReferenceName);
         }
 
-        public static IMorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlReader reader)
         {
             return new CopyWorkItemDataMorphAction(
                 reader.GetAttribute("typename"), 

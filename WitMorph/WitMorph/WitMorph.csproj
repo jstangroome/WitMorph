@@ -76,7 +76,7 @@
     <Compile Include="Model\WitdFieldWhenValue.cs" />
     <Compile Include="Model\WitdTransition.cs" />
     <Compile Include="MorphEngine.cs" />
-    <Compile Include="Actions\IMorphAction.cs" />
+    <Compile Include="Actions\MorphAction.cs" />
     <Compile Include="ProcessTemplate.cs" />
     <Compile Include="ProcessTemplateDownloader.cs" />
     <Compile Include="ProcessTemplateFactory.cs" />
