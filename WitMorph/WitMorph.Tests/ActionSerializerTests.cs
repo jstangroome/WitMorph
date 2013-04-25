@@ -112,6 +112,23 @@ namespace WitMorph.Tests
         }
 
         [TestMethod]
+        public void ActionSerializer_should_use_all_ModifyWorkItemTypeDefinitionSubAction_types_to_test_serializtion()
+        {
+            GenerateActions();
+
+            var allSubActionTypes = typeof(ModifyWorkItemTypeDefinitionSubAction).Assembly.GetTypes()
+                .Where(t => typeof(ModifyWorkItemTypeDefinitionSubAction).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract);
+
+            var subActions = _actions.OfType<ModifyWorkItemTypeDefinitionMorphAction>().SelectMany(a => a.Actions);
+
+            var missingSubActionTypes = allSubActionTypes.Where(t => !subActions.Select(a => a.GetType()).Contains(t)).ToArray();
+            if (missingSubActionTypes.Any())
+            {
+                Assert.Fail("MorphAction implementation '{0}' not covered by test data.", missingSubActionTypes.First());
+            }
+        }
+
+        [TestMethod]
         public void ActionSerializer_Morph_actions_should_be_serializable()
         {
             SerializeActions();
