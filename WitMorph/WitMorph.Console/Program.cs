@@ -24,6 +24,8 @@ namespace WitMorph.Console
             var currentTemplate = factory.FromActiveTeamProject(collectionUri, projectName);
             var goalTemplate = factory.FromActiveTeamProject(collectionUri, templateProjectName);
 
+            // TODO test for project property showing process template used and update after conversion
+
             var diffEngine = new DiffEngine(ProcessTemplateMap.ConvertScrum2ToAgile6());
             var differences = diffEngine.CompareProcessTemplates(currentTemplate, goalTemplate);
 
@@ -35,7 +37,7 @@ namespace WitMorph.Console
                 System.Console.WriteLine(action.ToString());
             }
 
-            //var filteredActions = actions.Where(a => !(a is DestroyWitdMorphAction)); // optionally skip deleting extra work item items
+            //var filteredActions = actions.Where(a => !(a is DestroyWitdMorphAction)); // TODO optionally skip deleting extra work item items
 
             engine.Apply(collectionUri, projectName, actions, Path.GetTempPath()); //TODO replace temp path with something useful
         }

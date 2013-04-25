@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<processtemplatemap>
+  <workitemtype from="User Story" to="Product Backlog Item" />
+  <workitemfield from="Microsoft.VSTS.Common.StackRank" to="Microsoft.VSTS.Common.BacklogPriority" />
+  <workitemstate type="User Story" from="Active" to="Approved" />
+</processtemplatemap>

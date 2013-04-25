@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 using WitMorph.Structures;
 
 namespace WitMorph
@@ -104,5 +106,48 @@ namespace WitMorph
         }
 
         public CurrentToGoalMap<string> WorkItemFieldMap { get { return _workItemFieldMap; } }
+
+        public static ProcessTemplateMap Read(Stream stream)
+        {
+            var map = new ProcessTemplateMap();
+
+            var settings = new XmlReaderSettings {CloseInput = false};
+            using (var reader = XmlReader.Create(stream, settings))
+            {
+                reader.ReadStartElement("processtemplatemap");
+                while (reader.Read())
+                {
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+                            switch (reader.LocalName)
+                            {
+                                case "workitemtype":
+                                    map._workItemTypeMap.Add(reader.GetAttribute("from"), reader.GetAttribute("to"));
+                                    break;
+                                case "workitemfield":
+                                    map._workItemFieldMap.Add(reader.GetAttribute("from"), reader.GetAttribute("to"));
+                                    break;
+                                case "workitemstate":
+                                    var typeName = reader.GetAttribute("type");
+                                    if (string.IsNullOrWhiteSpace(typeName))
+                                    {
+                                        throw new InvalidOperationException("workitemstate element is missing type attribute.");
+                                    }
+                                    var stateMap = map.GetWorkItemStateMap(typeName);
+                                    if (!map._workItemStateMaps.ContainsKey(typeName))
+                                    {
+                                        map._workItemStateMaps.Add(typeName, stateMap);
+                                    }
+                                    stateMap.Add(reader.GetAttribute("from"), reader.GetAttribute("to"));
+                                    break;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            return map;
+        }
     }
 }
