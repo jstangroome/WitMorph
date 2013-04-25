@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionSerializer.cs" />
+    <Compile Include="Actions\ActionLink.cs" />
+    <Compile Include="Actions\ActionLinkType.cs" />
     <Compile Include="Actions\DestroyWitdMorphAction.cs" />
     <Compile Include="Actions\CopyWorkItemDataMorphAction.cs" />
     <Compile Include="Actions\ExecutionContext.cs" />

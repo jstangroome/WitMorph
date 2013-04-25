@@ -63,6 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelativeAssert.cs" />
     <Compile Include="ProcessTemplateMapTests.cs" />
+    <Compile Include="MorphEngineTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WitMorph\WitMorph.csproj">

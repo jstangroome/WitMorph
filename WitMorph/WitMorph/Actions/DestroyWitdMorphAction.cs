@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Xml;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
@@ -9,11 +10,14 @@ namespace WitMorph.Actions
 
         public DestroyWitdMorphAction(string typeName)
         {
+            LinkedActions = new List<ActionLink>();
             _typeName = typeName;
         }
 
         public string TypeName { get { return _typeName; } }
 
+        public ICollection<ActionLink> LinkedActions { get; private set; }
+        
         public override void Execute(ExecutionContext context)
         {
             // most supported implementation would be to run witadmin.exe but that could be tricky with alternate credentials

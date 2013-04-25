@@ -86,8 +86,11 @@ namespace WitMorph
 
             foreach (var witdRemove in differences.OfType<RemovedWorkItemTypeDefinitionDifference>())
             {
-                actionSet.ProcessWorkItemData.Add(new ExportWorkItemDataMorphAction(witdRemove.TypeName, allFields: true));
-                actionSet.FinaliseWorkItemTypeDefinitions.Add(new DestroyWitdMorphAction(witdRemove.TypeName));
+                var exportAction = new ExportWorkItemDataMorphAction(witdRemove.TypeName, allFields: true);
+                var destroyAction = new DestroyWitdMorphAction(witdRemove.TypeName);
+                destroyAction.LinkedActions.Add(new ActionLink(exportAction, ActionLinkType.Encouraged));
+                actionSet.ProcessWorkItemData.Add(exportAction);
+                actionSet.FinaliseWorkItemTypeDefinitions.Add(destroyAction);
             }
 
             return actionSet.Combine().ToArray();
