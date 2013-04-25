@@ -119,7 +119,7 @@ namespace WitMorph.Tests
             var allSubActionTypes = typeof(ModifyWorkItemTypeDefinitionSubAction).Assembly.GetTypes()
                 .Where(t => typeof(ModifyWorkItemTypeDefinitionSubAction).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract);
 
-            var subActions = _actions.OfType<ModifyWorkItemTypeDefinitionMorphAction>().SelectMany(a => a.Actions);
+            var subActions = _actions.OfType<ModifyWorkItemTypeDefinitionMorphAction>().SelectMany(a => a.SubActions);
 
             var missingSubActionTypes = allSubActionTypes.Where(t => !subActions.Select(a => a.GetType()).Contains(t)).ToArray();
             if (missingSubActionTypes.Any())

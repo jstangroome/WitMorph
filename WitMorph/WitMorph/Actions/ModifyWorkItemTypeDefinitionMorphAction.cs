@@ -445,7 +445,7 @@ namespace WitMorph.Actions
     public class ModifyWorkItemTypeDefinitionMorphAction : MorphAction
     {
         private readonly string _workItemTypeName;
-        private readonly IList<ModifyWorkItemTypeDefinitionSubAction> _actions = new List<ModifyWorkItemTypeDefinitionSubAction>();
+        private readonly IList<ModifyWorkItemTypeDefinitionSubAction> _subActions = new List<ModifyWorkItemTypeDefinitionSubAction>();
 
         public ModifyWorkItemTypeDefinitionMorphAction(string workItemTypeName)
         {
@@ -459,48 +459,47 @@ namespace WitMorph.Actions
 
         public void AddFieldDefinition(WitdField field)
         {
-            _actions.Add(new AddFieldModifyWorkItemTypeDefinitionSubAction(field));
+            _subActions.Add(new AddFieldModifyWorkItemTypeDefinitionSubAction(field));
         }
 
         public void AddWorkflowState(WitdState state)
         {
-            _actions.Add(new AddStateModifyWorkItemTypeDefinitionSubAction(state));
+            _subActions.Add(new AddStateModifyWorkItemTypeDefinitionSubAction(state));
         }
 
         public void AddWorkflowTransition(string fromState, string toState, string defaultReason)
         {
-            _actions.Add(new AddTransitionModifyWorkItemTypeDefinitionSubAction(fromState, toState, defaultReason));
+            _subActions.Add(new AddTransitionModifyWorkItemTypeDefinitionSubAction(fromState, toState, defaultReason));
         }
 
         public void RemoveFieldDefinition(string fieldReferenceName)
         {
-            _actions.Add(new RemoveFieldModifyWorkItemTypeDefinitionSubAction(fieldReferenceName));
+            _subActions.Add(new RemoveFieldModifyWorkItemTypeDefinitionSubAction(fieldReferenceName));
         }
 
         public void RemoveWorkflowState(string state)
         {
-            _actions.Add(new RemoveStateModifyWorkItemTypeDefinitionSubAction(state));
+            _subActions.Add(new RemoveStateModifyWorkItemTypeDefinitionSubAction(state));
         }
-
 
         public void ReplaceFieldDefinition(WitdField field)
         {
-            _actions.Add(new ReplaceFieldModifyWorkItemTypeDefinitionSubAction(field));
+            _subActions.Add(new ReplaceFieldModifyWorkItemTypeDefinitionSubAction(field));
         }
 
         public void ReplaceWorkflow(XmlElement workflowElement)
         {
-            _actions.Add(new ReplaceWorkflowModifyWorkItemTypeDefinitionSubAction(workflowElement));
+            _subActions.Add(new ReplaceWorkflowModifyWorkItemTypeDefinitionSubAction(workflowElement));
         }
 
         public void ReplaceForm(XmlElement formElement)
         {
-            _actions.Add(new ReplaceFormModifyWorkItemTypeDefinitionSubAction(formElement));
+            _subActions.Add(new ReplaceFormModifyWorkItemTypeDefinitionSubAction(formElement));
         }
 
         public override void Execute(ExecutionContext context)
         {
-            if (_actions.Count == 0)
+            if (_subActions.Count == 0)
             {
                 return;
             }
@@ -509,7 +508,7 @@ namespace WitMorph.Actions
             project.Store.RefreshCache(true);
             var witdElement = project.WorkItemTypes[_workItemTypeName].Export(false).DocumentElement;
 
-            foreach (var action in _actions)
+            foreach (var action in _subActions)
             {
                 action.Execute(witdElement);
             }
@@ -523,7 +522,7 @@ namespace WitMorph.Actions
         public override void Serialize(XmlWriter writer)
         {
             writer.WriteAttributeString("typename", _workItemTypeName);
-            foreach (var action in _actions)
+            foreach (var action in _subActions)
             {
                 writer.WriteStartElement(action.GetType().Name.ToLowerInvariant());
                 action.Serialize(writer);
@@ -549,27 +548,27 @@ namespace WitMorph.Actions
                         throw new InvalidOperationException(string.Format("Cannot find type '{0}' in assembly '{1}'.", qualifiedTypeName, expectedAssembly));
                     }
                     var deserializeMethod = ModifyWorkItemTypeDefinitionSubAction.GetDeserializeMethod(actionType);
-                    action._actions.Add((ModifyWorkItemTypeDefinitionSubAction)deserializeMethod.Invoke(null, new object[] { reader }));
+                    action._subActions.Add((ModifyWorkItemTypeDefinitionSubAction)deserializeMethod.Invoke(null, new object[] { reader }));
                 }
             }
 
             return action;
         }
 
-        public IReadOnlyList<ModifyWorkItemTypeDefinitionSubAction> Actions
+        public IReadOnlyList<ModifyWorkItemTypeDefinitionSubAction> SubActions
         {
-            get { return new ReadOnlyCollection<ModifyWorkItemTypeDefinitionSubAction>(_actions); }
+            get { return new ReadOnlyCollection<ModifyWorkItemTypeDefinitionSubAction>(_subActions); }
         }
 
         public override string ToString()
         {
-            if (_actions.Count == 0)
+            if (_subActions.Count == 0)
             {
                 return string.Format("No action required. {0}", base.ToString());
             }
             var builder = new StringBuilder();
-            builder.AppendLine(string.Format("Import {0} schema change(s) to work item type definition '{1}':", _actions.Count, _workItemTypeName));
-            foreach (var action in _actions)
+            builder.AppendLine(string.Format("Import {0} schema change(s) to work item type definition '{1}':", _subActions.Count, _workItemTypeName));
+            foreach (var action in _subActions)
             {
                 builder.AppendLine(" " + action);
             }

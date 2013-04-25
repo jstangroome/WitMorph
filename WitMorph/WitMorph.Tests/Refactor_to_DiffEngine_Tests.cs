@@ -16,7 +16,7 @@ namespace WitMorph.Tests
             {
                 var m = a as ModifyWorkItemTypeDefinitionMorphAction;
                 return m != null && m.WorkItemTypeName == "Task" &&
-                       m.Actions.OfType<ReplaceFieldModifyWorkItemTypeDefinitionSubAction>().Any(r => r.ReferenceName == "Microsoft.VSTS.Build.IntegrationBuild");
+                       m.SubActions.OfType<ReplaceFieldModifyWorkItemTypeDefinitionSubAction>().Any(r => r.ReferenceName == "Microsoft.VSTS.Build.IntegrationBuild");
             });
 
             RelativeAssert.IsGreaterThanOrEqual(0, replaceActionIndex, "Will not replace IntegrationBuild field for Task");
@@ -70,7 +70,7 @@ namespace WitMorph.Tests
             {
                 var m = a as ModifyWorkItemTypeDefinitionMorphAction;
                 return m != null && m.WorkItemTypeName == "Task"
-                       && m.Actions.OfType<AddFieldModifyWorkItemTypeDefinitionSubAction>().Any(s => s.ReferenceName == "Microsoft.VSTS.Common.StackRank");
+                       && m.SubActions.OfType<AddFieldModifyWorkItemTypeDefinitionSubAction>().Any(s => s.ReferenceName == "Microsoft.VSTS.Common.StackRank");
             });
 
             var taskFieldCopyIndex = actionsViaDiffEngine.FindIndex(a =>
@@ -83,7 +83,7 @@ namespace WitMorph.Tests
             {
                 var m = a as ModifyWorkItemTypeDefinitionMorphAction;
                 return m != null && m.WorkItemTypeName == "Task"
-                       && m.Actions.OfType<RemoveFieldModifyWorkItemTypeDefinitionSubAction>().Any(s => s.ReferenceName == "Microsoft.VSTS.Common.BacklogPriority");
+                       && m.SubActions.OfType<RemoveFieldModifyWorkItemTypeDefinitionSubAction>().Any(s => s.ReferenceName == "Microsoft.VSTS.Common.BacklogPriority");
             });
 
             Assert.IsTrue(taskAddFieldIndex >= 0, "Will not add Task StackRank field");
@@ -96,14 +96,14 @@ namespace WitMorph.Tests
             {
                 var m = a as ModifyWorkItemTypeDefinitionMorphAction;
                 return m != null && m.WorkItemTypeName == "Task"
-                       && m.Actions.OfType<AddStateModifyWorkItemTypeDefinitionSubAction>().Any(s => s.Name == "Closed");
+                       && m.SubActions.OfType<AddStateModifyWorkItemTypeDefinitionSubAction>().Any(s => s.Name == "Closed");
             });
 
             var taskAddTransitionIndex = actionsViaDiffEngine.FindIndex(a =>
             {
                 var m = a as ModifyWorkItemTypeDefinitionMorphAction;
                 return m != null && m.WorkItemTypeName == "Task"
-                       && m.Actions.OfType<AddTransitionModifyWorkItemTypeDefinitionSubAction>().Any(t => t.FromState == "Done" && t.ToState == "Closed");
+                       && m.SubActions.OfType<AddTransitionModifyWorkItemTypeDefinitionSubAction>().Any(t => t.FromState == "Done" && t.ToState == "Closed");
             });
 
             var taskStateChangeIndex = actionsViaDiffEngine.FindIndex(a =>
@@ -116,7 +116,7 @@ namespace WitMorph.Tests
             {
                 var m = a as ModifyWorkItemTypeDefinitionMorphAction;
                 return m != null && m.WorkItemTypeName == "Task"
-                       && m.Actions.OfType<RemoveStateModifyWorkItemTypeDefinitionSubAction>().Any(s => s.Name == "Done");
+                       && m.SubActions.OfType<RemoveStateModifyWorkItemTypeDefinitionSubAction>().Any(s => s.Name == "Done");
             });
 
 
@@ -135,7 +135,7 @@ namespace WitMorph.Tests
             {
                 var m = a as ModifyWorkItemTypeDefinitionMorphAction;
                 return m != null && m.WorkItemTypeName == "Task"
-                       && m.Actions.OfType<AddFieldModifyWorkItemTypeDefinitionSubAction>().Any(s => s.ReferenceName == "Microsoft.VSTS.Scheduling.OriginalEstimate");
+                       && m.SubActions.OfType<AddFieldModifyWorkItemTypeDefinitionSubAction>().Any(s => s.ReferenceName == "Microsoft.VSTS.Scheduling.OriginalEstimate");
             });
 
             RelativeAssert.IsGreaterThanOrEqual(0, addFieldIndex, "Should add field to task.");
@@ -164,7 +164,7 @@ namespace WitMorph.Tests
             {
                 var m = a as ModifyWorkItemTypeDefinitionMorphAction;
                 return m != null && m.WorkItemTypeName == "Task"
-                    && m.Actions.OfType<ReplaceFormModifyWorkItemTypeDefinitionSubAction>().Any();
+                    && m.SubActions.OfType<ReplaceFormModifyWorkItemTypeDefinitionSubAction>().Any();
             });
 
             RelativeAssert.IsGreaterThanOrEqual(0, replaceFormIndex, "Should replace form for Task work item.");
