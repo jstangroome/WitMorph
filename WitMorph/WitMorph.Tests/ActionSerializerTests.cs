@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using WitMorph.Actions;
 using WitMorph.Differences;
 using WitMorph.Model;
 using WitMorph.Tests.ProcessTemplates;
@@ -12,8 +13,12 @@ namespace WitMorph.Tests
     {
         public TestContext TestContext { get; set; }
 
-        [TestMethod]
-        public void ActionSerializer_Morph_actions_should_be_recordable_for_inspection_and_playback()
+        private IDifference[] _differences;
+        private MorphAction[] _actions;
+        private string _serializedActionsPath;
+        private MorphAction[] _deserializedActions;
+
+        private void SetupDifferences()
         {
             WorkItemTypeDefinition workItemTypeDefinition;
             WitdField field;
@@ -26,29 +31,98 @@ namespace WitMorph.Tests
                 state = workItemTypeDefinition.States.First();
             }
 
-            var morphEngine = new MorphEngine();
-            var differences = new IDifference[]
-                              {
-                                  new AddedWorkItemTypeDefinitionDifference(workItemTypeDefinition),
-                                  new RenamedWorkItemTypeDefinitionDifference("User Story", "Product Backlog Item"),
-                                  new RenamedWorkItemFieldDifference(workItemTypeDefinition.Name, field.ReferenceName, field),
-                                  new RenamedWorkItemStateDifference(workItemTypeDefinition.Name, state.Value, state),
-                                  new ChangedWorkItemFieldDifference(workItemTypeDefinition.Name, field.ReferenceName, field),
-                                  new ChangedWorkItemFormDifference(workItemTypeDefinition.Name, workItemTypeDefinition.FormElement),
-                                  new ChangedWorkItemWorkflowDifference(workItemTypeDefinition.Name, workItemTypeDefinition.WorkflowElement),
-                                  new RemovedWorkItemTypeDefinitionDifference("Issue")
-                              };
-            var actions = morphEngine.GenerateActions(differences);
+            _differences = new IDifference[]
+                           {
+                               new AddedWorkItemTypeDefinitionDifference(workItemTypeDefinition),
+                               new AddedWorkItemStateDifference(workItemTypeDefinition.Name, state),
+                               new AddedWorkItemFieldDifference(workItemTypeDefinition.Name, field),
+                               new RenamedWorkItemTypeDefinitionDifference("User Story", "Product Backlog Item"),
+                               new RenamedWorkItemFieldDifference(workItemTypeDefinition.Name, field.ReferenceName, field),
+                               new RenamedWorkItemStateDifference(workItemTypeDefinition.Name, state.Value, state),
+                               new ChangedWorkItemFieldDifference(workItemTypeDefinition.Name, field.ReferenceName, field),
+                               new ChangedWorkItemStateDifference(workItemTypeDefinition.Name, state.Value, state),
+                               new ChangedWorkItemFormDifference(workItemTypeDefinition.Name, workItemTypeDefinition.FormElement),
+                               new ChangedWorkItemWorkflowDifference(workItemTypeDefinition.Name, workItemTypeDefinition.WorkflowElement),
+                               new RemovedWorkItemTypeDefinitionDifference("Issue"),
+                               new RemovedWorkItemFieldDifference(workItemTypeDefinition.Name, field.ReferenceName),
+                               new RemovedWorkItemStateDifference(state.Value), //workItemTypeDefinition.Name, 
+                           };
 
-            var path = Path.Combine(TestContext.TestRunResultsDirectory, TestContext.TestName + ".actions.xml");
+        }
+
+        private void GenerateActions()
+        {
+            SetupDifferences();
+            var morphEngine = new MorphEngine();
+            _actions = morphEngine.GenerateActions(_differences);
+        }
+
+        private void SerializeActions()
+        {
+            GenerateActions();
+            _serializedActionsPath = Path.Combine(TestContext.TestRunResultsDirectory, TestContext.TestName + ".actions.xml");
 
             var actionSerializer = new ActionSerializer();
-            actionSerializer.Serialize(actions, path);
+            actionSerializer.Serialize(_actions, _serializedActionsPath);
+        }
 
-            var rehydratedActions = actionSerializer.Deserialize(path);
-            
-            Assert.AreNotEqual(0, actions.Count(), "No actions to serialize then deserialize.");
-            Assert.AreEqual(actions.Count(), rehydratedActions.Length);
+        private void DeserializeActions()
+        {
+            SerializeActions();
+
+            var actionSerializer = new ActionSerializer();
+            _deserializedActions = actionSerializer.Deserialize(_serializedActionsPath);
+        }
+
+        [TestMethod]
+        public void ActionSerializer_should_have_test_actions_to_serialize()
+        {
+            GenerateActions();
+            Assert.AreNotEqual(0, _actions.Length, "No actions to serialize then deserialize.");
+        }
+
+        [TestMethod]
+        public void ActionSerializer_should_use_all_IDifference_types_to_test_serializtion()
+        {
+            SetupDifferences();
+
+            var allDifferenceTypes = typeof(IDifference).Assembly.GetTypes()
+                .Where(t => typeof(IDifference).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract);
+
+            var missingDifferenceTypes = allDifferenceTypes.Where(t => !_differences.Select(d => d.GetType()).Contains(t)).ToArray();
+            if (missingDifferenceTypes.Any())
+            {
+                Assert.Fail("IDifference implementation '{0}' not covered by test data.", missingDifferenceTypes.First());
+            }
+        }
+
+        [TestMethod]
+        public void ActionSerializer_should_use_all_MorphAction_types_to_test_serializtion()
+        {
+            GenerateActions();
+
+            var allMorphActionTypes = typeof(MorphAction).Assembly.GetTypes()
+                .Where(t => typeof(MorphAction).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract);
+
+            var missingMorphActionTypes = allMorphActionTypes.Where(t => !_actions.Select(a => a.GetType()).Contains(t)).ToArray();
+            if (missingMorphActionTypes.Any())
+            {
+                Assert.Fail("MorphAction implementation '{0}' not covered by test data.", missingMorphActionTypes.First());
+            }
+        }
+
+        [TestMethod]
+        public void ActionSerializer_Morph_actions_should_be_serializable()
+        {
+            SerializeActions();
+            Assert.IsTrue(File.Exists(_serializedActionsPath), "Missing file '{0}'", _serializedActionsPath);
+        }
+
+        [TestMethod]
+        public void ActionSerializer_Morph_actions_should_roundtrip_serialization_and_deserialization()
+        {
+            DeserializeActions();
+            Assert.AreEqual(_actions.Length, _deserializedActions.Length);
         }
 
     }
