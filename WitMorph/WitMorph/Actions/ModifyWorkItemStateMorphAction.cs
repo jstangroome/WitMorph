@@ -40,16 +40,19 @@ namespace WitMorph.Actions
 
         }
 
-        public override void Serialize(XmlWriter writer)
+        protected override void SerializeCore(XmlWriter writer)
         {
             writer.WriteAttributeString("typename", _workItemTypeName);
             writer.WriteAttributeString("fromvalue", _fromValue);
             writer.WriteAttributeString("tovalue", _toValue);
         }
 
-        public static MorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlElement element, DeserializationContext context)
         {
-            return new ModifyWorkItemStateMorphAction(reader.GetAttribute("typename"), reader.GetAttribute("fromvalue"), reader.GetAttribute("tovalue"));
+            return new ModifyWorkItemStateMorphAction(
+                element.GetAttribute("typename"), 
+                element.GetAttribute("fromvalue"), 
+                element.GetAttribute("tovalue"));
         }
 
         public override string ToString()

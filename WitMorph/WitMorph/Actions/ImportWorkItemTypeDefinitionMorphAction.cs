@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client.Provision;
@@ -60,22 +60,16 @@ namespace WitMorph.Actions
             }
         }
 
-        public override void Serialize(XmlWriter writer)
+        protected override void SerializeCore(XmlWriter writer)
         {
             writer.WriteCData(_typeDefinition.WITDElement.OuterXml);
         }
 
-        public static MorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlElement element, DeserializationContext context)
         {
-            reader.Read();
-            if (reader.NodeType != XmlNodeType.CDATA)
-            {
-                throw new InvalidOperationException(string.Format("Expected CDATA node but was '{0}'", reader.NodeType));
-            }
+            var cdata = element.ChildNodes.OfType<XmlCDataSection>().Single();
             var doc = new XmlDocument();
-            doc.LoadXml(reader.Value);
-            reader.Read();
-
+            doc.LoadXml(cdata.Value);
             var typeDef = new WorkItemTypeDefinition(doc);
             return new ImportWorkItemTypeDefinitionMorphAction(typeDef);
         }

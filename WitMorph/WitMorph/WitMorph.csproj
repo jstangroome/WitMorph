@@ -54,6 +54,7 @@
     <Compile Include="Actions\ImportWorkItemTypeDefinitionMorphAction.cs" />
     <Compile Include="Actions\ModifyWorkItemStateMorphAction.cs" />
     <Compile Include="Actions\ModifyWorkItemTypeDefinitionMorphAction.cs" />
+    <Compile Include="Actions\ModifyWorkItemTypeDefinitionSubAction.cs" />
     <Compile Include="Actions\RenameWitdMorphAction.cs" />
     <Compile Include="DiffEngine.cs" />
     <Compile Include="Differences\AddedWorkItemStateDifference.cs" />

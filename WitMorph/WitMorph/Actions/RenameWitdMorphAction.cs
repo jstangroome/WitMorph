@@ -36,15 +36,15 @@ namespace WitMorph.Actions
             project.Store.RefreshCache(true);
         }
 
-        public override void Serialize(XmlWriter writer)
+        protected override void SerializeCore(XmlWriter writer)
         {
             writer.WriteAttributeString("typename", _typeName);
             writer.WriteAttributeString("newname", _newName);
         }
 
-        public static MorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlElement element, DeserializationContext context)
         {
-            return new RenameWitdMorphAction(reader.GetAttribute("typename"), reader.GetAttribute("newname"));
+            return new RenameWitdMorphAction(element.GetAttribute("typename"), element.GetAttribute("newname"));
         }
 
         public override string ToString()

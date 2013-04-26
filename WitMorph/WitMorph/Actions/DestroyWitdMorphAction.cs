@@ -26,14 +26,14 @@ namespace WitMorph.Actions
             project.Store.RefreshCache(true);
         }
 
-        public override void Serialize(XmlWriter writer)
+        protected override void SerializeCore(XmlWriter writer)
         {
             writer.WriteAttributeString("typename", _typeName);
         }
 
-        public static MorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlElement element, DeserializationContext context)
         {
-            return new DestroyWitdMorphAction(reader.GetAttribute("typename"));
+            return new DestroyWitdMorphAction(element.GetAttribute("typename"));
         }
 
         public override string ToString()

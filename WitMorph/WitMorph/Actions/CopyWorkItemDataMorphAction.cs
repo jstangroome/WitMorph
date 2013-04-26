@@ -41,19 +41,19 @@ namespace WitMorph.Actions
 
         }
 
-        public override void Serialize(XmlWriter writer)
+        protected override void SerializeCore(XmlWriter writer)
         {
             writer.WriteAttributeString("typename", _workItemTypeName);
             writer.WriteAttributeString("fromfieldrefname", _fromFieldReferenceName);
             writer.WriteAttributeString("tofieldrefname", _toFieldReferenceName);
         }
 
-        public static MorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlElement element, DeserializationContext context)
         {
             return new CopyWorkItemDataMorphAction(
-                reader.GetAttribute("typename"), 
-                reader.GetAttribute("fromfieldrefname"), 
-                reader.GetAttribute("tofieldrefname")
+                element.GetAttribute("typename"),
+                element.GetAttribute("fromfieldrefname"),
+                element.GetAttribute("tofieldrefname")
                 );
         }
 

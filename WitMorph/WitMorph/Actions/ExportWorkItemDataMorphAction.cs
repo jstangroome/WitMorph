@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
@@ -85,7 +86,7 @@ namespace WitMorph.Actions
             }
         }
 
-        public override void Serialize(XmlWriter writer)
+        protected override void SerializeCore(XmlWriter writer)
         {
             //TODO skip serialization if not all fields and list is empty
             writer.WriteAttributeString("typename", _workItemTypeName);
@@ -101,19 +102,13 @@ namespace WitMorph.Actions
             }
         }
 
-        public static MorphAction Deserialize(XmlReader reader)
+        public static MorphAction Deserialize(XmlElement element, DeserializationContext context)
         {
-            var action = new ExportWorkItemDataMorphAction(reader.GetAttribute("typename"), Convert.ToBoolean(reader.GetAttribute("allfields")));
+            var action = new ExportWorkItemDataMorphAction(element.GetAttribute("typename"), Convert.ToBoolean(element.GetAttribute("allfields")));
 
-            if (!reader.IsEmptyElement)
+            foreach (var fieldElement in element.ChildNodes.OfType<XmlElement>().Where(e => e.Name == "field"))
             {
-                while (reader.Read() && reader.NodeType != XmlNodeType.EndElement)
-                {
-                    if (reader.NodeType == XmlNodeType.Element && reader.Name == "field")
-                    {
-                        action.AddExportField(reader.GetAttribute("refname"));
-                    }
-                }
+                action.AddExportField(fieldElement.GetAttribute("refname"));
             }
 
             return action;

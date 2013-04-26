@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using WitMorph.Actions;
 
 namespace WitMorph
 {
     public class ActionSerializer {
+
         public void Serialize(IEnumerable<MorphAction> actions, string path)
         {
             var settings = new XmlWriterSettings {Indent = true};
@@ -26,33 +28,40 @@ namespace WitMorph
 
         public MorphAction[] Deserialize(string path)
         {
+            var context = new DeserializationContext();
             var actions = new List<MorphAction>();
 
-            using (var reader = XmlReader.Create(path))
+            var xdoc = new XmlDocument();
+            xdoc.Load(path);
+
+            if (xdoc.DocumentElement == null || xdoc.DocumentElement.Name != "morphactions")
             {
-                reader.ReadStartElement("morphactions");
+                throw new InvalidOperationException(string.Format("XML document should have '<morphactions>' document element. '{0}'", path));
+            }
 
-                var expectedAssembly = typeof (MorphAction).Assembly;
-                
-                while (reader.Read())
-                {
-                    if (reader.NodeType == XmlNodeType.Element)
-                    {
-                        var typeName = reader.LocalName;
-                        var qualifiedTypeName = string.Format("{0}.{1}", typeof(MorphAction).Namespace, typeName);
-                        var actionType = expectedAssembly.GetType(qualifiedTypeName, throwOnError: false, ignoreCase: true);
-                        if (actionType == null)
-                        {
-                            throw new InvalidOperationException(string.Format("Cannot find type '{0}' in assembly '{1}'.", qualifiedTypeName, expectedAssembly));
-                        }
-                        var deserializeMethod = MorphAction.GetDeserializeMethod(actionType);
-                        actions.Add((MorphAction)deserializeMethod.Invoke(null, new object[] { reader }));
-                    }
-                }
-
+            foreach (var actionElement in xdoc.DocumentElement.ChildNodes.OfType<XmlElement>())
+            {
+                var action = MorphAction.Deserialize(actionElement, context);
+                actions.Add(action);
             }
 
             return actions.ToArray();
         }
+    }
+
+    public class DeserializationContext
+    {
+        private IDictionary<string, ILinkableAction> _linkableActions = new Dictionary<string, ILinkableAction>();
+
+        public ILinkableAction GetLinkableAction(string targetId)
+        {
+            return _linkableActions[targetId];
+        }
+
+        public void RegisterLinkableAction(string serializationId, ILinkableAction linkableAction)
+        {
+            _linkableActions.Add(serializationId, linkableAction);
+        }
+       
     }
 }

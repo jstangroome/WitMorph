@@ -142,5 +142,21 @@ namespace WitMorph.Tests
             Assert.AreEqual(_actions.Length, _deserializedActions.Length);
         }
 
+        [TestMethod]
+        public void ActionSerializer_Morph_action_links_should_roundtrip_serialization()
+        {
+            DeserializeActions();
+
+            var actionsWithLinks = _actions.Where(a => a.LinkedActions.Any());
+
+            Assert.AreNotEqual(0, actionsWithLinks.Count(), "Original actions should have links.");
+            
+            var deserializedActionsWithLinks = _deserializedActions.Where(a => a.LinkedActions.Any());
+
+            Assert.AreEqual(actionsWithLinks.Count(), deserializedActionsWithLinks.Count(), "Deserialized actions should have the same number of links as before serialization.");
+
+            // TODO check linked items are in the list for both linked MorphActions and linked sub actions
+        }
+
     }
 }
