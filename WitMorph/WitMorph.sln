@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitMorph.Console", "WitMorp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitMorph.IntegrationTests", "WitMorph.IntegrationTests\WitMorph.IntegrationTests.csproj", "{36503F2F-7028-4F82-92EE-2E55785C6D6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitMorph.UI", "WitMorph.UI\WitMorph.UI.csproj", "{920F5DF6-3702-4078-B688-E45EE17DA11C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{36503F2F-7028-4F82-92EE-2E55785C6D6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36503F2F-7028-4F82-92EE-2E55785C6D6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36503F2F-7028-4F82-92EE-2E55785C6D6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{920F5DF6-3702-4078-B688-E45EE17DA11C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{920F5DF6-3702-4078-B688-E45EE17DA11C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{920F5DF6-3702-4078-B688-E45EE17DA11C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{920F5DF6-3702-4078-B688-E45EE17DA11C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
