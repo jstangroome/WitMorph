@@ -50,6 +50,7 @@
     <Compile Include="Actions\CopyWorkItemDataMorphAction.cs" />
     <Compile Include="Actions\ExecutionContext.cs" />
     <Compile Include="Actions\ExportWorkItemDataMorphAction.cs" />
+    <Compile Include="Actions\ILinkableAction.cs" />
     <Compile Include="Actions\ImportWorkItemTypeDefinitionMorphAction.cs" />
     <Compile Include="Actions\ModifyWorkItemStateMorphAction.cs" />
     <Compile Include="Actions\ModifyWorkItemTypeDefinitionMorphAction.cs" />

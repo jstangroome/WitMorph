@@ -9,11 +9,12 @@ using WitMorph.Model;
 
 namespace WitMorph.Actions
 {
-    public abstract class ModifyWorkItemTypeDefinitionSubAction
+    public abstract class ModifyWorkItemTypeDefinitionSubAction : ILinkableAction
     {
         protected ModifyWorkItemTypeDefinitionSubAction()
         {
             GetDeserializeMethod(GetType());
+            LinkedActions = new Collection<ActionLink>();
         }
 
         public static MethodInfo GetDeserializeMethod(Type subActionType)
@@ -56,6 +57,7 @@ namespace WitMorph.Actions
         }
 
         public abstract void Serialize(XmlWriter writer);
+        public ICollection<ActionLink> LinkedActions { get; private set; }
     }
 
     public class AddFieldModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
@@ -462,14 +464,18 @@ namespace WitMorph.Actions
             _subActions.Add(new AddFieldModifyWorkItemTypeDefinitionSubAction(field));
         }
 
-        public void AddWorkflowState(WitdState state)
+        public ILinkableAction AddWorkflowState(WitdState state)
         {
-            _subActions.Add(new AddStateModifyWorkItemTypeDefinitionSubAction(state));
+            var subAction = new AddStateModifyWorkItemTypeDefinitionSubAction(state);
+            _subActions.Add(subAction);
+            return subAction;
         }
 
-        public void AddWorkflowTransition(string fromState, string toState, string defaultReason)
+        public ILinkableAction AddWorkflowTransition(string fromState, string toState, string defaultReason)
         {
-            _subActions.Add(new AddTransitionModifyWorkItemTypeDefinitionSubAction(fromState, toState, defaultReason));
+            var subAction = new AddTransitionModifyWorkItemTypeDefinitionSubAction(fromState, toState, defaultReason);
+            _subActions.Add(subAction);
+            return subAction;
         }
 
         public void RemoveFieldDefinition(string fieldReferenceName)

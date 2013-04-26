@@ -1,14 +1,18 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Xml;
 
 namespace WitMorph.Actions
 {
-    public abstract class MorphAction
+    public abstract class MorphAction : ILinkableAction
     {
         protected MorphAction()
         {
             GetDeserializeMethod(GetType());
+
+            LinkedActions = new Collection<ActionLink>();
         }
 
         public static MethodInfo GetDeserializeMethod(Type actionType)
@@ -27,6 +31,7 @@ namespace WitMorph.Actions
 
         public abstract void Execute(ExecutionContext context);
         public abstract void Serialize(XmlWriter writer);
+        public ICollection<ActionLink> LinkedActions { get; private set; }
     }
 
 }
