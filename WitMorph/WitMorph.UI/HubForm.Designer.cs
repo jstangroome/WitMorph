@@ -338,7 +338,7 @@
             this.Controls.Add(groupBox2);
             this.Controls.Add(groupBox1);
             this.Name = "HubForm";
-            this.Text = "Form1";
+            this.Text = "Team Foundation Project Process Converter";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);
