@@ -12,7 +12,7 @@ namespace WitMorph.UI
 
         public void SetDataSource(HubViewModel model)
         {
-            bindingSource1.DataSource = model;
+            modelBindingSource.DataSource = model;
         }
 
         private void SelectCurrentTeamProject_Click(object sender, EventArgs e)
@@ -23,10 +23,24 @@ namespace WitMorph.UI
 
         public event EventHandler SelectCurrentTeamProject;
         public event EventHandler SelectGoalTeamProject;
+        public event EventHandler SelectProcessMap;
+        public event EventHandler SelectOutputFile;
 
         private void SelectGoalTeamProject_Click(object sender, EventArgs e)
         {
             var handler = SelectGoalTeamProject;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        private void SelectProcessMap_Click(object sender, EventArgs e)
+        {
+            var handler = SelectProcessMap;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        private void SelectOutputFile_Click(object sender, EventArgs e)
+        {
+            var handler = SelectOutputFile;
             if (handler != null) handler(this, EventArgs.Empty);
         }
     }

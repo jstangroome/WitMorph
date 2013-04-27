@@ -44,11 +44,16 @@
             System.Windows.Forms.RadioButton radioButton3;
             System.Windows.Forms.RadioButton radioButton2;
             System.Windows.Forms.RadioButton radioButton1;
-            System.Windows.Forms.Button button3;
-            System.Windows.Forms.Button button4;
             System.Windows.Forms.Button button5;
             System.Windows.Forms.Button button6;
-            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            System.Windows.Forms.TextBox textBox5;
+            System.Windows.Forms.Label label5;
+            System.Windows.Forms.Button button4;
+            System.Windows.Forms.Button button3;
+            System.Windows.Forms.TextBox textBox6;
+            System.Windows.Forms.Label label6;
+            System.Windows.Forms.Button button7;
+            this.modelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             textBox1 = new System.Windows.Forms.TextBox();
             textBox2 = new System.Windows.Forms.TextBox();
             button1 = new System.Windows.Forms.Button();
@@ -64,30 +69,31 @@
             radioButton3 = new System.Windows.Forms.RadioButton();
             radioButton2 = new System.Windows.Forms.RadioButton();
             radioButton1 = new System.Windows.Forms.RadioButton();
-            button3 = new System.Windows.Forms.Button();
-            button4 = new System.Windows.Forms.Button();
             button5 = new System.Windows.Forms.Button();
             button6 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
+            textBox5 = new System.Windows.Forms.TextBox();
+            label5 = new System.Windows.Forms.Label();
+            button4 = new System.Windows.Forms.Button();
+            button3 = new System.Windows.Forms.Button();
+            textBox6 = new System.Windows.Forms.TextBox();
+            label6 = new System.Windows.Forms.Label();
+            button7 = new System.Windows.Forms.Button();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
             // 
-            textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource1, "CurrentCollectionUri", true));
+            textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "CurrentCollectionUri", true));
             textBox1.Location = new System.Drawing.Point(116, 19);
             textBox1.Name = "textBox1";
             textBox1.Size = new System.Drawing.Size(269, 20);
             textBox1.TabIndex = 4;
             // 
-            // bindingSource1
-            // 
-            this.bindingSource1.DataSource = typeof(WitMorph.UI.HubViewModel);
-            // 
             // textBox2
             // 
-            textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource1, "CurrentProjectName", true));
+            textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "CurrentProjectName", true));
             textBox2.Location = new System.Drawing.Point(116, 45);
             textBox2.Name = "textBox2";
             textBox2.Size = new System.Drawing.Size(269, 20);
@@ -115,7 +121,7 @@
             // 
             // textBox3
             // 
-            textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource1, "GoalProjectName", true));
+            textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "GoalProjectName", true));
             textBox3.Location = new System.Drawing.Point(145, 68);
             textBox3.Name = "textBox3";
             textBox3.Size = new System.Drawing.Size(269, 20);
@@ -123,7 +129,7 @@
             // 
             // textBox4
             // 
-            textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.bindingSource1, "GoalCollectionUri", true));
+            textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "GoalCollectionUri", true));
             textBox4.Location = new System.Drawing.Point(145, 42);
             textBox4.Name = "textBox4";
             textBox4.Size = new System.Drawing.Size(269, 20);
@@ -163,6 +169,13 @@
             // 
             // groupBox2
             // 
+            groupBox2.Controls.Add(button7);
+            groupBox2.Controls.Add(textBox6);
+            groupBox2.Controls.Add(label6);
+            groupBox2.Controls.Add(button4);
+            groupBox2.Controls.Add(button3);
+            groupBox2.Controls.Add(textBox5);
+            groupBox2.Controls.Add(label5);
             groupBox2.Controls.Add(button2);
             groupBox2.Controls.Add(textBox3);
             groupBox2.Controls.Add(label3);
@@ -173,7 +186,7 @@
             groupBox2.Controls.Add(radioButton1);
             groupBox2.Location = new System.Drawing.Point(12, 132);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(540, 232);
+            groupBox2.Size = new System.Drawing.Size(535, 380);
             groupBox2.TabIndex = 8;
             groupBox2.TabStop = false;
             groupBox2.Text = "Process to convert to";
@@ -230,24 +243,6 @@
             radioButton1.Text = "Use process from an existing project";
             radioButton1.UseVisualStyleBackColor = true;
             // 
-            // button3
-            // 
-            button3.Location = new System.Drawing.Point(12, 370);
-            button3.Name = "button3";
-            button3.Size = new System.Drawing.Size(207, 23);
-            button3.TabIndex = 9;
-            button3.Text = "Select Process Template Map";
-            button3.UseVisualStyleBackColor = true;
-            // 
-            // button4
-            // 
-            button4.Location = new System.Drawing.Point(12, 399);
-            button4.Name = "button4";
-            button4.Size = new System.Drawing.Size(207, 23);
-            button4.TabIndex = 10;
-            button4.Text = "Generate Actions to file";
-            button4.UseVisualStyleBackColor = true;
-            // 
             // button5
             // 
             button5.Location = new System.Drawing.Point(665, 50);
@@ -266,31 +261,96 @@
             button6.Text = "Open Actions viewer/editor";
             button6.UseVisualStyleBackColor = true;
             // 
+            // textBox5
+            // 
+            textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "ProcessMapFile", true));
+            textBox5.Location = new System.Drawing.Point(116, 222);
+            textBox5.Name = "textBox5";
+            textBox5.Size = new System.Drawing.Size(269, 20);
+            textBox5.TabIndex = 14;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(6, 225);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(91, 13);
+            label5.TabIndex = 13;
+            label5.Text = "Process Map File:";
+            // 
+            // button4
+            // 
+            button4.Location = new System.Drawing.Point(262, 316);
+            button4.Name = "button4";
+            button4.Size = new System.Drawing.Size(123, 23);
+            button4.TabIndex = 16;
+            button4.Text = "Select Output File";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += new System.EventHandler(this.SelectOutputFile_Click);
+            // 
+            // button3
+            // 
+            button3.Location = new System.Drawing.Point(262, 248);
+            button3.Name = "button3";
+            button3.Size = new System.Drawing.Size(123, 23);
+            button3.TabIndex = 15;
+            button3.Text = "Select Process Map";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += new System.EventHandler(this.SelectProcessMap_Click);
+            // 
+            // textBox6
+            // 
+            textBox6.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "OutputActionsFile", true));
+            textBox6.Location = new System.Drawing.Point(116, 290);
+            textBox6.Name = "textBox6";
+            textBox6.Size = new System.Drawing.Size(269, 20);
+            textBox6.TabIndex = 18;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(6, 293);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(99, 13);
+            label6.TabIndex = 17;
+            label6.Text = "Output Actions File:";
+            // 
+            // button7
+            // 
+            button7.Location = new System.Drawing.Point(406, 351);
+            button7.Name = "button7";
+            button7.Size = new System.Drawing.Size(123, 23);
+            button7.TabIndex = 19;
+            button7.Text = "Generate Actions";
+            button7.UseVisualStyleBackColor = true;
+            // 
+            // modelBindingSource
+            // 
+            this.modelBindingSource.DataSource = typeof(WitMorph.UI.HubViewModel);
+            // 
             // HubForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1002, 488);
+            this.ClientSize = new System.Drawing.Size(1002, 524);
             this.Controls.Add(button6);
             this.Controls.Add(button5);
-            this.Controls.Add(button4);
-            this.Controls.Add(button3);
             this.Controls.Add(groupBox2);
             this.Controls.Add(groupBox1);
             this.Name = "HubForm";
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.BindingSource bindingSource1;
+        private System.Windows.Forms.BindingSource modelBindingSource;
     }
 }
 

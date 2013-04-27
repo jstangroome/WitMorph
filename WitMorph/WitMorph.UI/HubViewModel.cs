@@ -12,6 +12,8 @@ namespace WitMorph.UI
 
         private string _goalCollectionUri;
         private string _goalProjectName;
+        private string _processMapFile;
+        private string _outputActionsFile;
 
         public string CurrentCollectionUri
         {
@@ -49,6 +51,26 @@ namespace WitMorph.UI
             set
             {
                 _goalProjectName = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ProcessMapFile
+        {
+            get { return _processMapFile; }
+            set
+            {
+                _processMapFile = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string OutputActionsFile
+        {
+            get { return _outputActionsFile; }
+            set
+            {
+                _outputActionsFile = value;
                 OnPropertyChanged();
             }
         }
