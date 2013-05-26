@@ -39,6 +39,13 @@
             System.Windows.Forms.Label label2;
             System.Windows.Forms.Label label1;
             System.Windows.Forms.GroupBox groupBox2;
+            System.Windows.Forms.Button button7;
+            System.Windows.Forms.TextBox textBox6;
+            System.Windows.Forms.Label label6;
+            System.Windows.Forms.Button button4;
+            System.Windows.Forms.Button button3;
+            System.Windows.Forms.TextBox textBox5;
+            System.Windows.Forms.Label label5;
             System.Windows.Forms.Label label3;
             System.Windows.Forms.Label label4;
             System.Windows.Forms.RadioButton radioButton3;
@@ -46,13 +53,6 @@
             System.Windows.Forms.RadioButton radioButton1;
             System.Windows.Forms.Button button5;
             System.Windows.Forms.Button button6;
-            System.Windows.Forms.TextBox textBox5;
-            System.Windows.Forms.Label label5;
-            System.Windows.Forms.Button button4;
-            System.Windows.Forms.Button button3;
-            System.Windows.Forms.TextBox textBox6;
-            System.Windows.Forms.Label label6;
-            System.Windows.Forms.Button button7;
             this.modelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             textBox1 = new System.Windows.Forms.TextBox();
             textBox2 = new System.Windows.Forms.TextBox();
@@ -64,6 +64,13 @@
             label2 = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             groupBox2 = new System.Windows.Forms.GroupBox();
+            button7 = new System.Windows.Forms.Button();
+            textBox6 = new System.Windows.Forms.TextBox();
+            label6 = new System.Windows.Forms.Label();
+            button4 = new System.Windows.Forms.Button();
+            button3 = new System.Windows.Forms.Button();
+            textBox5 = new System.Windows.Forms.TextBox();
+            label5 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             radioButton3 = new System.Windows.Forms.RadioButton();
@@ -71,13 +78,6 @@
             radioButton1 = new System.Windows.Forms.RadioButton();
             button5 = new System.Windows.Forms.Button();
             button6 = new System.Windows.Forms.Button();
-            textBox5 = new System.Windows.Forms.TextBox();
-            label5 = new System.Windows.Forms.Label();
-            button4 = new System.Windows.Forms.Button();
-            button3 = new System.Windows.Forms.Button();
-            textBox6 = new System.Windows.Forms.TextBox();
-            label6 = new System.Windows.Forms.Label();
-            button7 = new System.Windows.Forms.Button();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).BeginInit();
@@ -191,6 +191,70 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "Process to convert to";
             // 
+            // button7
+            // 
+            button7.Location = new System.Drawing.Point(406, 351);
+            button7.Name = "button7";
+            button7.Size = new System.Drawing.Size(123, 23);
+            button7.TabIndex = 19;
+            button7.Text = "Generate Actions";
+            button7.UseVisualStyleBackColor = true;
+            button7.Click += new System.EventHandler(this.GenerateActions_Click);
+            // 
+            // textBox6
+            // 
+            textBox6.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "OutputActionsFile", true));
+            textBox6.Location = new System.Drawing.Point(116, 290);
+            textBox6.Name = "textBox6";
+            textBox6.Size = new System.Drawing.Size(269, 20);
+            textBox6.TabIndex = 18;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(6, 293);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(99, 13);
+            label6.TabIndex = 17;
+            label6.Text = "Output Actions File:";
+            // 
+            // button4
+            // 
+            button4.Location = new System.Drawing.Point(262, 316);
+            button4.Name = "button4";
+            button4.Size = new System.Drawing.Size(123, 23);
+            button4.TabIndex = 16;
+            button4.Text = "Select Output File";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += new System.EventHandler(this.SelectOutputFile_Click);
+            // 
+            // button3
+            // 
+            button3.Location = new System.Drawing.Point(262, 248);
+            button3.Name = "button3";
+            button3.Size = new System.Drawing.Size(123, 23);
+            button3.TabIndex = 15;
+            button3.Text = "Select Process Map";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += new System.EventHandler(this.SelectProcessMap_Click);
+            // 
+            // textBox5
+            // 
+            textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "ProcessMapFile", true));
+            textBox5.Location = new System.Drawing.Point(116, 222);
+            textBox5.Name = "textBox5";
+            textBox5.Size = new System.Drawing.Size(269, 20);
+            textBox5.TabIndex = 14;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(6, 225);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(91, 13);
+            label5.TabIndex = 13;
+            label5.Text = "Process Map File:";
+            // 
             // label3
             // 
             label3.AutoSize = true;
@@ -260,69 +324,6 @@
             button6.TabIndex = 12;
             button6.Text = "Open Actions viewer/editor";
             button6.UseVisualStyleBackColor = true;
-            // 
-            // textBox5
-            // 
-            textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "ProcessMapFile", true));
-            textBox5.Location = new System.Drawing.Point(116, 222);
-            textBox5.Name = "textBox5";
-            textBox5.Size = new System.Drawing.Size(269, 20);
-            textBox5.TabIndex = 14;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(6, 225);
-            label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(91, 13);
-            label5.TabIndex = 13;
-            label5.Text = "Process Map File:";
-            // 
-            // button4
-            // 
-            button4.Location = new System.Drawing.Point(262, 316);
-            button4.Name = "button4";
-            button4.Size = new System.Drawing.Size(123, 23);
-            button4.TabIndex = 16;
-            button4.Text = "Select Output File";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += new System.EventHandler(this.SelectOutputFile_Click);
-            // 
-            // button3
-            // 
-            button3.Location = new System.Drawing.Point(262, 248);
-            button3.Name = "button3";
-            button3.Size = new System.Drawing.Size(123, 23);
-            button3.TabIndex = 15;
-            button3.Text = "Select Process Map";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += new System.EventHandler(this.SelectProcessMap_Click);
-            // 
-            // textBox6
-            // 
-            textBox6.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "OutputActionsFile", true));
-            textBox6.Location = new System.Drawing.Point(116, 290);
-            textBox6.Name = "textBox6";
-            textBox6.Size = new System.Drawing.Size(269, 20);
-            textBox6.TabIndex = 18;
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Location = new System.Drawing.Point(6, 293);
-            label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(99, 13);
-            label6.TabIndex = 17;
-            label6.Text = "Output Actions File:";
-            // 
-            // button7
-            // 
-            button7.Location = new System.Drawing.Point(406, 351);
-            button7.Name = "button7";
-            button7.Size = new System.Drawing.Size(123, 23);
-            button7.TabIndex = 19;
-            button7.Text = "Generate Actions";
-            button7.UseVisualStyleBackColor = true;
             // 
             // modelBindingSource
             // 

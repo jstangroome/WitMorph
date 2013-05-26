@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 using Microsoft.TeamFoundation.Client;
 
@@ -16,9 +17,36 @@ namespace WitMorph.UI
             _view.SelectGoalTeamProject += SelectGoalTeamProject;
             _view.SelectProcessMap += SelectProcessMap;
             _view.SelectOutputFile += SelectOutputFile;
+            _view.GenerateActions += GenerateActions;
 
             _model = new HubViewModel();
             _view.SetDataSource(_model);
+        }
+
+        private void GenerateActions(object sender, EventArgs e)
+        {
+            // TODO validate inputs, handle exceptions
+
+            var factory = new ProcessTemplateFactory();
+
+            var currentTemplate = factory.FromActiveTeamProject(new Uri(_model.CurrentCollectionUri), _model.CurrentProjectName);
+            var goalTemplate = factory.FromActiveTeamProject(new Uri(_model.GoalCollectionUri), _model.GoalProjectName);
+
+            ProcessTemplateMap map;
+            using (var mapStream = File.OpenRead(_model.ProcessMapFile))
+            {
+                map = ProcessTemplateMap.Read(mapStream);
+            }
+
+            var diffEngine = new DiffEngine(map);
+            var differences = diffEngine.CompareProcessTemplates(currentTemplate, goalTemplate);
+
+            var engine = new MorphEngine();
+
+            var actions = engine.GenerateActions(differences);
+
+            var actionSerializer = new ActionSerializer();
+            actionSerializer.Serialize(actions, _model.OutputActionsFile);
         }
 
         private void SelectOutputFile(object sender, EventArgs e)
@@ -53,7 +81,6 @@ namespace WitMorph.UI
                 {
                     _model.ProcessMapFile = openDialog.FileName;
                 }
-
             }
         }
 
@@ -67,7 +94,6 @@ namespace WitMorph.UI
                     _model.GoalCollectionUri = picker.SelectedTeamProjectCollection.Uri.ToString();
                     _model.GoalProjectName = picker.SelectedProjects[0].Name;
                 }
-
             }
         }
 
@@ -81,9 +107,8 @@ namespace WitMorph.UI
                     _model.CurrentCollectionUri = picker.SelectedTeamProjectCollection.Uri.ToString();
                     _model.CurrentProjectName = picker.SelectedProjects[0].Name;
                 }
-                
             }
-
         }
+
     }
 }

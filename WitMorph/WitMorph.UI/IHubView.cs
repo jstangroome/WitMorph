@@ -9,5 +9,6 @@ namespace WitMorph.UI
         event EventHandler SelectGoalTeamProject;
         event EventHandler SelectProcessMap;
         event EventHandler SelectOutputFile;
+        event EventHandler GenerateActions;
     }
 }
