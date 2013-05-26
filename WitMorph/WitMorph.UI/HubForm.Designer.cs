@@ -51,9 +51,13 @@
             System.Windows.Forms.RadioButton radioButton3;
             System.Windows.Forms.RadioButton radioButton2;
             System.Windows.Forms.RadioButton radioButton1;
-            System.Windows.Forms.Button button5;
             System.Windows.Forms.Button button6;
+            System.Windows.Forms.TextBox textBox7;
+            System.Windows.Forms.Label label7;
+            System.Windows.Forms.Button button8;
+            System.Windows.Forms.Button button5;
             this.modelBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             textBox1 = new System.Windows.Forms.TextBox();
             textBox2 = new System.Windows.Forms.TextBox();
             button1 = new System.Windows.Forms.Button();
@@ -76,11 +80,15 @@
             radioButton3 = new System.Windows.Forms.RadioButton();
             radioButton2 = new System.Windows.Forms.RadioButton();
             radioButton1 = new System.Windows.Forms.RadioButton();
-            button5 = new System.Windows.Forms.Button();
             button6 = new System.Windows.Forms.Button();
+            textBox7 = new System.Windows.Forms.TextBox();
+            label7 = new System.Windows.Forms.Label();
+            button8 = new System.Windows.Forms.Button();
+            button5 = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).BeginInit();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).BeginInit();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox1
@@ -90,6 +98,10 @@
             textBox1.Name = "textBox1";
             textBox1.Size = new System.Drawing.Size(269, 20);
             textBox1.TabIndex = 4;
+            // 
+            // modelBindingSource
+            // 
+            this.modelBindingSource.DataSource = typeof(WitMorph.UI.HubViewModel);
             // 
             // textBox2
             // 
@@ -307,15 +319,6 @@
             radioButton1.Text = "Use process from an existing project";
             radioButton1.UseVisualStyleBackColor = true;
             // 
-            // button5
-            // 
-            button5.Location = new System.Drawing.Point(665, 50);
-            button5.Name = "button5";
-            button5.Size = new System.Drawing.Size(207, 23);
-            button5.TabIndex = 11;
-            button5.Text = "Apply Actions from File";
-            button5.UseVisualStyleBackColor = true;
-            // 
             // button6
             // 
             button6.Location = new System.Drawing.Point(665, 239);
@@ -325,26 +328,74 @@
             button6.Text = "Open Actions viewer/editor";
             button6.UseVisualStyleBackColor = true;
             // 
-            // modelBindingSource
+            // textBox7
             // 
-            this.modelBindingSource.DataSource = typeof(WitMorph.UI.HubViewModel);
+            textBox7.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "InputActionsFile", true));
+            textBox7.Location = new System.Drawing.Point(116, 19);
+            textBox7.Name = "textBox7";
+            textBox7.Size = new System.Drawing.Size(269, 20);
+            textBox7.TabIndex = 21;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new System.Drawing.Point(6, 22);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(91, 13);
+            label7.TabIndex = 20;
+            label7.Text = "Input Actions File:";
+            // 
+            // button8
+            // 
+            button8.Location = new System.Drawing.Point(262, 45);
+            button8.Name = "button8";
+            button8.Size = new System.Drawing.Size(123, 23);
+            button8.TabIndex = 19;
+            button8.Text = "Select Actions File";
+            button8.UseVisualStyleBackColor = true;
+            button8.Click += new System.EventHandler(this.SelectInputActionsFile_Click);
+            // 
+            // button5
+            // 
+            button5.Location = new System.Drawing.Point(262, 85);
+            button5.Name = "button5";
+            button5.Size = new System.Drawing.Size(123, 23);
+            button5.TabIndex = 22;
+            button5.Text = "Apply Actions";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += new System.EventHandler(this.ApplyActions_Click);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(button5);
+            this.groupBox3.Controls.Add(textBox7);
+            this.groupBox3.Controls.Add(label7);
+            this.groupBox3.Controls.Add(button8);
+            this.groupBox3.Location = new System.Drawing.Point(553, 12);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(437, 114);
+            this.groupBox3.TabIndex = 13;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Apply new process";
             // 
             // HubForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1002, 524);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(button6);
-            this.Controls.Add(button5);
             this.Controls.Add(groupBox2);
             this.Controls.Add(groupBox1);
             this.Name = "HubForm";
             this.Text = "Team Foundation Project Process Converter";
+            ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).EndInit();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -352,6 +403,7 @@
         #endregion
 
         private System.Windows.Forms.BindingSource modelBindingSource;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }
 

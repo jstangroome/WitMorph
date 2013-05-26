@@ -16,11 +16,39 @@ namespace WitMorph.UI
             _view.SelectCurrentTeamProject += SelectCurrentTeamProject;
             _view.SelectGoalTeamProject += SelectGoalTeamProject;
             _view.SelectProcessMap += SelectProcessMap;
-            _view.SelectOutputFile += SelectOutputFile;
+            _view.SelectOutputActionsFile += SelectOutputActionsFile;
             _view.GenerateActions += GenerateActions;
+            _view.SelectInputActionsFile += SelectInputActionsFile;
+            _view.ApplyActions += ApplyActions;
 
             _model = new HubViewModel();
             _view.SetDataSource(_model);
+        }
+
+        private void ApplyActions(object sender, EventArgs e)
+        {
+            var actionSerializer = new ActionSerializer();
+            var actions = actionSerializer.Deserialize(_model.InputActionsFile);
+            
+            var engine = new MorphEngine();
+            engine.Apply(new Uri(_model.CurrentCollectionUri), _model.CurrentProjectName, actions, Path.GetTempPath()); 
+        }
+
+        private void SelectInputActionsFile(object sender, EventArgs e)
+        {
+            // TODO change file extensions to something other than xml
+            using (var openDialog = new OpenFileDialog())
+            {
+                openDialog.CheckFileExists = true;
+                openDialog.DefaultExt = ".xml";
+                openDialog.DereferenceLinks = true;
+                openDialog.Filter = "WitMorph Process Map (*.xml)|*.xml|All files (*.*)|*.*";
+                var result = openDialog.ShowDialog(_view);
+                if (result == DialogResult.OK)
+                {
+                    _model.InputActionsFile = openDialog.FileName;
+                }
+            }
         }
 
         private void GenerateActions(object sender, EventArgs e)
@@ -49,7 +77,7 @@ namespace WitMorph.UI
             actionSerializer.Serialize(actions, _model.OutputActionsFile);
         }
 
-        private void SelectOutputFile(object sender, EventArgs e)
+        private void SelectOutputActionsFile(object sender, EventArgs e)
         {
             using (var saveDialog = new SaveFileDialog())
             {

@@ -24,8 +24,10 @@ namespace WitMorph.UI
         public event EventHandler SelectCurrentTeamProject;
         public event EventHandler SelectGoalTeamProject;
         public event EventHandler SelectProcessMap;
-        public event EventHandler SelectOutputFile;
+        public event EventHandler SelectOutputActionsFile;
         public event EventHandler GenerateActions;
+        public event EventHandler ApplyActions;
+        public event EventHandler SelectInputActionsFile;
 
         private void SelectGoalTeamProject_Click(object sender, EventArgs e)
         {
@@ -41,13 +43,25 @@ namespace WitMorph.UI
 
         private void SelectOutputFile_Click(object sender, EventArgs e)
         {
-            var handler = SelectOutputFile;
+            var handler = SelectOutputActionsFile;
             if (handler != null) handler(this, EventArgs.Empty);
         }
 
         private void GenerateActions_Click(object sender, EventArgs e)
         {
             var handler = GenerateActions;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        private void SelectInputActionsFile_Click(object sender, EventArgs e)
+        {
+            var handler = SelectInputActionsFile;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        private void ApplyActions_Click(object sender, EventArgs e)
+        {
+            var handler = ApplyActions;
             if (handler != null) handler(this, EventArgs.Empty);
         }
     }
