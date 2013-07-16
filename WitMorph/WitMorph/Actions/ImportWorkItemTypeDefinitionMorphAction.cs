@@ -44,6 +44,10 @@ namespace WitMorph.Actions
             try
             {
                 project.WorkItemTypes.Import(_typeDefinition.WITDElement);
+                if (accumulator.ImportEventArgs.Count != 0)
+                {
+                    throw new ProvisionValidationException(string.Format("Could not import work item type definition '{0}'", WorkItemTypeName));
+                }
                 project.Store.RefreshCache(true);
             }
             catch (ProvisionValidationException)

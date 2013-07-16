@@ -24,6 +24,13 @@ namespace WitMorph.Actions
 
         public override void Execute(XmlElement witdElement)
         {
+            var fieldsElement = FieldsElement(witdElement);
+            var originalFieldElement = fieldsElement.SelectSingleNode(string.Format("FIELD[@refname='{0}']", ReferenceName));
+            if (originalFieldElement != null)
+            {
+                throw new InvalidOperationException(string.Format("Cannot add field '{0}' that exists.", ReferenceName));
+            }
+
             AppendImportedChild(FieldsElement(witdElement), _field.Element);
         }
 

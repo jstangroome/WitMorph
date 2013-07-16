@@ -35,8 +35,11 @@ namespace WitMorph.Actions
             foreach (WorkItem workItem in workItems)
             {
                 Debug.WriteLine(workItem.Id);
-                workItem.Fields[_toFieldReferenceName].Value = workItem.Fields[_fromFieldReferenceName].Value;
-                workItem.Save();
+                if (workItem.Fields.Contains(_fromFieldReferenceName) && workItem.Fields.Contains(_toFieldReferenceName))
+                {
+                    workItem.Fields[_toFieldReferenceName].Value = workItem.Fields[_fromFieldReferenceName].Value;
+                    workItem.Save();
+                }
             }
 
         }

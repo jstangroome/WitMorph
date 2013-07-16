@@ -75,9 +75,13 @@
     <EmbeddedResource Include="ProcessTemplates\Microsoft Visual Studio Scrum 2.0.zip" />
     <EmbeddedResource Include="ProcessTemplates\MSF for Agile Software Development 6.0.zip" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="ProcessTemplateMaps\Agile6ToScrum2.xml">
+    <EmbeddedResource Include="ProcessTemplateMaps\Agile6.1_to_Scrum2.1.witmap">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProcessTemplateMaps\Agile6ToScrum2.witmap">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

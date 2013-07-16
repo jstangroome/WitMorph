@@ -18,6 +18,7 @@ namespace WitMorph.UI
         private string _processMapFile;
         private string _outputActionsFile;
         private string _inputActionsFile;
+        private string _outputPath;
 
         private bool _ready;
         private string _resultMessage;
@@ -64,6 +65,12 @@ namespace WitMorph.UI
         {
             get { return _inputActionsFile; }
             set { ChangeProperty(ref _inputActionsFile, value); }
+        }
+
+        public string OutputPath
+        {
+            get { return _outputPath; }
+            set { ChangeProperty(ref _outputPath, value); }
         }
 
         public bool Ready

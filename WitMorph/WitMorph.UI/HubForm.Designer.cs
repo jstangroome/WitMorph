@@ -58,6 +58,8 @@
             System.Windows.Forms.Button button5;
             System.Windows.Forms.ErrorProvider modelErrorProvider;
             System.Windows.Forms.TextBox textBox8;
+            System.Windows.Forms.TextBox textBox9;
+            System.Windows.Forms.Label label8;
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.modelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             textBox1 = new System.Windows.Forms.TextBox();
@@ -89,6 +91,8 @@
             button5 = new System.Windows.Forms.Button();
             modelErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             textBox8 = new System.Windows.Forms.TextBox();
+            textBox9 = new System.Windows.Forms.TextBox();
+            label8 = new System.Windows.Forms.Label();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(modelErrorProvider)).BeginInit();
@@ -374,7 +378,7 @@
             // button5
             // 
             button5.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
-            button5.Location = new System.Drawing.Point(262, 85);
+            button5.Location = new System.Drawing.Point(262, 138);
             button5.Name = "button5";
             button5.Size = new System.Drawing.Size(123, 23);
             button5.TabIndex = 22;
@@ -387,19 +391,6 @@
             modelErrorProvider.ContainerControl = this;
             modelErrorProvider.DataSource = this.modelBindingSource;
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(button5);
-            this.groupBox3.Controls.Add(textBox7);
-            this.groupBox3.Controls.Add(label7);
-            this.groupBox3.Controls.Add(button8);
-            this.groupBox3.Location = new System.Drawing.Point(553, 12);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(437, 114);
-            this.groupBox3.TabIndex = 13;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Apply new process";
-            // 
             // textBox8
             // 
             textBox8.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "ResultMessage", true));
@@ -409,6 +400,39 @@
             textBox8.ReadOnly = true;
             textBox8.Size = new System.Drawing.Size(1002, 20);
             textBox8.TabIndex = 14;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(textBox9);
+            this.groupBox3.Controls.Add(label8);
+            this.groupBox3.Controls.Add(button5);
+            this.groupBox3.Controls.Add(textBox7);
+            this.groupBox3.Controls.Add(label7);
+            this.groupBox3.Controls.Add(button8);
+            this.groupBox3.Location = new System.Drawing.Point(553, 12);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(437, 178);
+            this.groupBox3.TabIndex = 13;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Apply new process";
+            // 
+            // textBox9
+            // 
+            textBox9.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
+            textBox9.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "OutputPath", true));
+            textBox9.Location = new System.Drawing.Point(116, 87);
+            textBox9.Name = "textBox9";
+            textBox9.Size = new System.Drawing.Size(269, 20);
+            textBox9.TabIndex = 24;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new System.Drawing.Point(6, 90);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(67, 13);
+            label8.TabIndex = 23;
+            label8.Text = "Output Path:";
             // 
             // modelBindingSource
             // 

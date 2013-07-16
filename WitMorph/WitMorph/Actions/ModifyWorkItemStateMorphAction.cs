@@ -34,6 +34,7 @@ namespace WitMorph.Actions
             foreach (WorkItem workItem in workItems)
             {
                 Debug.WriteLine(workItem.Id);
+                if (!workItem.IsOpen) workItem.Open();
                 workItem.State = _toValue;
                 workItem.Save();
             }

@@ -78,7 +78,15 @@ namespace WitMorph.Actions
                     xw.WriteAttributeString("id", workItem.Id.ToString(CultureInfo.InvariantCulture));
                     foreach (var fieldReferenceName in _fieldReferenceNames)
                     {
-                        xw.WriteElementString(fieldReferenceName, workItem.Fields[fieldReferenceName].Value.ToString());
+                        if (workItem.Fields.Contains(fieldReferenceName))
+                        {
+                            xw.WriteElementString(fieldReferenceName, Convert.ToString(workItem.Fields[fieldReferenceName].Value));
+                        }
+                        else
+                        {
+                            xw.WriteElementString(fieldReferenceName, "[missing]");
+                        } 
+
                     }
                     xw.WriteEndElement();
                 }

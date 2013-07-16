@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Windows.Forms;
 using Microsoft.TeamFoundation.Client;
+using WitMorph.Actions;
 
 namespace WitMorph.UI
 {
@@ -23,17 +24,92 @@ namespace WitMorph.UI
             _view.SelectInputActionsFile += SelectInputActionsFile;
             _view.ApplyActions += ApplyActions;
 
-            _model = new HubViewModel {Ready = true};
+            _model = new HubViewModel {Ready = true, OutputPath = Path.GetTempPath()};
             _view.SetDataSource(_model);
         }
 
         private void ApplyActions(object sender, EventArgs e)
         {
-            var actionSerializer = new ActionSerializer();
-            var actions = actionSerializer.Deserialize(_model.InputActionsFile);
+            using (new DisposableAction(() => _model.Ready = true))
+            {
+                _model.Ready = false;
+
+                var actions = ReadInputActionsFile();
+                var outputPath = GetOutputPath();
+
+                var factory = new ProcessTemplateFactory();
+                var currentTemplate = GetProcessTemplate(factory, m => m.CurrentCollectionUri, m => m.CurrentProjectName);
+                
+                if (actions == null || currentTemplate == null || outputPath == null) return;
+
+                try
+                {
+                    var engine = new MorphEngine();
+                    engine.Apply(new Uri(_model.CurrentCollectionUri), _model.CurrentProjectName, actions, outputPath);
+                    _model.ResultMessage = "Successfully applied actions.";
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    _model.ResultMessage = string.Format("Failed to apply actions: {0}", ex.Message);
+                }
+            }
+        }
+
+        private string GetOutputPath()
+        {
+            _model.ClearError(m => m.OutputPath);
+            if (string.IsNullOrWhiteSpace(_model.OutputPath))
+            {
+                _model.SetError(m => m.OutputPath, "Required.");
+                return null;
+            }
+            try
+            {
+                if (!Directory.Exists(_model.OutputPath))
+                {
+                    Directory.CreateDirectory(_model.OutputPath);
+                }
+                var testFile = Path.Combine(_model.OutputPath, ".outputtest");
+                File.WriteAllText(testFile, "testfile");
+                File.Delete(testFile);
+                return _model.OutputPath;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                _model.SetError(m => m.OutputPath, ex.Message);
+            }
+            return null;
+        }
+
+        private MorphAction[] ReadInputActionsFile()
+        {
+            _model.ClearError(m => m.InputActionsFile);
+
+            if (string.IsNullOrWhiteSpace(_model.InputActionsFile))
+            {
+                _model.SetError(m => m.InputActionsFile, "Required.");
+                return null;
+            }
             
-            var engine = new MorphEngine();
-            engine.Apply(new Uri(_model.CurrentCollectionUri), _model.CurrentProjectName, actions, Path.GetTempPath()); 
+            if (!File.Exists(_model.InputActionsFile))
+            {
+                _model.SetError(m => m.InputActionsFile, "File not found.");
+                return null;
+            }
+
+            try
+            {
+                var actionSerializer = new ActionSerializer();
+                return actionSerializer.Deserialize(_model.InputActionsFile);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                _model.SetError(m => m.InputActionsFile, ex.Message);
+            }
+            return null;
         }
 
         private void SelectInputActionsFile(object sender, EventArgs e)
@@ -48,6 +124,7 @@ namespace WitMorph.UI
                 if (result == DialogResult.OK)
                 {
                     _model.InputActionsFile = openDialog.FileName;
+                    _model.ClearError(m => m.InputActionsFile);
                 }
             }
         }
@@ -57,8 +134,6 @@ namespace WitMorph.UI
             using (new DisposableAction(() => _model.Ready = true))
             {
                 _model.Ready = false;
-
-                // TODO handle exceptions
 
                 var factory = new ProcessTemplateFactory();
 
