@@ -56,8 +56,10 @@
             System.Windows.Forms.Label label7;
             System.Windows.Forms.Button button8;
             System.Windows.Forms.Button button5;
-            this.modelBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            System.Windows.Forms.ErrorProvider modelErrorProvider;
+            System.Windows.Forms.TextBox textBox8;
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.modelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             textBox1 = new System.Windows.Forms.TextBox();
             textBox2 = new System.Windows.Forms.TextBox();
             button1 = new System.Windows.Forms.Button();
@@ -85,27 +87,28 @@
             label7 = new System.Windows.Forms.Label();
             button8 = new System.Windows.Forms.Button();
             button5 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).BeginInit();
+            modelErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            textBox8 = new System.Windows.Forms.TextBox();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(modelErrorProvider)).BeginInit();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
             // 
             textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "CurrentCollectionUri", true));
+            textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             textBox1.Location = new System.Drawing.Point(116, 19);
             textBox1.Name = "textBox1";
             textBox1.Size = new System.Drawing.Size(269, 20);
             textBox1.TabIndex = 4;
             // 
-            // modelBindingSource
-            // 
-            this.modelBindingSource.DataSource = typeof(WitMorph.UI.HubViewModel);
-            // 
             // textBox2
             // 
             textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "CurrentProjectName", true));
+            textBox2.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             textBox2.Location = new System.Drawing.Point(116, 45);
             textBox2.Name = "textBox2";
             textBox2.Size = new System.Drawing.Size(269, 20);
@@ -113,6 +116,7 @@
             // 
             // button1
             // 
+            button1.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             button1.Location = new System.Drawing.Point(262, 71);
             button1.Name = "button1";
             button1.Size = new System.Drawing.Size(123, 23);
@@ -123,6 +127,7 @@
             // 
             // button2
             // 
+            button2.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             button2.Location = new System.Drawing.Point(291, 94);
             button2.Name = "button2";
             button2.Size = new System.Drawing.Size(123, 23);
@@ -134,6 +139,7 @@
             // textBox3
             // 
             textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "GoalProjectName", true));
+            textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             textBox3.Location = new System.Drawing.Point(145, 68);
             textBox3.Name = "textBox3";
             textBox3.Size = new System.Drawing.Size(269, 20);
@@ -142,6 +148,7 @@
             // textBox4
             // 
             textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "GoalCollectionUri", true));
+            textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             textBox4.Location = new System.Drawing.Point(145, 42);
             textBox4.Name = "textBox4";
             textBox4.Size = new System.Drawing.Size(269, 20);
@@ -205,6 +212,7 @@
             // 
             // button7
             // 
+            button7.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             button7.Location = new System.Drawing.Point(406, 351);
             button7.Name = "button7";
             button7.Size = new System.Drawing.Size(123, 23);
@@ -216,6 +224,7 @@
             // textBox6
             // 
             textBox6.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "OutputActionsFile", true));
+            textBox6.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             textBox6.Location = new System.Drawing.Point(116, 290);
             textBox6.Name = "textBox6";
             textBox6.Size = new System.Drawing.Size(269, 20);
@@ -232,6 +241,7 @@
             // 
             // button4
             // 
+            button4.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             button4.Location = new System.Drawing.Point(262, 316);
             button4.Name = "button4";
             button4.Size = new System.Drawing.Size(123, 23);
@@ -242,6 +252,7 @@
             // 
             // button3
             // 
+            button3.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             button3.Location = new System.Drawing.Point(262, 248);
             button3.Name = "button3";
             button3.Size = new System.Drawing.Size(123, 23);
@@ -253,6 +264,7 @@
             // textBox5
             // 
             textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "ProcessMapFile", true));
+            textBox5.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             textBox5.Location = new System.Drawing.Point(116, 222);
             textBox5.Name = "textBox5";
             textBox5.Size = new System.Drawing.Size(269, 20);
@@ -311,6 +323,7 @@
             // 
             radioButton1.AutoSize = true;
             radioButton1.Checked = true;
+            radioButton1.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             radioButton1.Location = new System.Drawing.Point(9, 19);
             radioButton1.Name = "radioButton1";
             radioButton1.Size = new System.Drawing.Size(195, 17);
@@ -321,6 +334,7 @@
             // 
             // button6
             // 
+            button6.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             button6.Location = new System.Drawing.Point(665, 239);
             button6.Name = "button6";
             button6.Size = new System.Drawing.Size(207, 23);
@@ -331,6 +345,7 @@
             // textBox7
             // 
             textBox7.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "InputActionsFile", true));
+            textBox7.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             textBox7.Location = new System.Drawing.Point(116, 19);
             textBox7.Name = "textBox7";
             textBox7.Size = new System.Drawing.Size(269, 20);
@@ -347,6 +362,7 @@
             // 
             // button8
             // 
+            button8.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             button8.Location = new System.Drawing.Point(262, 45);
             button8.Name = "button8";
             button8.Size = new System.Drawing.Size(123, 23);
@@ -357,6 +373,7 @@
             // 
             // button5
             // 
+            button5.DataBindings.Add(new System.Windows.Forms.Binding("Enabled", this.modelBindingSource, "Ready", true, System.Windows.Forms.DataSourceUpdateMode.Never));
             button5.Location = new System.Drawing.Point(262, 85);
             button5.Name = "button5";
             button5.Size = new System.Drawing.Size(123, 23);
@@ -364,6 +381,11 @@
             button5.Text = "Apply Actions";
             button5.UseVisualStyleBackColor = true;
             button5.Click += new System.EventHandler(this.ApplyActions_Click);
+            // 
+            // modelErrorProvider
+            // 
+            modelErrorProvider.ContainerControl = this;
+            modelErrorProvider.DataSource = this.modelBindingSource;
             // 
             // groupBox3
             // 
@@ -378,25 +400,43 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Apply new process";
             // 
+            // textBox8
+            // 
+            textBox8.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.modelBindingSource, "ResultMessage", true));
+            textBox8.Dock = System.Windows.Forms.DockStyle.Bottom;
+            textBox8.Location = new System.Drawing.Point(0, 581);
+            textBox8.Name = "textBox8";
+            textBox8.ReadOnly = true;
+            textBox8.Size = new System.Drawing.Size(1002, 20);
+            textBox8.TabIndex = 14;
+            // 
+            // modelBindingSource
+            // 
+            this.modelBindingSource.DataSource = typeof(WitMorph.UI.HubViewModel);
+            // 
             // HubForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1002, 524);
+            this.ClientSize = new System.Drawing.Size(1002, 601);
+            this.Controls.Add(textBox8);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(button6);
             this.Controls.Add(groupBox2);
             this.Controls.Add(groupBox1);
+            this.MaximizeBox = false;
             this.Name = "HubForm";
             this.Text = "Team Foundation Project Process Converter";
-            ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(modelErrorProvider)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.modelBindingSource)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
