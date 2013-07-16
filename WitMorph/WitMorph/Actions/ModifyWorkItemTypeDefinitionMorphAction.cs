@@ -156,7 +156,14 @@ namespace WitMorph.Actions
 
         public override void Execute(XmlElement witdElement)
         {
-            AppendImportedChild(StatesElement(witdElement), _state.Element);
+            var statesElement = StatesElement(witdElement);
+            var originalStateElement = statesElement.SelectSingleNode(string.Format("STATE[@value='{0}']", _state.Value));
+            if (originalStateElement != null)
+            {
+                throw new InvalidOperationException(string.Format("Cannot add state '{0}' that exists.", _state.Value));
+            }
+
+            AppendImportedChild(statesElement, _state.Element);
         }
 
         public override void SerializeCore(XmlWriter writer)
@@ -383,9 +390,16 @@ namespace WitMorph.Actions
 
         public ILinkableAction AddWorkflowState(WitdState state)
         {
-            var subAction = new AddStateModifyWorkItemTypeDefinitionSubAction(state);
-            _subActions.Add(subAction);
-            return subAction;
+            var newSubAction = new AddStateModifyWorkItemTypeDefinitionSubAction(state);
+
+            var existingAction = _subActions
+                .OfType<AddStateModifyWorkItemTypeDefinitionSubAction>()
+                .FirstOrDefault(a => a.Name == newSubAction.Name); // match on more than name?
+
+            if (existingAction != null) return existingAction;
+
+            _subActions.Add(newSubAction);
+            return newSubAction;
         }
 
         public ILinkableAction AddWorkflowTransition(string fromState, string toState, string defaultReason)
