@@ -35,10 +35,24 @@ namespace WitMorph.Actions
             foreach (WorkItem workItem in workItems)
             {
                 Debug.WriteLine(workItem.Id);
-                if (workItem.Fields.Contains(_fromFieldReferenceName) && workItem.Fields.Contains(_toFieldReferenceName))
+                var hasFromField = workItem.Fields.Contains(_fromFieldReferenceName);
+                var hasToField = workItem.Fields.Contains(_toFieldReferenceName);
+                if (hasFromField && hasToField)
                 {
+                    if (!workItem.IsOpen) workItem.Open();
                     workItem.Fields[_toFieldReferenceName].Value = workItem.Fields[_fromFieldReferenceName].Value;
                     workItem.Save();
+                }
+                else
+                {
+                    if (!hasFromField)
+                    {
+                        context.Log(string.Format("Work item '{0}' is missing field '{1}'.", workItem.Id, _fromFieldReferenceName), TraceLevel.Warning);
+                    }
+                    if (!hasToField)
+                    {
+                        context.Log(string.Format("Work item '{0}' is missing field '{1}'.", workItem.Id, _toFieldReferenceName), TraceLevel.Warning);
+                    }
                 }
             }
 
