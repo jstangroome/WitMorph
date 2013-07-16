@@ -31,7 +31,7 @@ namespace WitMorph.Actions
 
         public void Log(string message, TraceLevel traceLevel)
         {
-            if (traceLevel < TraceLevel) return;
+            if (traceLevel > TraceLevel) return;
             var path = Path.Combine(OutputPath, ProjectName + ".log");
             using (var w = new StreamWriter(path, append: true))
             {
