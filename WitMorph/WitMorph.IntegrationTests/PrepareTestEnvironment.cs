@@ -24,20 +24,19 @@ namespace WitMorph.IntegrationTests
         private static readonly object Lock = new object();
         private static volatile bool _hasReset;
 
-        public static void ResetCollection()
+        public static void ResetCollectionOnce()
         {
             if (_hasReset) return;
             lock (Lock)
             {
                 if (_hasReset) return;
-                ResetCollectionInternal();
+                ResetCollection();
                 _hasReset = true;
             }
         }
 
-        private static void ResetCollectionInternal()
+        public static void ResetCollection()
         {
-
             /*
              * add test run user to TFS Server admins and SQL admins
              * create new collection WitMorphTests
@@ -45,12 +44,15 @@ namespace WitMorph.IntegrationTests
              * add new team project 'Agile-6.1'
              * detach collection and backup db
              */
-
-            const string testServerUri = "http://localhost:8080/tfs";
-            const string testCollectionName = "WitMorphTests";
             const string databaseBackupRelativePath = @"tfs_witmorphtests.bak";
-
             var databaseBackupFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), databaseBackupRelativePath);
+            ResetCollection("WitMorphTests", databaseBackupFile, false);    
+        }
+
+        public static void ResetCollection(string testCollectionName, string databaseBackupFile, bool cloneCollection)
+        {
+            const string testServerUri = "http://localhost:8080/tfs";
+
             Assert.IsTrue(File.Exists(databaseBackupFile), "Collection database backup not found at '{0}'", databaseBackupFile);
 
             var server = new TfsConfigurationServer(new Uri(testServerUri));
@@ -60,7 +62,7 @@ namespace WitMorph.IntegrationTests
 
             RestoreDatabase(collectionInfo, databaseBackupFile);
 
-            var attachedCollection = AttachCollection(server, collectionInfo);
+            var attachedCollection = AttachCollection(server, collectionInfo, cloneCollection);
 
             Assert.AreEqual(TeamFoundationServiceHostStatus.Started, attachedCollection.State, "Collection not started");
         }
@@ -98,10 +100,10 @@ namespace WitMorph.IntegrationTests
                    };
         }
 
-        private static TeamProjectCollection AttachCollection(TfsConfigurationServer server, CollectionInformation collectionInfo)
+        private static TeamProjectCollection AttachCollection(TfsConfigurationServer server, CollectionInformation collectionInfo, bool cloneCollection)
         {
             var collectionService = server.GetService<ITeamProjectCollectionService>();
-            var jobDetail = collectionService.QueueAttachCollection(collectionInfo.ConnectionString, null, false, collectionInfo.Name, null, collectionInfo.VirtualDir);
+            var jobDetail = collectionService.QueueAttachCollection(collectionInfo.ConnectionString, null, cloneCollection, collectionInfo.Name, null, collectionInfo.VirtualDir);
             return collectionService.WaitForCollectionServicingToComplete(jobDetail);
         }
 

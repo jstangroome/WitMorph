@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using WitMorph.Actions;
 using WitMorph.Differences;
 using WitMorph.Model;
 using WitMorph.Tests.ProcessTemplates;
@@ -26,13 +27,28 @@ namespace WitMorph.Tests
                     var currentProcessTemplate = new ProcessTemplate {WorkItemTypeDefinitions = new ReadOnlyCollection<WorkItemTypeDefinition>(currentTemplateReader.WorkItemTypeDefinitions.ToArray())};
                     var goalProcessTemplate = new ProcessTemplate {WorkItemTypeDefinitions = new ReadOnlyCollection<WorkItemTypeDefinition>(goalTemplateReader.WorkItemTypeDefinitions.ToArray())};
 
-                    var diffEngine = new DiffEngine(ProcessTemplateMap.ConvertAgile6ToScrum2());
+                    var diffEngine = new DiffEngine(ProcessTemplateMaps.Agile61ToScrum21());
                     _differences = diffEngine.CompareProcessTemplates(currentProcessTemplate, goalProcessTemplate);
                 }
 
                 return _differences;
             }
         }
-     
+
+        private static MorphAction[] _actions;
+
+        protected static MorphAction[] Actions
+        {
+            get
+            {
+                if (_actions != null) return _actions;
+
+                var morphEngine = new MorphEngine();
+                _actions = morphEngine.GenerateActions(Differences);
+
+                return _actions;
+            }
+        }
+
     }
 }

@@ -7,4 +7,5 @@
   <workitemstate type="User Story" from="Active" to="Approved" />
   <workitemstate type="User Story" from="Closed" to="Done" />
   <workitemstate type="User Story" from="Resolved" to="Done" />
+  <workitemstate type="Task" from="Active" to="In Progress" />
 </processtemplatemap>

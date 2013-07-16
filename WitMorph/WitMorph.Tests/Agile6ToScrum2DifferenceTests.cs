@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using WitMorph.Actions;
 using WitMorph.Differences;
 
 namespace WitMorph.Tests
@@ -10,23 +11,14 @@ namespace WitMorph.Tests
     {
       
         [TestMethod]
-        public void Agile6ToScrum2Difference_should_identify_new_Impediment_work_item_type()
+        public void Agile6ToScrum2Difference_should_identify_Issue_renamed_to_Impediment_work_item_type()
         {
-            var addedImpediment = Differences
-                .OfType<AddedWorkItemTypeDefinitionDifference>()
-                .SingleOrDefault(d => d.WorkItemTypeDefinition.Name.Equals("Impediment", StringComparison.InvariantCultureIgnoreCase));
+            var renamedIssue = Differences
+                .OfType<RenamedWorkItemTypeDefinitionDifference>()
+                .SingleOrDefault(d => d.CurrentTypeName.Equals("Issue", StringComparison.InvariantCultureIgnoreCase) &&
+                    d.GoalTypeName.Equals("Impediment", StringComparison.InvariantCultureIgnoreCase));
 
-            Assert.IsNotNull(addedImpediment);
-        }
-
-        [TestMethod]
-        public void Agile6ToScrum2Difference_should_identify_removed_Issue_work_item_type()
-        {
-            var removedIssue = Differences
-                .OfType<RemovedWorkItemTypeDefinitionDifference>()
-                .SingleOrDefault(d => d.TypeName.Equals("Issue", StringComparison.InvariantCultureIgnoreCase));
-
-            Assert.IsNotNull(removedIssue);
+            Assert.IsNotNull(renamedIssue);
         }
 
         [TestMethod]
@@ -89,6 +81,39 @@ namespace WitMorph.Tests
                     && d.GoalStateName == "In Progress");
 
             Assert.IsNotNull(stateRename, "Task Active state rename not identified");
+        }
+
+        [TestMethod]
+        public void Agile6ToScrum2Difference_should_identify_Closed_and_Resolved_states_renamed_to_Done_for_User_Story()
+        {
+            var closedStateRename = Differences
+                .OfType<RenamedWorkItemStateDifference>()
+                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "User Story"
+                    && d.CurrentStateName == "Closed"
+                    && d.GoalStateName == "Done");
+
+            var resolvedStateRename = Differences
+                .OfType<RenamedWorkItemStateDifference>()
+                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "User Story"
+                    && d.CurrentStateName == "Resolved"
+                    && d.GoalStateName == "Done");
+
+            Assert.IsNotNull(closedStateRename, "User Story Closed state rename not identified");
+            Assert.IsNotNull(resolvedStateRename, "User Story Resolved state rename not identified");
+        }
+
+        [TestMethod]
+        public void Agile6ToScrum2_should_add_User_Story_Done_state_once()
+        {
+            var addDoneStateActions = Actions
+                .OfType<ModifyWorkItemTypeDefinitionMorphAction>()
+                .Where(a => a.WorkItemTypeName == "User Story")
+                .SelectMany(a => a.SubActions
+                    .OfType<AddStateModifyWorkItemTypeDefinitionSubAction>()
+                    .Where(s => s.Name == "Done")
+                );
+
+            Assert.AreEqual(1, addDoneStateActions.Count(), "Should only add Done state once.");
         }
 
     }

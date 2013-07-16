@@ -7,9 +7,9 @@ namespace WitMorph.Tests
     public class ProcessTemplateMapTests
     {
         [TestMethod]
-        public void ProcessTemplateMap_should_be_readable_from_file()
+        public void ProcessTemplateMap_should_be_readable_from_stream()
         {
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("WitMorph.Tests.ProcessTemplateMaps.Agile6ToScrum2.witmap"))
+            using (var stream = typeof(ProcessTemplateMaps).Assembly.GetManifestResourceStream("WitMorph.ProcessTemplateMaps.Agile6ToScrum2.witmap"))
             {
                 var map = ProcessTemplateMap.Read(stream);
 

@@ -58,22 +58,6 @@ namespace WitMorph
             return map;
         }
 
-        public static ProcessTemplateMap ConvertAgile6ToScrum2()
-        {
-            var map = new ProcessTemplateMap();
-
-            map._workItemTypeMap.Add("User Story", "Product Backlog Item");
-
-            map._workItemFieldMap.Add("Microsoft.VSTS.Common.StackRank", "Microsoft.VSTS.Common.BacklogPriority");
-
-            // Agile Task => Scrum Task
-            var taskStateMap = new CurrentToGoalMap<string>(StringComparer.OrdinalIgnoreCase);
-            taskStateMap.Add("Active", "In Progress");
-            map._workItemStateMaps.Add("Task", taskStateMap);
-
-            return map;
-        }
-
         private ProcessTemplateMap()
         {
             _systemFieldReferenceNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
