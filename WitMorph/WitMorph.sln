@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitMorph", "WitMorph\WitMorph.csproj", "{E651E0D9-CD14-4D94-8669-B336FE3FF32F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitMorph.Tests", "WitMorph.Tests\WitMorph.Tests.csproj", "{5D7FFF4A-593B-4BE6-8E50-EDC02F97AAB9}"
@@ -12,6 +14,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitMorph.UI", "WitMorph.UI\WitMorph.UI.csproj", "{920F5DF6-3702-4078-B688-E45EE17DA11C}"
 EndProject
 Global
+	GlobalSection(CodealikeProperties) = postSolution
+		SolutionGuid = 12ea44f5-6087-4a02-ab8b-998dc4c77f8c
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
