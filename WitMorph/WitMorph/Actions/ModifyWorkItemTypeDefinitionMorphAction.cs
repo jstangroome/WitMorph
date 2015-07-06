@@ -24,14 +24,16 @@ namespace WitMorph.Actions
 
         public override void Execute(XmlElement witdElement)
         {
+            //TODO: JH Check if field already exists
+
             var fieldsElement = FieldsElement(witdElement);
             var originalFieldElement = fieldsElement.SelectSingleNode(string.Format("FIELD[@refname='{0}']", ReferenceName));
-            if (originalFieldElement != null)
+            if (originalFieldElement == null)
             {
-                throw new InvalidOperationException(string.Format("Cannot add field '{0}' that exists.", ReferenceName));
+                AppendImportedChild(FieldsElement(witdElement), _field.Element);
             }
 
-            AppendImportedChild(FieldsElement(witdElement), _field.Element);
+            
         }
 
         public override void SerializeCore(XmlWriter writer)
@@ -158,12 +160,10 @@ namespace WitMorph.Actions
         {
             var statesElement = StatesElement(witdElement);
             var originalStateElement = statesElement.SelectSingleNode(string.Format("STATE[@value='{0}']", _state.Value));
-            if (originalStateElement != null)
+            if (originalStateElement == null)
             {
-                throw new InvalidOperationException(string.Format("Cannot add state '{0}' that exists.", _state.Value));
+                AppendImportedChild(statesElement, _state.Element);
             }
-
-            AppendImportedChild(statesElement, _state.Element);
         }
 
         public override void SerializeCore(XmlWriter writer)
@@ -499,6 +499,69 @@ namespace WitMorph.Actions
             }
             return builder.ToString();
         }
+
+        public RemoveTransitionModifyWorkItemTypeDefinitionSubAction RemoveWorkflowTransition(string fromState, string toState)
+        {
+            var subAction = new RemoveTransitionModifyWorkItemTypeDefinitionSubAction(fromState, toState);
+            _subActions.Add(subAction);
+            return subAction;
+        }
     }
 
+    public class RemoveTransitionModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
+    {
+        public RemoveTransitionModifyWorkItemTypeDefinitionSubAction(string fromState, string toState)
+        {
+            _fromState = fromState;
+            _toState = toState;
+        }
+
+        private readonly string _fromState;
+        private readonly string _toState;
+        private readonly string _defaultReason;
+
+
+        public string FromState
+        {
+            get { return _fromState; }
+        }
+
+        public string ToState
+        {
+            get { return _toState; }
+        }
+
+        public override void Execute(XmlElement witdElement)
+        {
+            var transitionsElement = TransitionsElement(witdElement);
+            var transitionElements = transitionsElement.SelectNodes("TRANSITION").Cast<XmlElement>()
+                            .Where(e => string.Equals(e.GetAttribute("from"), _fromState, StringComparison.OrdinalIgnoreCase)
+                                        || string.Equals(e.GetAttribute("to"), _toState, StringComparison.OrdinalIgnoreCase));
+
+            foreach (var transitionElement in transitionElements)
+            {
+                transitionsElement.RemoveChild(transitionElement);
+                //_isDirty = true;
+            }
+        }
+
+        public override void SerializeCore(XmlWriter writer)
+        {
+            writer.WriteAttributeString("fromstate", _fromState);
+            writer.WriteAttributeString("tostate", _toState);
+        }
+
+        public static ModifyWorkItemTypeDefinitionSubAction Deserialize(XmlElement element, DeserializationContext context)
+        {
+            return new RemoveTransitionModifyWorkItemTypeDefinitionSubAction(
+                element.GetAttribute("fromstate"),
+                element.GetAttribute("tostate")
+                );
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Remove transition from state '{0}' to '{1}' with reason '{2}'", FromState, ToState, _defaultReason);
+        }
+    }
 }

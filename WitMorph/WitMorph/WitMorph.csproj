@@ -69,6 +69,7 @@
     <Compile Include="Actions\ModifyWorkItemTypeDefinitionMorphAction.cs" />
     <Compile Include="Actions\ModifyWorkItemTypeDefinitionSubAction.cs" />
     <Compile Include="Actions\RenameWitdMorphAction.cs" />
+    <Compile Include="Differences\ConsolidatedWorkItemStateDifference.cs" />
     <Compile Include="DiffEngine.cs" />
     <Compile Include="Differences\AddedWorkItemStateDifference.cs" />
     <Compile Include="Differences\AddedWorkItemTypeDefinitionDifference.cs" />

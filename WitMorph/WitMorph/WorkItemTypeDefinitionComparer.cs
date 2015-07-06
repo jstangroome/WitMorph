@@ -99,7 +99,11 @@ namespace WitMorph
             {
                 if (!string.Equals(pair.Current.Value, pair.Goal.Value, StringComparison.OrdinalIgnoreCase))
                 {
-                    differences.Add(new RenamedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
+                    string[] stateNames = currentStates.Select(s => s.Value).ToArray();
+                    if (stateNames.Any(name => string.Equals(pair.Goal.Value, name, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        differences.Add(new ConsolidatedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
+                    }
                 } 
                 else if (!pair.Current.Equals(pair.Goal))
                 {
