@@ -40,8 +40,11 @@ namespace WitMorph
         private IReadOnlyList<WorkItemTypeDefinition> GetTeamProjectWorkItemTypeDefinitions(TfsTeamProjectCollection collection, string projectName)
         {
             var store = collection.GetService<WorkItemStore>();
+
+            Thread.Sleep(5000);
             store.RefreshCache();
             store.SyncToCache();
+
             var project = store.Projects[projectName];
 
             var witds = new List<WorkItemTypeDefinition>();

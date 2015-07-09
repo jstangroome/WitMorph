@@ -8,6 +8,8 @@ using WitMorph.Model;
 
 namespace WitMorph.Actions
 {
+    using System.Threading;
+
     public class AddFieldModifyWorkItemTypeDefinitionSubAction : ModifyWorkItemTypeDefinitionSubAction
     {
         private readonly WitdField _field;
@@ -442,7 +444,10 @@ namespace WitMorph.Actions
             }
 
             var project = context.GetWorkItemProject();
-            project.Store.RefreshCache(true);
+            Thread.Sleep(5000);
+            project.Store.RefreshCache();
+            project.Store.SyncToCache();
+
             var witdElement = project.WorkItemTypes[_workItemTypeName].Export(false).DocumentElement;
 
             foreach (var action in _subActions)

@@ -6,6 +6,8 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
 {
+    using System.Threading;
+
     public class ExecutionContext
     {
         public ExecutionContext(Uri collectionUri, string projectName, string outputPath)
@@ -25,7 +27,10 @@ namespace WitMorph.Actions
         {
             var collection = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(CollectionUri);
             var store = collection.GetService<WorkItemStore>();
+
+            Thread.Sleep(5000);
             store.RefreshCache();
+            store.SyncToCache();
             return store.Projects[ProjectName];
         }
 

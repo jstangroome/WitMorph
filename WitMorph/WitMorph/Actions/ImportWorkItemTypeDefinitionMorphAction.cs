@@ -9,6 +9,8 @@ using WitMorph.Model;
 
 namespace WitMorph.Actions
 {
+    using System.Threading;
+
     public class ImportWorkItemTypeDefinitionMorphAction : MorphAction
     {
         private readonly WorkItemTypeDefinition _typeDefinition;
@@ -48,7 +50,10 @@ namespace WitMorph.Actions
                 {
                     throw new ProvisionValidationException(string.Format("Could not import work item type definition '{0}'", WorkItemTypeName));
                 }
-                project.Store.RefreshCache(true);
+                Thread.Sleep(5000);            
+
+                project.Store.RefreshCache();
+                project.Store.SyncToCache();
             }
             catch (ProvisionValidationException)
             {
