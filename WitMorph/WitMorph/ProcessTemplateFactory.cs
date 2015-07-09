@@ -47,7 +47,7 @@ namespace WitMorph
             var witds = new List<WorkItemTypeDefinition>();
             foreach (WorkItemType wit in project.WorkItemTypes)
             {
-                wit.Export(false);
+                witds.Add(new WorkItemTypeDefinition(wit.Export(false)));
             }
             return witds;
         }
