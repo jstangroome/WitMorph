@@ -34,7 +34,7 @@ namespace WitMorph.Actions
             }
             else if (targetType == typeof(int))
             {
-                from.Value = this.ToDouble(to);
+                from.Value = this.ToInt(to);
             }
             else
             { 
