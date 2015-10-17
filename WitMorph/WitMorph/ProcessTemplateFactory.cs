@@ -7,6 +7,8 @@ using WitMorph.Model;
 
 namespace WitMorph
 {
+    using System.Threading;
+
     public class ProcessTemplateFactory
     {
         public ProcessTemplate FromCollectionTemplates(Uri collectionUri, string processTemplateName)
@@ -38,8 +40,11 @@ namespace WitMorph
         private IReadOnlyList<WorkItemTypeDefinition> GetTeamProjectWorkItemTypeDefinitions(TfsTeamProjectCollection collection, string projectName)
         {
             var store = collection.GetService<WorkItemStore>();
-            store.RefreshCache(true);
+
+            Thread.Sleep(5000);
+            store.RefreshCache();
             store.SyncToCache();
+
             var project = store.Projects[projectName];
 
             var witds = new List<WorkItemTypeDefinition>();

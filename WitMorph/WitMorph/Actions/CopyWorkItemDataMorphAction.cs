@@ -5,6 +5,8 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
 {
+    using Microsoft.TeamFoundation.Client.CommandLine;
+
     public class CopyWorkItemDataMorphAction : MorphAction
     {
         private readonly string _workItemTypeName;
@@ -32,6 +34,8 @@ namespace WitMorph.Actions
 
             var workItems = project.Store.Query(wiql, queryContext);
 
+            WorkItemFieldDataConvertor convertor = new WorkItemFieldDataConvertor();
+            
             foreach (WorkItem workItem in workItems)
             {
                 Debug.WriteLine(workItem.Id);
@@ -40,7 +44,7 @@ namespace WitMorph.Actions
                 if (hasFromField && hasToField)
                 {
                     if (!workItem.IsOpen) workItem.Open();
-                    workItem.Fields[_toFieldReferenceName].Value = workItem.Fields[_fromFieldReferenceName].Value;
+                    convertor.ConvertFieldData(workItem.Fields[_fromFieldReferenceName], workItem.Fields[_toFieldReferenceName]);
                     workItem.Save();
                 }
                 else

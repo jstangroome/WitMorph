@@ -48,8 +48,23 @@ namespace WitMorph
                     finalModifyTypeAction.RemoveFieldDefinition(fieldRename.CurrentFieldReferenceName);
                 }
 
+                foreach (var stateRename in workItemTypeGroup.OfType<ConsolidatedWorkItemStateDifference>())
+                {
+                    // Rename
+                    const string defaultReason = "Process Template Change";
+                    var removeTransitionAction = modifyTypeAction.RemoveWorkflowTransition(stateRename.CurrentStateName, stateRename.GoalStateName);
+                    var addTransitionAction = modifyTypeAction.AddWorkflowTransition(stateRename.CurrentStateName, stateRename.GoalStateName, defaultReason);
+                    var modifyStateAction = new ModifyWorkItemStateMorphAction(stateRename.CurrentWorkItemTypeName, stateRename.CurrentStateName, stateRename.GoalStateName);
+                    modifyStateAction.LinkedActions.Add(new ActionLink(removeTransitionAction, ActionLinkType.Required));
+                    modifyStateAction.LinkedActions.Add(new ActionLink(addTransitionAction, ActionLinkType.Required));
+                    actionSet.ProcessWorkItemData.Add(modifyStateAction);
+                    finalModifyTypeAction.RemoveWorkflowState(stateRename.CurrentStateName);
+                }
+
+
                 foreach (var stateRename in workItemTypeGroup.OfType<RenamedWorkItemStateDifference>())
                 {
+                    // Rename
                     const string defaultReason = "Process Template Change";
                     var addStateAction = modifyTypeAction.AddWorkflowState(stateRename.GoalState);
                     var addTransitionAction = modifyTypeAction.AddWorkflowTransition(stateRename.CurrentStateName, stateRename.GoalStateName, defaultReason);

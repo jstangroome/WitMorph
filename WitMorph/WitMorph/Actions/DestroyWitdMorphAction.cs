@@ -3,6 +3,8 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace WitMorph.Actions
 {
+    using System.Threading;
+
     public class DestroyWitdMorphAction : MorphAction
     {
         private readonly string _typeName;
@@ -23,7 +25,9 @@ namespace WitMorph.Actions
             var workItemType = project.WorkItemTypes[_typeName];
 
             InternalAdmin.DestroyWorkItemType(workItemType);
-            project.Store.RefreshCache(true);
+            Thread.Sleep(5000);
+            project.Store.RefreshCache();
+            project.Store.SyncToCache();
         }
 
         protected override void SerializeCore(XmlWriter writer)
