@@ -104,12 +104,16 @@ namespace WitMorph
                     {
                         differences.Add(new ConsolidatedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
                     }
-                } 
+                    else
+                    {
+                        differences.Add(new RenamedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
+                    }
+                }
                 else if (!pair.Current.Equals(pair.Goal))
                 {
                     differences.Add(new ChangedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
                 }
-                // TODO state validation changes and transition differences
+
             }
         }
 

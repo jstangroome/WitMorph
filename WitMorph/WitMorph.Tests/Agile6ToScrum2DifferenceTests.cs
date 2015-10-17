@@ -76,9 +76,9 @@ namespace WitMorph.Tests
         {
             var stateRename = Differences
                 .OfType<RenamedWorkItemStateDifference>()
-                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "Task"
+                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "User Story"
                     && d.CurrentStateName == "Active"
-                    && d.GoalStateName == "In Progress");
+                    && d.GoalStateName == "Approved");
 
             Assert.IsNotNull(stateRename, "Task Active state rename not identified");
         }

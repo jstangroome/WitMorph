@@ -13,6 +13,7 @@ namespace WitMorph.IntegrationTests
 
         public TestContext TestContext { get; set; }
 
+        [Ignore]
         [TestMethod]
         public void Should_find_no_differences_between_Scrum_project_and_template()
         {
@@ -30,6 +31,7 @@ namespace WitMorph.IntegrationTests
             Assert.AreEqual(0, differences.Count(), "Should be zero differences between new Scrum 2.1 project and the template it was created from.");
         }
 
+        [Ignore]
         [TestMethod]
         public void Should_find_no_difference_between_original_Scrum_project_and_Agile_project_converted_to_Scrum()
         {
