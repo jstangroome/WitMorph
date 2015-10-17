@@ -97,19 +97,33 @@ namespace WitMorph
 
             foreach (var pair in stateMatchResult.Pairs)
             {
-                if (!string.Equals(pair.Current.Value, pair.Goal.Value, StringComparison.OrdinalIgnoreCase))
+                string[] currentStateNames = currentStates.Select(s => s.Value).ToArray();
+                string[] goalStateNames = goalStates.Select(s => s.Value).ToArray();
+                bool currentExistsInGoal = currentStateNames.Any(name => string.Equals(pair.Goal.Value, name, StringComparison.OrdinalIgnoreCase));
+                bool goalExistsInCurrent = goalStateNames.Any(name => string.Equals(pair.Current.Value, name, StringComparison.OrdinalIgnoreCase));
+                bool renameRegistered = differences.OfType<RenamedWorkItemStateDifference>().Any(diff => string.Equals(diff.GoalStateName, pair.Goal.Value, StringComparison.OrdinalIgnoreCase));
+
+                if (!currentExistsInGoal && goalExistsInCurrent)
                 {
-                    string[] stateNames = currentStates.Select(s => s.Value).ToArray();
-                    if (stateNames.Any(name => string.Equals(pair.Goal.Value, name, StringComparison.OrdinalIgnoreCase)))
+                    differences.Add(new ConsolidatedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
+                }
+                else if (
+                    !currentExistsInGoal 
+                    && !goalExistsInCurrent)
+                {
+                    if (!renameRegistered)
                     {
-                        differences.Add(new ConsolidatedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
+                        differences.Add(new RenamedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
                     }
-                } 
-                else if (!pair.Current.Equals(pair.Goal))
+                    else
+                    {
+                        differences.Add(new ChangedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
+                    }
+                }
+                else if (currentExistsInGoal && goalExistsInCurrent)
                 {
                     differences.Add(new ChangedWorkItemStateDifference(currentWorkItemTypeName, pair.Current.Value, pair.Goal));
                 }
-                // TODO state validation changes and transition differences
             }
         }
 

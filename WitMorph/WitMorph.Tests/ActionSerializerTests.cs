@@ -45,7 +45,9 @@ namespace WitMorph.Tests
                                new ChangedWorkItemWorkflowDifference(workItemTypeDefinition.Name, workItemTypeDefinition.WorkflowElement),
                                new RemovedWorkItemTypeDefinitionDifference("Issue"),
                                new RemovedWorkItemFieldDifference(workItemTypeDefinition.Name, field.ReferenceName),
-                               new RemovedWorkItemStateDifference(state.Value), //workItemTypeDefinition.Name, 
+                               new RemovedWorkItemStateDifference(state.Value),
+                               new ConsolidatedWorkItemStateDifference(workItemTypeDefinition.Name, state.Value, state)
+
                            };
 
         }

@@ -76,9 +76,9 @@ namespace WitMorph.Tests
         {
             var stateRename = Differences
                 .OfType<RenamedWorkItemStateDifference>()
-                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "Task"
+                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "User Story"
                     && d.CurrentStateName == "Active"
-                    && d.GoalStateName == "In Progress");
+                    && d.GoalStateName == "Approved");
 
             Assert.IsNotNull(stateRename, "Task Active state rename not identified");
         }
@@ -86,18 +86,18 @@ namespace WitMorph.Tests
         [TestMethod]
         public void Agile6ToScrum2Difference_should_identify_Closed_and_Resolved_states_renamed_to_Done_for_User_Story()
         {
-            var closedStateRename = Differences
-                .OfType<RenamedWorkItemStateDifference>()
-                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "User Story"
-                    && d.CurrentStateName == "Closed"
-                    && d.GoalStateName == "Done");
-
             var resolvedStateRename = Differences
                 .OfType<RenamedWorkItemStateDifference>()
                 .SingleOrDefault(d => d.CurrentWorkItemTypeName == "User Story"
                     && d.CurrentStateName == "Resolved"
                     && d.GoalStateName == "Done");
 
+            var closedStateRename = Differences
+                .OfType<ChangedWorkItemStateDifference>()
+                .SingleOrDefault(d => d.CurrentWorkItemTypeName == "User Story"
+                    && d.CurrentStateName == "Closed"
+                    && d.GoalStateName == "Done");
+            
             Assert.IsNotNull(closedStateRename, "User Story Closed state rename not identified");
             Assert.IsNotNull(resolvedStateRename, "User Story Resolved state rename not identified");
         }

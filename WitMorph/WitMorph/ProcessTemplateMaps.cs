@@ -13,7 +13,7 @@ namespace WitMorph
         
         public static ProcessTemplateMap Agile61ToScrum21()
         {
-            return ReadEmbeddedResource("Agile6.1_to_Scrum2.1");
+            return ReadEmbeddedResource("Agile6ToScrum2");
         }
     }
 }
